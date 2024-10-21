@@ -1,0 +1,26 @@
+.edge {
+    --edge-width: 2;
+    --layer: -10;
+}
+
+.edge:hover {
+    --edge-width: 7;
+}
+
+.edge:checked {
+    --edge-width: 5;
+}
+
+.flow-point {
+    width: 6px;
+    height: 6px;
+    background-color: #FFFF00;
+    margin-top: -3px;
+    margin-bottom: -3px;
+    margin-left: -3px;
+    margin-right: -3px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}

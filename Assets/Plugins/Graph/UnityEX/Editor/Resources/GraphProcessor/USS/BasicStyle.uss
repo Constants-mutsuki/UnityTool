@@ -1,0 +1,34 @@
+.unity-text-element {
+    -unity-font-style: bold;
+}
+
+.unity-toolbar {
+    border-width: 0px;
+}
+
+.unity-toolbar #ToolbarCenter {
+    flex-grow: 1;
+}
+
+.unity-toolbar > ToolbarButton {
+    width: 80px;
+    -unity-text-align: middle-center;
+}
+
+.unity-toolbar #ToolbarLeft > ToolbarButton {
+    border-left-width: 0;
+}
+
+.unity-toolbar #ToolbarRight > ToolbarButton {
+    border-right-width: 0;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.highlight {
+    background-color: rgba(0, 255, 255, 1);
+    border-radius: 7px
+}

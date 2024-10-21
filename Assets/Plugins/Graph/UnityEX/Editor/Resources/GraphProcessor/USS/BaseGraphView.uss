@@ -1,0 +1,12 @@
+GridBackground {
+    --grid-background-color: rgb(30, 30, 30);
+    --line-color: rgba(193, 196, 192, 0.05);
+    --thick-line-color: rgba(193, 196, 192, 0.07);
+    --spacing: 30;
+    --thick-lines: 5;
+}
+
+.scope.group {
+    /*background-image: resource("GraphProcessor/Textures/Wallpaper 4 Desaturated");*/
+    -unity-background-scale-mode: scale-and-crop;
+}

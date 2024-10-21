@@ -1,0 +1,96 @@
+#node-border {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 3px;
+    border-width: 1px;
+}
+
+#selection-border {
+    border-radius: 4px;
+}
+
+#node-border > #title {
+    background-color: rgba(0, 0, 0, 0.0);
+    height: 25px;
+}
+
+#node-border > #title > #title-input {
+    align-items: center;
+    height: 100%;
+    width: 25px;
+    padding: 3px;
+}
+
+#node-border > #title > #title-output {
+    align-items: center;
+    height: 100%;
+    width: 25px;
+    padding: 3px;
+}
+
+#node-border > #title > #title-icon {
+    width: 12px;
+    height: 12px;
+    margin-left: 5px;
+    align-self: center;
+    -unity-background-scale-mode: scale-to-fit;
+    visibility: hidden;
+    display: none;
+}
+
+#node-border > #title > #title-label {
+    color: #FF6387;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 0;
+    align-self: center;
+    flex-wrap: Wrap;
+    flex-grow: 1;
+}
+
+#node-border > #title > #title-button-container {
+    visibility: hidden;
+    display: none;
+}
+
+#node-border > #contents > #top > #input {
+    align-self: flex-start;
+    margin-right: 5px;
+    background-color: rgba(0, 0, 0, 0.23);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#node-border > #contents > #top > #output {
+    align-self: flex-start;
+    margin-left: 5px;
+    background-color: rgba(0, 0, 0, 0.23);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#node-border > #contents > #controls {
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+#node-border > #top-input {
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    background-color: rgba(78, 89, 113, 0.0);
+    border-color: black;
+}
+
+#node-border > #bottom-input {
+    height: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    background-color: rgba(78, 89, 113, 0.0);
+    border-color: black;
+}
+
+#divider {
+    background-color: rgba(255, 128, 0, 1);
+}

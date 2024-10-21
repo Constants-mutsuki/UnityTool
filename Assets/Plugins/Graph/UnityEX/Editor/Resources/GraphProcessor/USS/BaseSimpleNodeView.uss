@@ -1,0 +1,39 @@
+.node {
+    min-width: 80px;
+}
+
+#node-border {
+    border-radius: 8px;
+}
+
+#selection-border {
+    border-radius: 9px;
+}
+
+#node-border > #title > #title-label {
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: 12px;
+    align-self: center;
+    -unity-text-align: middle-center;
+}
+
+#node-border > #title > #title-button-container {
+    display: none;
+}
+
+#node-border > #title > #input {
+    flex-direction: row-reverse;
+    align-items: center;
+    flex-direction: row;
+}
+
+#node-border > #title > #output {
+    flex-direction: row-reverse;
+    align-items: center;
+    flex-direction: row;
+}
+
+#node-border > .highlight {
+    border-radius: 8px;
+}
