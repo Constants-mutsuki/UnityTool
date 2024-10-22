@@ -1,5 +1,5 @@
 ﻿
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public interface IDirectableTimePointer
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class EditorTools
     {
@@ -19,7 +19,7 @@ namespace NBC.ActionEditor
 
         public static void BoldSeparator()
         {
-            var tex = Styles.whiteTexture;
+            var tex = Styles.WhiteTexture;
             var lastRect = GUILayoutUtility.GetLastRect();
             GUILayout.Space(14);
             GUI.color = new Color(0, 0, 0, 0.25f);

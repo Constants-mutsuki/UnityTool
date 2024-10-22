@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
-namespace NBC.ActionEditor.Test
+namespace Darkness.Test
 {
     public static class EditorInspectorFactory
     {

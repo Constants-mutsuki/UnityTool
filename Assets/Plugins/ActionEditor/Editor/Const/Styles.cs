@@ -1,92 +1,86 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     [InitializeOnLoad]
     public static class Styles
     {
         public static Texture2D Logo;
-        public static Texture2D stripes;
-        public static Texture2D magnetIcon;
-        public static Texture2D lockIcon;
-        public static Texture2D hiddenIcon;
+        public static Texture2D Stripes;
+        public static Texture2D MagnetIcon;
+        public static Texture2D LockIcon;
+        public static Texture2D HiddenIcon;
+        public static Texture2D PlayIcon;
+        public static Texture2D PlayForwardIcon;
+        public static Texture2D PlayBackwardIcon;
+        public static Texture2D StepForwardIcon;
+        public static Texture2D StepBackwardIcon;
+        public static Texture2D PauseIcon;
+        public static Texture2D PlayLoopIcon;
+        public static Texture2D CarretIcon;
+        public static Texture2D CutsceneIconOpen;
+        public static Texture2D BackIcon;
+        public static Texture2D SaveIcon;
+        public static Texture2D SettingsIcon;
+        public static Texture2D PlusIcon;
+        public static Texture2D MenuIcon;
+        private static GUISkin m_styleSheet;
+        public static Color HighlightColor => EditorGUIUtility.isProSkin ? new Color(0.65f, 0.65f, 1) : new Color(0.1f, 0.1f, 0.1f);
+        public static readonly Color ListSelectionColor = new Color(0.5f, 0.5f, 1, 0.3f);
+        public static readonly Color GroupColor = new Color(0f, 0f, 0f, 0.25f);
 
-        public static Texture2D playIcon;
-        public static Texture2D playForwardIcon;
-        public static Texture2D playBackwardIcon;
-        public static Texture2D stepForwardIcon;
-        public static Texture2D stepBackwardIcon;
-        public static Texture2D pauseIcon;
-        public static Texture2D playLoopIcon;
-
-        public static Texture2D carretIcon;
-        public static Texture2D cutsceneIconOpen;
-        public static Texture2D backIcon;
-        public static Texture2D saveIcon;
-        public static Texture2D settingsIcon;
-        public static Texture2D plusIcon;
-        public static Texture2D menuIcon;
-
-        private static GUISkin styleSheet;
-
-
-        public static Color HIGHLIGHT_COLOR => EditorGUIUtility.isProSkin ? new Color(0.65f, 0.65f, 1) : new Color(0.1f, 0.1f, 0.1f);
-        
-        public static readonly Color LIST_SELECTION_COLOR = new Color(0.5f, 0.5f, 1, 0.3f);
-        public static readonly Color GROUP_COLOR = new Color(0f, 0f, 0f, 0.25f);
-        
         /// <summary>
         /// 右边边距
         /// </summary>
-        public const float RIGHT_MARGIN = 16;
+        public const float RightMargin = 16;
 
         /// <summary>
         /// 工具栏的高度
         /// </summary>
-        public const float TOOLBAR_HEIGHT = 20;
+        public const float ToolbarHeight = 20;
 
         /// <summary>
         /// 上边距
         /// </summary>
-        public const float TOP_MARGIN = 20;
+        public const float TopMargin = 20;
 
         /// <summary>
         /// 组高
         /// </summary>
-        public const float GROUP_HEIGHT = 31;
+        public const float GroupHeight = 31;
 
         /// <summary>
         /// 组右边距
         /// </summary>
-        public const float GROUP_RIGHT_MARGIN = 4;
+        public const float GroupRightMargin = 4;
 
         /// <summary>
         /// 第一个组上边距
         /// </summary>
-        public const float FIRST_GROUP_TOP_MARGIN = 22;
+        public const float FirstGroupTopMargin = 22;
 
         /// <summary>
         /// 轨道上下边距
         /// </summary>
-        public const float TRACK_MARGINS = 4;
+        public const float TrackMargins = 4;
 
         /// <summary>
         /// 轨道右边距
         /// </summary>
-        public const float TRACK_RIGHT_MARGIN = 4;
+        public const float TrackRightMargin = 4;
 
         /// <summary>
         /// 底部滚动条高度
         /// </summary>
-        public const float BOTTOM_HEIGHT = 20;
-        
-        public static float LEFT_MARGIN
+        public const float BottomHeight = 20;
+
+        public static float LeftMargin
         {
             get => Prefs.trackListLeftMargin;
             set => Prefs.trackListLeftMargin = Mathf.Clamp(value, 230, 400);
         }
-        
+
         static Styles()
         {
             Load();
@@ -95,94 +89,62 @@ namespace NBC.ActionEditor
         [InitializeOnLoadMethod]
         public static void Load()
         {
-            stripes = (Texture2D)Resources.Load("nbc/Stripes");
-            magnetIcon = (Texture2D)Resources.Load("nbc/magnet");
-            lockIcon = (Texture2D)Resources.Load("nbc/LockIcon");
-            hiddenIcon = (Texture2D)Resources.Load("nbc/HiddenIcon");
-            playIcon = (Texture2D)Resources.Load("nbc/play");
-            playForwardIcon = (Texture2D)Resources.Load("nbc/playForward");
-            playBackwardIcon = (Texture2D)Resources.Load("nbc/playBackward");
-            playLoopIcon = (Texture2D)Resources.Load("nbc/loopPlay");
-            stepForwardIcon = (Texture2D)Resources.Load("nbc/stepForward");
-            stepBackwardIcon = (Texture2D)Resources.Load("nbc/stepBackward");
-            pauseIcon = (Texture2D)Resources.Load("nbc/pause");
-            carretIcon = (Texture2D)Resources.Load("nbc/CarretIcon");
-            cutsceneIconOpen = (Texture2D)Resources.Load("nbc/CutsceneIconOpen");
-            settingsIcon = (Texture2D)Resources.Load("nbc/settings");
-            backIcon = (Texture2D)Resources.Load("nbc/back");
-            saveIcon = (Texture2D)Resources.Load("nbc/save");
-            plusIcon = (Texture2D)Resources.Load("nbc/plus");
-            menuIcon = (Texture2D)Resources.Load("nbc/menu");
+            Stripes = (Texture2D)Resources.Load("nbc/Stripes");
+            MagnetIcon = (Texture2D)Resources.Load("nbc/magnet");
+            LockIcon = (Texture2D)Resources.Load("nbc/LockIcon");
+            HiddenIcon = (Texture2D)Resources.Load("nbc/HiddenIcon");
+            PlayIcon = (Texture2D)Resources.Load("nbc/play");
+            PlayForwardIcon = (Texture2D)Resources.Load("nbc/playForward");
+            PlayBackwardIcon = (Texture2D)Resources.Load("nbc/playBackward");
+            PlayLoopIcon = (Texture2D)Resources.Load("nbc/loopPlay");
+            StepForwardIcon = (Texture2D)Resources.Load("nbc/stepForward");
+            StepBackwardIcon = (Texture2D)Resources.Load("nbc/stepBackward");
+            PauseIcon = (Texture2D)Resources.Load("nbc/pause");
+            CarretIcon = (Texture2D)Resources.Load("nbc/CarretIcon");
+            CutsceneIconOpen = (Texture2D)Resources.Load("nbc/CutsceneIconOpen");
+            SettingsIcon = (Texture2D)Resources.Load("nbc/settings");
+            BackIcon = (Texture2D)Resources.Load("nbc/back");
+            SaveIcon = (Texture2D)Resources.Load("nbc/save");
+            PlusIcon = (Texture2D)Resources.Load("nbc/plus");
+            MenuIcon = (Texture2D)Resources.Load("nbc/menu");
 
             Logo = (Texture2D)Resources.Load("nbc/Logo");
 
-            styleSheet = (GUISkin)Resources.Load("nbc/StyleSheet");
+            m_styleSheet = (GUISkin)Resources.Load("nbc/StyleSheet");
         }
 
-        public static Texture2D whiteTexture => EditorGUIUtility.whiteTexture;
-
-        private static GUIStyle _shadowBorderStyle;
-
-        public static GUIStyle shadowBorderStyle =>
-            _shadowBorderStyle != null
-                ? _shadowBorderStyle
-                : _shadowBorderStyle = styleSheet.GetStyle("ShadowBorder");
-
-        private static GUIStyle _clipBoxStyle;
-
-        public static GUIStyle clipBoxStyle => _clipBoxStyle != null ? _clipBoxStyle : _clipBoxStyle = styleSheet.GetStyle("ClipBox");
-
-        private static GUIStyle _clipBoxFooterStyle;
-
-
-        private static GUIStyle _clipBoxHorizontalStyle;
-
-        public static GUIStyle clipBoxHorizontalStyle =>
-            _clipBoxHorizontalStyle != null
-                ? _clipBoxHorizontalStyle
-                : _clipBoxHorizontalStyle = styleSheet.GetStyle("ClipBoxHorizontal");
-
-        private static GUIStyle _timeBoxStyle;
-
-        public static GUIStyle timeBoxStyle => _timeBoxStyle != null ? _timeBoxStyle : _timeBoxStyle = styleSheet.GetStyle("TimeBox");
-
-        private static GUIStyle _headerBoxStyle;
-
-        public static GUIStyle headerBoxStyle => _headerBoxStyle != null ? _headerBoxStyle : _headerBoxStyle = styleSheet.GetStyle("HeaderBox");
-
-        private static GUIStyle _hollowFrameStyle;
-
-        public static GUIStyle hollowFrameStyle =>
-            _hollowFrameStyle != null
-                ? _hollowFrameStyle
-                : _hollowFrameStyle = styleSheet.GetStyle("HollowFrame");
-
-        private static GUIStyle _hollowFrameHorizontalStyle;
-
-        public static GUIStyle hollowFrameHorizontalStyle =>
-            _hollowFrameHorizontalStyle != null
-                ? _hollowFrameHorizontalStyle
-                : _hollowFrameHorizontalStyle = styleSheet.GetStyle("HollowFrameHorizontal");
-
-
-        private static GUIStyle _centerLabel;
-
-        public static GUIStyle centerLabel
+        private static GUIStyle m_shadowBorderStyle;
+        private static GUIStyle m_clipBoxStyle;
+        private static GUIStyle m_clipBoxFooterStyle;
+        private static GUIStyle m_clipBoxHorizontalStyle;
+        private static GUIStyle m_timeBoxStyle;
+        private static GUIStyle m_headerBoxStyle;
+        private static GUIStyle m_hollowFrameStyle;
+        private static GUIStyle m_hollowFrameHorizontalStyle;
+        private static GUIStyle m_centerLabel;
+        public static Texture2D WhiteTexture => EditorGUIUtility.whiteTexture;
+        public static GUIStyle ShadowBorderStyle => m_shadowBorderStyle ??= m_styleSheet.GetStyle("ShadowBorder");
+        public static GUIStyle ClipBoxStyle => m_clipBoxStyle ??= m_styleSheet.GetStyle("ClipBox");
+        public static GUIStyle ClipBoxHorizontalStyle => m_clipBoxHorizontalStyle ??= m_styleSheet.GetStyle("ClipBoxHorizontal");
+        public static GUIStyle TimeBoxStyle => m_timeBoxStyle ??= m_styleSheet.GetStyle("TimeBox");
+        public static GUIStyle HeaderBoxStyle => m_headerBoxStyle ??= m_styleSheet.GetStyle("HeaderBox");
+        public static GUIStyle HollowFrameStyle => m_hollowFrameStyle ??= m_styleSheet.GetStyle("HollowFrame");
+        public static GUIStyle HollowFrameHorizontalStyle => m_hollowFrameHorizontalStyle ??= m_styleSheet.GetStyle("HollowFrameHorizontal");
+        public static GUIStyle CenterLabel
         {
             get
             {
-                if (_centerLabel != null)
+                if (m_centerLabel != null)
                 {
-                    return _centerLabel;
+                    return m_centerLabel;
                 }
 
-                _centerLabel = new GUIStyle("label");
-                _centerLabel.alignment = TextAnchor.MiddleCenter;
-                return _centerLabel;
+                m_centerLabel = new GUIStyle("label")
+                {
+                    alignment = TextAnchor.MiddleCenter
+                };
+                return m_centerLabel;
             }
         }
-        
-        
-        
     }
 }

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class G
     {
@@ -33,7 +33,7 @@ namespace NBC.ActionEditor
 
         public static Vector2 ScrollPos;
 
-        public static readonly float BottomHeight = Styles.BOTTOM_HEIGHT * 2;
+        public static readonly float BottomHeight = Styles.BottomHeight * 2;
 
         public static Rect TopLeftRect;
 
@@ -45,17 +45,17 @@ namespace NBC.ActionEditor
 
         public static void Reset()
         {
-            TopLeftRect = new Rect(0, Styles.TOOLBAR_HEIGHT, Styles.LEFT_MARGIN, Styles.TOP_MARGIN);
+            TopLeftRect = new Rect(0, Styles.ToolbarHeight, Styles.LeftMargin, Styles.TopMargin);
 
 
-            var centerHeight = ScreenHeight - Styles.TOOLBAR_HEIGHT - Styles.TOP_MARGIN + ScrollPos.y;
-            var centerWidth = ScreenWidth - Styles.LEFT_MARGIN - Styles.RIGHT_MARGIN;
+            var centerHeight = ScreenHeight - Styles.ToolbarHeight - Styles.TopMargin + ScrollPos.y;
+            var centerWidth = ScreenWidth - Styles.LeftMargin - Styles.RightMargin;
 
-            TopMiddleRect = new Rect(Styles.LEFT_MARGIN, Styles.TOOLBAR_HEIGHT, centerWidth, Styles.TOP_MARGIN);
+            TopMiddleRect = new Rect(Styles.LeftMargin, Styles.ToolbarHeight, centerWidth, Styles.TopMargin);
 
-            LeftRect = new Rect(0, Styles.TOOLBAR_HEIGHT + Styles.TOP_MARGIN, Styles.LEFT_MARGIN, centerHeight);
+            LeftRect = new Rect(0, Styles.ToolbarHeight + Styles.TopMargin, Styles.LeftMargin, centerHeight);
 
-            CenterRect = new Rect(Styles.LEFT_MARGIN, Styles.TOP_MARGIN + Styles.TOOLBAR_HEIGHT, centerWidth,
+            CenterRect = new Rect(Styles.LeftMargin, Styles.TopMargin + Styles.ToolbarHeight, centerWidth,
                 centerHeight - BottomHeight);
         }
 

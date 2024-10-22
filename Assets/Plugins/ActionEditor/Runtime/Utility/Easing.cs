@@ -1,4 +1,4 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
     using UnityEngine;
     using System;

@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public sealed class HeaderTimeInfoGUI : ICustomized
     {
@@ -9,13 +9,13 @@ namespace NBC.ActionEditor
 
         public void OnGUI()
         {
-            var asset = App.AssetData;
+            var asset = App.TimelineGraphAssetData;
             if (asset == null) return;
             var topMiddleRect = G.TopMiddleRect;
             GUI.color = Color.white.WithAlpha(0.2f);
             GUI.Box(topMiddleRect, string.Empty, EditorStyles.toolbarButton);
             GUI.color = Color.black.WithAlpha(0.2f);
-            GUI.Box(topMiddleRect, string.Empty, Styles.timeBoxStyle);
+            GUI.Box(topMiddleRect, string.Empty, Styles.TimeBoxStyle);
             GUI.color = Color.white;
 
             var timeInfoInterval = 1000000f;
@@ -53,9 +53,9 @@ namespace NBC.ActionEditor
                     for (var i = timeInfoStart; i <= timeInfoEnd; i += timeStep)
                     {
                         var posX = asset.TimeToPos(i);
-                        var frameRect = Rect.MinMaxRect(posX - 1, Styles.TOP_MARGIN - 2, posX, Styles.TOP_MARGIN - 5);
+                        var frameRect = Rect.MinMaxRect(posX - 1, Styles.TopMargin - 2, posX, Styles.TopMargin - 5);
                         GUI.color = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-                        GUI.DrawTexture(frameRect, Styles.whiteTexture);
+                        GUI.DrawTexture(frameRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
                     }
                 }
@@ -67,8 +67,8 @@ namespace NBC.ActionEditor
                     var rounded = Mathf.Round(i * 10) / 10;
 
                     GUI.color = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-                    var markRect = Rect.MinMaxRect(posX - 1, Styles.TOP_MARGIN - 2, posX, Styles.TOP_MARGIN - 15);
-                    GUI.DrawTexture(markRect, Styles.whiteTexture);
+                    var markRect = Rect.MinMaxRect(posX - 1, Styles.TopMargin - 2, posX, Styles.TopMargin - 15);
+                    GUI.DrawTexture(markRect, Styles.WhiteTexture);
                     GUI.color = Color.white;
 
                     var text = doFrames ? (rounded * Prefs.frameRate).ToString("0") : rounded.ToString("0.00");
@@ -86,24 +86,24 @@ namespace NBC.ActionEditor
                         ? (player.CurrentTime * Prefs.frameRate).ToString("0")
                         : player.CurrentTime.ToString("0.00");
                     var text = "<b><size=16>" + label + "</size></b>";
-                    var size = Styles.headerBoxStyle.CalcSize(new GUIContent(text));
+                    var size = Styles.HeaderBoxStyle.CalcSize(new GUIContent(text));
                     var posX = asset.TimeToPos(player.CurrentTime);
                     var stampRect = new Rect(0, 0, size.x, size.y);
-                    stampRect.center = new Vector2(posX, Styles.TOP_MARGIN - size.y / 2);
+                    stampRect.center = new Vector2(posX, Styles.TopMargin - size.y / 2);
 
                     GUI.backgroundColor = EditorGUIUtility.isProSkin
                         ? Color.black.WithAlpha(0.4f)
                         : Color.black.WithAlpha(0.7f);
                     GUI.color = AssetPlayer.Inst.GetScriberColor();
-                    GUI.Box(stampRect, text, Styles.headerBoxStyle);
+                    GUI.Box(stampRect, text, Styles.HeaderBoxStyle);
                 }
 
                 //长度位置箭头图片和预退出长度指示
                 var lengthPos = asset.TimeToPos(asset.Length);
                 var lengthRect = new Rect(0, 0, 18, 18);
-                lengthRect.center = new Vector2(lengthPos - 1, Styles.TOP_MARGIN - 2);
+                lengthRect.center = new Vector2(lengthPos - 1, Styles.TopMargin - 2);
                 GUI.color = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-                GUI.DrawTexture(lengthRect, Styles.carretIcon);
+                GUI.DrawTexture(lengthRect, Styles.CarretIcon);
                 GUI.color = Color.white;
             }
             GUI.EndGroup();

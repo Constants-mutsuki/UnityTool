@@ -1,6 +1,6 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
-    public abstract class PreviewBase<T> : PreviewBase where T : ActionClip
+    public abstract class PreviewBase<T> : PreviewBase where T : ActionClipAsset
     {
         public T clip => (T)directable;
     }

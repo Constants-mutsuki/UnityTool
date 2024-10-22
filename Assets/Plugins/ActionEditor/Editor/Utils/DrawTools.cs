@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class DrawTools
     {
@@ -79,7 +79,7 @@ namespace NBC.ActionEditor
 
             if (clip.loadType != AudioClipLoadType.DecompressOnLoad)
             {
-                audioTextures[clip] = Styles.whiteTexture;
+                audioTextures[clip] = Styles.WhiteTexture;
                 return null;
             }
 

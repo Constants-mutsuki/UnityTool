@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     /// <summary>
     /// 类排序

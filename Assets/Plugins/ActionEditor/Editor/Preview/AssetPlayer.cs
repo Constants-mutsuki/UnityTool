@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class AssetPlayer
     {
@@ -37,7 +37,7 @@ namespace NBC.ActionEditor
 
         private bool preInitialized;
 
-        public Asset Asset => App.AssetData;
+        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
 
         /// <summary>
         /// 当前时间
@@ -68,9 +68,9 @@ namespace NBC.ActionEditor
         {
             get
             {
-                if (Asset != null)
+                if (TimelineGraphAsset != null)
                 {
-                    return Asset.Length;
+                    return TimelineGraphAsset.Length;
                 }
 
                 return 0;
@@ -191,7 +191,7 @@ namespace NBC.ActionEditor
                 }
             }
 
-            foreach (var group in Asset.groups.AsEnumerable().Reverse())
+            foreach (var group in TimelineGraphAsset.groups.AsEnumerable().Reverse())
             {
                 if (!group.IsActive) continue;
                 foreach (var track in group.Tracks.AsEnumerable().Reverse())

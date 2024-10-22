@@ -1,4 +1,4 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
     /// <summary>
     /// 保护子片段的内容，如动画/音频。

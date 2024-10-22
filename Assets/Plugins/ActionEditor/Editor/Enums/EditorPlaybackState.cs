@@ -1,8 +1,8 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
     public enum EditorPlaybackState
     {
-        Stoped,
+        Stopped,
         PlayingForwards,
         PlayingBackwards
     }

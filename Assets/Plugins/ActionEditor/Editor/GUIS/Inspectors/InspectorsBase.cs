@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class InspectorsBase
     {

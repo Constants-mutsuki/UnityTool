@@ -1,17 +1,17 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
-    public abstract class ActionClipInspector<T> : ActionClipInspector where T : ActionClip
+    public abstract class ActionClipInspector<T> : ActionClipInspector where T : ActionClipAsset
     {
         protected T action => (T)target;
     }
 
-    [CustomInspectors(typeof(ActionClip), true)]
+    [CustomInspectors(typeof(ActionClipAsset), true)]
     public class ActionClipInspector : InspectorsBase
     {
-        private ActionClip action => (ActionClip)target;
+        private ActionClipAsset action => (ActionClipAsset)target;
 
         public override void OnInspectorGUI()
         {

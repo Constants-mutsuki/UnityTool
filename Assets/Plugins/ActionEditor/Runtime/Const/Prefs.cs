@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class Prefs
     {
@@ -185,7 +185,7 @@ namespace NBC.ActionEditor
         {
             AssetTypes.Clear();
             AssetNames.Clear();
-            var types = ReflectionTools.GetImplementationsOf(typeof(Asset));
+            var types = ReflectionTools.GetImplementationsOf(typeof(TimelineGraphAsset));
             foreach (var t in types)
             {
                 var typeName = t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.name : t.Name.SplitCamelCase();

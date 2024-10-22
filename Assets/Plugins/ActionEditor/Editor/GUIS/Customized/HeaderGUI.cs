@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class HeaderGUI : ICustomized
     {
@@ -31,7 +31,7 @@ namespace NBC.ActionEditor
 
         protected virtual void DrawPlayControlLeft()
         {
-            if (GUILayout.Button(new GUIContent(Styles.stepBackwardIcon, Lan.StepBackwardTips), EditorStyles.toolbarButton,
+            if (GUILayout.Button(new GUIContent(Styles.StepBackwardIcon, Lan.StepBackwardTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
                 App.StepBackward();
@@ -40,7 +40,7 @@ namespace NBC.ActionEditor
 
             EditorGUI.BeginChangeCheck();
 
-            var playContent = new GUIContent(Styles.playIcon, !App.IsPlay ? Lan.PlayTips : Lan.StopTips);
+            var playContent = new GUIContent(Styles.PlayIcon, !App.IsPlay ? Lan.PlayTips : Lan.StopTips);
             var isPlaying = GUILayout.Toggle(App.IsPlay, playContent, EditorStyles.toolbarButton,
                 GUILayout.Width(26));
             if (EditorGUI.EndChangeCheck())
@@ -56,7 +56,7 @@ namespace NBC.ActionEditor
             }
 
             EditorGUI.BeginChangeCheck();
-            var isPause = GUILayout.Toggle(App.IsPlay && App.IsStop, new GUIContent(Styles.pauseIcon, Lan.PauseTips),
+            var isPause = GUILayout.Toggle(App.IsPlay && App.IsStop, new GUIContent(Styles.PauseIcon, Lan.PauseTips),
                 EditorStyles.toolbarButton, GUILayout.Width(26));
             if (EditorGUI.EndChangeCheck())
             {
@@ -70,14 +70,14 @@ namespace NBC.ActionEditor
                 }
             }
 
-            if (GUILayout.Button(new GUIContent(Styles.stepForwardIcon, Lan.StepForwardTips), EditorStyles.toolbarButton,
+            if (GUILayout.Button(new GUIContent(Styles.StepForwardIcon, Lan.StepForwardTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
                 App.StepForward();
                 Event.current.Use();
             }
 
-            if (GUILayout.Button(new GUIContent(Styles.playForwardIcon, Lan.PlayForwardTips), EditorStyles.toolbarButton,
+            if (GUILayout.Button(new GUIContent(Styles.PlayForwardIcon, Lan.PlayForwardTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
                 player.CurrentTime = player.Length;
@@ -88,7 +88,7 @@ namespace NBC.ActionEditor
         {
             EditorGUI.BeginChangeCheck();
             var isLoop = GUILayout.Toggle(App.EditorPlaybackWrapMode == WrapMode.Loop,
-                new GUIContent(Styles.playLoopIcon, Lan.PlayLoopTips),
+                new GUIContent(Styles.PlayLoopIcon, Lan.PlayLoopTips),
                 EditorStyles.toolbarButton, GUILayout.Width(26));
             if (EditorGUI.EndChangeCheck())
             {
@@ -124,25 +124,25 @@ namespace NBC.ActionEditor
 
         protected virtual void DrawToolbarLeft()
         {
-            if (GUILayout.Button(new GUIContent(Styles.backIcon, Lan.BackMenuTips), EditorStyles.toolbarButton,
+            if (GUILayout.Button(new GUIContent(Styles.BackIcon, Lan.BackMenuTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
-                App.AssetData = null;
+                App.TimelineGraphAssetData = null;
                 GUILayout.EndHorizontal();
                 return;
             }
 
-            if (GUILayout.Button(new GUIContent(Styles.plusIcon, Lan.NewAssetTips), EditorStyles.toolbarButton,
+            if (GUILayout.Button(new GUIContent(Styles.PlusIcon, Lan.NewAssetTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
                 CreateAssetWindow.Show();
             }
 
-            Prefs.magnetSnapping = GUILayout.Toggle(Prefs.magnetSnapping, new GUIContent(Styles.magnetIcon, Lan.OpenMagnetSnappingTips),
+            Prefs.magnetSnapping = GUILayout.Toggle(Prefs.magnetSnapping, new GUIContent(Styles.MagnetIcon, Lan.OpenMagnetSnappingTips),
                 EditorStyles.toolbarButton);
 
-            var gName = App.AssetData != null
-                ? App.AssetData.name
+            var gName = App.TimelineGraphAssetData != null
+                ? App.TimelineGraphAssetData.name
                 : string.Empty;
 
             var con = new GUIContent(string.Format(Lan.HeaderSelectAsset, gName), Lan.SelectAssetTips);
@@ -150,7 +150,7 @@ namespace NBC.ActionEditor
                     GUILayout.Width(120)))
             {
                 App.AutoSave(); //先保存当前的
-                ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.AssetData, App.OnObjectPickerConfig,
+                ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.TimelineGraphAssetData, App.OnObjectPickerConfig,
                     Prefs.savePath);
             }
         }
@@ -164,15 +164,15 @@ namespace NBC.ActionEditor
             GUI.color = Color.white;
 
             
-            if (GUILayout.Button(new GUIContent(Styles.saveIcon, Lan.Save), EditorStyles.toolbarButton, GUILayout.Width(26)))
+            if (GUILayout.Button(new GUIContent(Styles.SaveIcon, Lan.Save), EditorStyles.toolbarButton, GUILayout.Width(26)))
             {
                 App.AutoSave(); //先保存当前的
             }
             
-            if (GUILayout.Button(new GUIContent(Styles.settingsIcon, Lan.OpenPreferencesTips), EditorStyles.toolbarButton, GUILayout.Width(26)))
+            if (GUILayout.Button(new GUIContent(Styles.SettingsIcon, Lan.OpenPreferencesTips), EditorStyles.toolbarButton, GUILayout.Width(26)))
             {
-                PreferencesWindow.Show(new Rect(G.ScreenWidth - 5 - 400, Styles.TOOLBAR_HEIGHT + 5, 400,
-                    G.ScreenHeight - Styles.TOOLBAR_HEIGHT - 50));
+                PreferencesWindow.Show(new Rect(G.ScreenWidth - 5 - 400, Styles.ToolbarHeight + 5, 400,
+                    G.ScreenHeight - Styles.ToolbarHeight - 50));
             }
         }
     }

@@ -1,11 +1,11 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class DirectorUtility
     {
-        private static ActionClip _copyClip;
+        private static ActionClipAsset m_copyClipAsset;
         private static System.Type _copyClipType;
         
         [System.NonSerialized] private static InspectorPreviewAsset _currentInspectorPreviewAsset;
@@ -13,12 +13,12 @@ namespace NBC.ActionEditor
         [System.NonSerialized] private static ScriptableObject _selectedObject;
         public static event System.Action<ScriptableObject> onSelectionChange;
         
-        public static ActionClip CopyClip
+        public static ActionClipAsset CopyClipAsset
         {
-            get => _copyClip;
+            get => m_copyClipAsset;
             set
             {
-                _copyClip = value;
+                m_copyClipAsset = value;
                 if (value != null)
                 {
                     _copyClipType = value.GetType();
@@ -39,15 +39,15 @@ namespace NBC.ActionEditor
         public static void FlushCopyClip()
         {
             _copyClipType = null;
-            _copyClip = null;
+            m_copyClipAsset = null;
         }
 
 
-        public static void CutClip(ActionClip clip)
+        public static void CutClip(ActionClipAsset clipAsset)
         {
-            _copyClip = clip;
-            _copyClipType = clip.GetType();
-            clip.Parent.DeleteAction(clip);
+            m_copyClipAsset = clipAsset;
+            _copyClipType = clipAsset.GetType();
+            clipAsset.Parent.DeleteAction(clipAsset);
         }
         
 

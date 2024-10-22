@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor.Draws
+namespace Darkness.Draws
 {
     public static class TrackDraw
     {
@@ -16,15 +16,15 @@ namespace NBC.ActionEditor.Draws
         private static readonly Dictionary<Type, Texture> _iconDictionary = new Dictionary<Type, Texture>();
         private static readonly Dictionary<Type, Color> _colorDictionary = new Dictionary<Type, Color>();
 
-        private static Texture GetIcon(this Track track)
+        private static Texture GetIcon(this TrackAsset trackAsset)
         {
-            var type = track.GetType();
+            var type = trackAsset.GetType();
             if (_iconDictionary.TryGetValue(type, out var icon))
             {
                 return icon;
             }
 
-            var att = track.GetType().RTGetAttribute<ShowIconAttribute>(true);
+            var att = trackAsset.GetType().RTGetAttribute<ShowIconAttribute>(true);
 
             if (att != null)
             {
@@ -63,15 +63,15 @@ namespace NBC.ActionEditor.Draws
             return icon;
         }
 
-        private static Color GetColor(this Track track)
+        private static Color GetColor(this TrackAsset trackAsset)
         {
-            var type = track.GetType();
+            var type = trackAsset.GetType();
             if (_colorDictionary.TryGetValue(type, out var icon))
             {
                 return icon;
             }
 
-            var colorAttribute = track.GetType().GetCustomAttribute<ColorAttribute>();
+            var colorAttribute = trackAsset.GetType().GetCustomAttribute<ColorAttribute>();
             if (colorAttribute != null)
             {
                 _colorDictionary[type] = colorAttribute.Color;
@@ -86,48 +86,48 @@ namespace NBC.ActionEditor.Draws
 
         #endregion
 
-        public static void Draw(Track track, Rect trackRect)
+        public static void Draw(TrackAsset trackAsset, Rect trackRect)
         {
             var e = Event.current;
 
-            DoDefaultInfoGUI(track, e, trackRect);
+            DoDefaultInfoGUI(trackAsset, e, trackRect);
 
             GUI.color = Color.white;
             GUI.backgroundColor = Color.white;
         }
 
-        public static void DoDefaultInfoGUI(Track track, Event e, Rect trackRect)
+        public static void DoDefaultInfoGUI(TrackAsset trackAsset, Event e, Rect trackRect)
         {
-            var dopeRect = new Rect(0, 0, 4f, track.ShowHeight);
-            GUI.color = track.GetColor();
-            GUI.Box(dopeRect, string.Empty, Styles.headerBoxStyle);
+            var dopeRect = new Rect(0, 0, 4f, trackAsset.ShowHeight);
+            GUI.color = trackAsset.GetColor();
+            GUI.Box(dopeRect, string.Empty, Styles.HeaderBoxStyle);
             GUI.color = Color.white;
 
-            var iconBGRect = new Rect(4f, 0, BOX_WIDTH, track.ShowHeight);
+            var iconBGRect = new Rect(4f, 0, BOX_WIDTH, trackAsset.ShowHeight);
             iconBGRect = iconBGRect.ExpandBy(-1);
             var textInfoRect =
-                Rect.MinMaxRect(iconBGRect.xMax + 2, 0, trackRect.width - BOX_WIDTH - 2, track.ShowHeight);
-            var curveButtonRect = new Rect(trackRect.width - BOX_WIDTH, 0, BOX_WIDTH, track.ShowHeight);
+                Rect.MinMaxRect(iconBGRect.xMax + 2, 0, trackRect.width - BOX_WIDTH - 2, trackAsset.ShowHeight);
+            var curveButtonRect = new Rect(trackRect.width - BOX_WIDTH, 0, BOX_WIDTH, trackAsset.ShowHeight);
 
             GUI.color = Color.black.WithAlpha(0.1f);
             GUI.DrawTexture(iconBGRect, Texture2D.whiteTexture);
             GUI.color = Color.white;
 
-            var icon = track.GetIcon();
+            var icon = trackAsset.GetIcon();
             if (icon != null)
             {
                 var iconRect = new Rect(0, 0, 16, 16);
                 iconRect.center = iconBGRect.center;
-                GUI.color = ReferenceEquals(DirectorUtility.selectedObject, track)
+                GUI.color = ReferenceEquals(DirectorUtility.selectedObject, trackAsset)
                     ? Color.white
                     : new Color(1, 1, 1, 0.8f);
                 GUI.DrawTexture(iconRect, icon);
                 GUI.color = Color.white;
             }
 
-            var nameString = $"<size=11>{track.Name}</size>";
-            var infoString = $"<size=9><color=#707070>{track.info}</color></size>";
-            GUI.color = track.IsActive ? Color.white : Color.grey;
+            var nameString = $"<size=11>{trackAsset.Name}</size>";
+            var infoString = $"<size=9><color=#707070>{trackAsset.info}</color></size>";
+            GUI.color = trackAsset.IsActive ? Color.white : Color.grey;
             GUI.Label(textInfoRect, $"{nameString}\n{infoString}");
             GUI.color = Color.white;
 
@@ -136,32 +136,32 @@ namespace NBC.ActionEditor.Draws
             GUI.enabled = true;
 
             GUI.color = Color.grey;
-            if (!track.IsActive)
+            if (!trackAsset.IsActive)
             {
                 var hiddenRect = new Rect(0, 0, 16, 16)
                 {
                     center = curveButtonRect.center
                 };
-                if (GUI.Button(hiddenRect, Styles.hiddenIcon, GUIStyle.none))
+                if (GUI.Button(hiddenRect, Styles.HiddenIcon, GUIStyle.none))
                 {
-                    track.IsActive = !track.IsActive;
+                    trackAsset.IsActive = !trackAsset.IsActive;
                 }
             }
 
-            if (track.IsLocked)
+            if (trackAsset.IsLocked)
             {
                 var lockRect = new Rect(0, 0, 16, 16)
                 {
                     center = curveButtonRect.center
                 };
-                if (!track.IsActive)
+                if (!trackAsset.IsActive)
                 {
                     lockRect.center -= new Vector2(16, 0);
                 }
 
-                if (GUI.Button(lockRect, Styles.lockIcon, GUIStyle.none))
+                if (GUI.Button(lockRect, Styles.LockIcon, GUIStyle.none))
                 {
-                    track.IsLocked = !track.IsLocked;
+                    trackAsset.IsLocked = !trackAsset.IsLocked;
                 }
             }
 
@@ -169,22 +169,22 @@ namespace NBC.ActionEditor.Draws
             GUI.enabled = wasEnable;
         }
         
-        public static void DrawTrackContextMenu(Track track, Event e, Rect posRect, float cursorTime)
+        public static void DrawTrackContextMenu(TrackAsset trackAsset, Event e, Rect posRect, float cursorTime)
         {
             var clipsPosRect =
-                Rect.MinMaxRect(posRect.xMin, posRect.yMin, posRect.xMax, posRect.yMin + track.ShowHeight);
+                Rect.MinMaxRect(posRect.xMin, posRect.yMin, posRect.xMax, posRect.yMin + trackAsset.ShowHeight);
             if (e.type == EventType.ContextClick && clipsPosRect.Contains(e.mousePosition))
             {
                 var attachableTypeInfos = new List<EditorTools.TypeMetaInfo>();
 
-                var existing = track.Clips.FirstOrDefault();
+                var existing = trackAsset.Clips.FirstOrDefault();
                 var existingCatAtt =
                     existing?.GetType().GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() as
                         CategoryAttribute;
 
-                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ActionClip)))
+                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ActionClipAsset)))
                 {
-                    if (!clip.attachableTypes.Contains(track.GetType()))
+                    if (!clip.attachableTypes.Contains(trackAsset.GetType()))
                     {
                         continue;
                     }
@@ -211,7 +211,7 @@ namespace NBC.ActionEditor.Draws
                         var category = string.IsNullOrEmpty(info.category) ? string.Empty : (info.category + "/");
                         var tName = info.name;
                         menu.AddItem(new GUIContent(category + tName), false,
-                            () => { track.AddAction(info.type, cursorTime); });
+                            () => { trackAsset.AddAction(info.type, cursorTime); });
                     }
 
                     var copyType = DirectorUtility.GetCopyType();
@@ -219,7 +219,7 @@ namespace NBC.ActionEditor.Draws
                     {
                         menu.AddSeparator("/");
                         menu.AddItem(new GUIContent(string.Format(Lan.ClipPaste, copyType.Name)), false,
-                            () => { track.PasteClip(DirectorUtility.CopyClip, cursorTime); });
+                            () => { trackAsset.PasteClip(DirectorUtility.CopyClipAsset, cursorTime); });
                     }
 
                     menu.ShowAsContext();

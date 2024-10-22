@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public abstract class DirectableAsset : ScriptableObject, IData
     {

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class PreferencesGUI : ICustomized
     {
@@ -12,7 +12,7 @@ namespace NBC.ActionEditor
 
             GUI.color = new Color(0, 0, 0, 0.3f);
 
-            GUILayout.BeginHorizontal(Styles.headerBoxStyle);
+            GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
             GUILayout.Label($"<size=22><b>{Lan.PreferencesTitle}</b></size>");
             GUILayout.EndHorizontal();

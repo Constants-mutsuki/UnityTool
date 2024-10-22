@@ -1,14 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public sealed class BottomGUI : ICustomized
     {
         public void OnGUI()
         {
             var sliderRect = new Rect(G.CenterRect.x, G.ScreenHeight - G.BottomHeight, G.CenterRect.width,
-                Styles.BOTTOM_HEIGHT);
+                Styles.BottomHeight);
             ShowTimeSlider(sliderRect);
         }
 
@@ -18,7 +18,7 @@ namespace NBC.ActionEditor
         void ShowTimeSlider(Rect rect)
         {
             GUILayout.BeginArea(rect);
-            var asset = App.AssetData;
+            var asset = App.TimelineGraphAssetData;
             //最小最大值滑块
             var _timeMin = asset.ViewTimeMin;
             var _timeMax = asset.ViewTimeMax;
@@ -33,8 +33,8 @@ namespace NBC.ActionEditor
             }
 
             GUI.color = Color.white.WithAlpha(0.1f);
-            GUI.DrawTexture(Rect.MinMaxRect(0, Styles.TOP_MARGIN - 1, G.TopMiddleRect.xMax, Styles.TOP_MARGIN),
-                Styles.whiteTexture);
+            GUI.DrawTexture(Rect.MinMaxRect(0, Styles.TopMargin - 1, G.TopMiddleRect.xMax, Styles.TopMargin),
+                Styles.WhiteTexture);
             GUI.color = Color.white;
 
             GUILayout.EndArea();

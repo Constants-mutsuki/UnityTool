@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class CreateAssetWindow : PopupWindowContent
     {
@@ -11,7 +11,7 @@ namespace NBC.ActionEditor
 
         public static void Show()
         {
-            var rect = new Rect(Styles.RIGHT_MARGIN, Styles.TOOLBAR_HEIGHT + 5, 400, 150);
+            var rect = new Rect(Styles.RightMargin, Styles.ToolbarHeight + 5, 400, 150);
             myRect = rect;
             PopupWindow.Show(new Rect(rect.x, rect.y, 0, 0), new CreateAssetWindow());
         }
@@ -27,7 +27,7 @@ namespace NBC.ActionEditor
 
             GUI.color = new Color(0, 0, 0, 0.3f);
 
-            GUILayout.BeginHorizontal(Styles.headerBoxStyle);
+            GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
             GUILayout.Label($"<size=22><b>{Lan.CreateAsset}</b></size>");
             GUILayout.EndHorizontal();
@@ -61,7 +61,7 @@ namespace NBC.ActionEditor
             {
                 EditorUtility.DisplayDialog(Lan.TipsTitle, Lan.CreateAssetTipsNameNull, Lan.TipsConfirm);
             }
-            else if (AssetDatabase.LoadAssetAtPath<Asset>(path) != null)
+            else if (AssetDatabase.LoadAssetAtPath<TimelineGraphAsset>(path) != null)
             {
                 EditorUtility.DisplayDialog(Lan.TipsTitle, Lan.CreateAssetTipsRepetitive, Lan.TipsConfirm);
             }

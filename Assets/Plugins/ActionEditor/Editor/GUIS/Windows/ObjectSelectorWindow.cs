@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     /// <summary>
     /// 对象选择器窗口

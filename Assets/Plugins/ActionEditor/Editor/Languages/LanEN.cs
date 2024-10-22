@@ -1,4 +1,4 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
     [Name("English")]
     public class LanEN : ILanguages

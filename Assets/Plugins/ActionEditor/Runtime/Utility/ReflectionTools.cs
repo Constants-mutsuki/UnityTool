@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class ReflectionTools
     {

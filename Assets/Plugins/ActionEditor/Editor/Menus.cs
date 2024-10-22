@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class Menus
     {
-        [MenuItem("NBC/Action Editor/Open Action Editor", false, 0)]
+        [MenuItem("YAMITool/ActionEditor", false, 0)]
         public static void OpenDirectorWindow()
         {
             ActionEditorWindow.ShowWindow();

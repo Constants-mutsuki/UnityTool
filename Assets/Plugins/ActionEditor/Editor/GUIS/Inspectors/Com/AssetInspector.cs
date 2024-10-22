@@ -1,11 +1,11 @@
 ﻿using UnityEditor;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
-    [CustomInspectors(typeof(Asset), true)]
+    [CustomInspectors(typeof(TimelineGraphAsset), true)]
     public class AssetInspector : InspectorsBase
     {
-        private Asset action => (Asset)target;
+        private TimelineGraphAsset action => (TimelineGraphAsset)target;
 
         public override void OnInspectorGUI()
         {

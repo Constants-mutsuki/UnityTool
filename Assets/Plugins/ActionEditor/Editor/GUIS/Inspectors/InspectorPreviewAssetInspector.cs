@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NBC.ActionEditor.Test;
+using Darkness.Test;
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     [CustomEditor(typeof(InspectorPreviewAsset))]
     public class InspectorPreviewAssetInspector : Editor
     {
         private bool _optionsAssetFold = true;
 
-        private static Asset _lastAsset;
+        private static TimelineGraphAsset m_lastTimelineGraphAsset;
         private static bool _willResample;
 
         private static Dictionary<IData, InspectorsBase> directableEditors =
@@ -69,10 +69,10 @@ namespace NBC.ActionEditor
 
         void DoAssetInspector()
         {
-            if (App.AssetData == null) return;
-            var assetData = App.AssetData;
+            if (App.TimelineGraphAssetData == null) return;
+            var assetData = App.TimelineGraphAssetData;
             GUI.color = new Color(0, 0, 0, 0.2f);
-            GUILayout.BeginHorizontal(Styles.headerBoxStyle);
+            GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
             var title = string.Format(Lan.InsBaseInfo, Prefs.GetAssetTypeName(assetData.GetType()));
             GUILayout.Label(
@@ -151,13 +151,13 @@ namespace NBC.ActionEditor
         /// </summary>
         void ShowPreliminaryInspector()
         {
-            if (App.AssetData == null) return;
+            if (App.TimelineGraphAssetData == null) return;
             var type = DirectorUtility.selectedObject.GetType();
             var nameAtt = type.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() as NameAttribute;
             var name = nameAtt != null ? nameAtt.name : type.Name.SplitCamelCase();
 
             GUI.color = new Color(0, 0, 0, 0.2f);
-            GUILayout.BeginHorizontal(Styles.headerBoxStyle);
+            GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
 
             GUILayout.Label($"<b><size=18>{name}</size></b>");

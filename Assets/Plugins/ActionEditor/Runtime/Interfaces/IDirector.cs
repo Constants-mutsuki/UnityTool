@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public interface IDirector : IData
     {
         float Length { get; }
-        // void Validate();
 
         void SaveToAssets();
     }

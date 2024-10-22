@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public static class AttributesUtility
     {

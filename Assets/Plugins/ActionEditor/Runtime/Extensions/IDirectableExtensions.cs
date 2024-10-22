@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
-    public static class IDirectableExtensions
+    public static class DirectableExtensions
     {
         public static float GetLength(this DirectableAsset directable)
         {
@@ -17,13 +17,12 @@ namespace NBC.ActionEditor
             return Mathf.Clamp(time - directable.StartTime, 0, directable.GetLength());
         }
 
-
-        public static float ToLocalTimeUnclamped(this DirectableAsset directable, float time)
+        public static float ToLocalTimeUnClamped(this DirectableAsset directable, float time)
         {
             return time - directable.StartTime;
         }
 
-        public static bool CanCrossBlend(this ActionClip directable, ActionClip other)
+        public static bool CanCrossBlend(this ActionClipAsset directable, ActionClipAsset other)
         {
             if (directable == null || other == null)
             {
@@ -38,33 +37,29 @@ namespace NBC.ActionEditor
             return false;
         }
 
-        public static bool CanBlendIn(this ActionClip directable)
+        public static bool CanBlendIn(this ActionClipAsset directable)
         {
             var blendInProp = directable.GetType().GetProperty("BlendIn", BindingFlags.Instance | BindingFlags.Public);
-            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f &&
-                   blendInProp.DeclaringType != typeof(DirectableAsset);
+            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f && blendInProp.DeclaringType != typeof(DirectableAsset);
         }
 
-        public static bool CanBlendOut(this ActionClip directable)
+        public static bool CanBlendOut(this ActionClipAsset directable)
         {
-            var blendOutProp =
-                directable.GetType().GetProperty("BlendOut", BindingFlags.Instance | BindingFlags.Public);
-            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f &&
-                   blendOutProp.DeclaringType != typeof(DirectableAsset);
+            var blendOutProp = directable.GetType().GetProperty("BlendOut", BindingFlags.Instance | BindingFlags.Public);
+            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f && blendOutProp.DeclaringType != typeof(DirectableAsset);
         }
 
-        public static bool CanScale(this ActionClip directable)
+        public static bool CanScale(this ActionClipAsset directable)
         {
             var lengthProp = directable.GetType().GetProperty("Length", BindingFlags.Instance | BindingFlags.Public);
-            return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ActionClip);
+            return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ActionClipAsset);
         }
 
-        public static ActionClip GetPreviousSibling(this ActionClip directable)
+        public static ActionClipAsset GetPreviousSibling(this ActionClipAsset directable)
         {
             if (directable.Parent != null)
             {
-                return directable.Parent.Clips.LastOrDefault(d =>
-                    d != directable && d.StartTime < directable.StartTime);
+                return directable.Parent.Clips.LastOrDefault(d => d != directable && d.StartTime < directable.StartTime);
             }
 
             return null;
@@ -76,17 +71,16 @@ namespace NBC.ActionEditor
         /// <param name="directable"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetNextSibling<T>(this ActionClip directable) where T : ActionClip
+        public static T GetNextSibling<T>(this ActionClipAsset directable) where T : ActionClipAsset
         {
             return (T)GetNextSibling(directable);
         }
 
-        public static ActionClip GetNextSibling(this ActionClip directable)
+        public static ActionClipAsset GetNextSibling(this ActionClipAsset directable)
         {
             if (directable.Parent != null)
             {
-                return directable.Parent.Clips.FirstOrDefault(d =>
-                    d != directable && d.StartTime > directable.StartTime);
+                return directable.Parent.Clips.FirstOrDefault(d => d != directable && d.StartTime > directable.StartTime);
             }
 
             return null;
@@ -94,18 +88,18 @@ namespace NBC.ActionEditor
 
 
         ///The weight at specified local time based on its blend properties.
-        public static float GetWeight(this ActionClip directable, float time)
+        public static float GetWeight(this ActionClipAsset directable, float time)
         {
             return GetWeight(directable, time, directable.BlendIn, directable.BlendOut);
         }
 
         ///The weight at specified local time based on provided override blend in/out properties
-        public static float GetWeight(this ActionClip directable, float time, float blendInOut)
+        public static float GetWeight(this ActionClipAsset directable, float time, float blendInOut)
         {
             return GetWeight(directable, time, blendInOut, blendInOut);
         }
 
-        public static float GetWeight(this ActionClip directable, float time, float blendIn, float blendOut)
+        public static float GetWeight(this ActionClipAsset directable, float time, float blendIn, float blendOut)
         {
             var length = GetLength(directable);
             if (time <= 0)

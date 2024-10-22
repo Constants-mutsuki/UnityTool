@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NBC.ActionEditor.Draws;
+using Darkness.Draws;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class ActionEditorWindow : EditorWindow
     {
@@ -16,7 +16,7 @@ namespace NBC.ActionEditor
         [NonSerialized] internal bool WillRepaint;
         [NonSerialized] internal bool ShowDragDropInfo;
 
-        public Asset asset => App.AssetData;
+        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
         public AssetPlayer player => AssetPlayer.Inst;
 
         int UID(int g, int t, int a)
@@ -82,7 +82,7 @@ namespace NBC.ActionEditor
             App.OnStop += OnStop;
 
             Tools.hidden = false;
-            titleContent = new GUIContent(Lan.Title, Styles.cutsceneIconOpen);
+            titleContent = new GUIContent(Lan.Title, Styles.CutsceneIconOpen);
             minSize = new Vector2(500, 250);
 
             WillRepaint = true;
@@ -106,7 +106,7 @@ namespace NBC.ActionEditor
             App.OnPlay -= OnPlay;
 
             Tools.hidden = false;
-            if (App.AssetData != null && !Application.isPlaying)
+            if (App.TimelineGraphAssetData != null && !Application.isPlaying)
             {
                 App.Stop(true);
             }
@@ -129,7 +129,7 @@ namespace NBC.ActionEditor
 
         void OnEditorUpdate()
         {
-            if (App.AssetData == null)
+            if (App.TimelineGraphAssetData == null)
             {
                 return;
             }
@@ -148,12 +148,12 @@ namespace NBC.ActionEditor
 
             player.Sample();
 
-            if (App.EditorPlaybackState == EditorPlaybackState.Stoped)
+            if (App.EditorPlaybackState == EditorPlaybackState.Stopped)
             {
                 return;
             }
 
-            if (player.CurrentTime >= App.AssetData.Length &&
+            if (player.CurrentTime >= App.TimelineGraphAssetData.Length &&
                 App.EditorPlaybackState == EditorPlaybackState.PlayingForwards)
             {
                 if (App.EditorPlaybackWrapMode == WrapMode.Once)
@@ -200,7 +200,7 @@ namespace NBC.ActionEditor
             EditorStyles.foldout.richText = true;
             var e = Event.current;
 
-            if (App.AssetData == null)
+            if (App.TimelineGraphAssetData == null)
             {
                 DrawTools.Draw<WelcomeGUI>();
                 return;
@@ -233,7 +233,7 @@ namespace NBC.ActionEditor
 
 
             DrawTools.Draw<HeaderGUI>();
-            if (App.AssetData == null) return;
+            if (App.TimelineGraphAssetData == null) return;
             DrawTools.Draw<HeaderTimeInfoGUI>();
             DrawTimelineInfo();
             DrawTools.Draw<BottomGUI>();
@@ -243,7 +243,7 @@ namespace NBC.ActionEditor
 
         void OnWillSaveScene(UnityEngine.SceneManagement.Scene scene, string path)
         {
-            if (App.AssetData != null && player.CurrentTime > 0)
+            if (App.TimelineGraphAssetData != null && player.CurrentTime > 0)
             {
                 App.Stop(true);
                 Debug.LogWarning(
@@ -261,7 +261,7 @@ namespace NBC.ActionEditor
             Prefs.InitializeAssetTypes();
             App.OnInitialize?.Invoke();
             //停止播放
-            if (App.AssetData != null)
+            if (App.TimelineGraphAssetData != null)
             {
                 if (!Application.isPlaying)
                 {
@@ -299,7 +299,7 @@ namespace NBC.ActionEditor
                 //play
                 if (e.keyCode == KeyCode.Space && !e.shift)
                 {
-                    if (App.EditorPlaybackState != EditorPlaybackState.Stoped)
+                    if (App.EditorPlaybackState != EditorPlaybackState.Stopped)
                     {
                         App.Pause();
                     }
@@ -346,8 +346,8 @@ namespace NBC.ActionEditor
 
         private Dictionary<int, ActionClipWrapper> clipWrappers = new Dictionary<int, ActionClipWrapper>();
 
-        private Dictionary<ActionClip, ActionClipWrapper> clipWrappersMap =
-            new Dictionary<ActionClip, ActionClipWrapper>();
+        private Dictionary<ActionClipAsset, ActionClipWrapper> clipWrappersMap =
+            new Dictionary<ActionClipAsset, ActionClipWrapper>();
 
         ActionClipWrapper interactingClip;
 
@@ -362,7 +362,7 @@ namespace NBC.ActionEditor
 
         internal float[] magnetSnapTimesCache;
 
-        private float MAGNET_SNAP_INTERVAL => asset.ViewTime * 0.01f;
+        private float MAGNET_SNAP_INTERVAL => TimelineGraphAsset.ViewTime * 0.01f;
 
         private Section draggedSection;
 
@@ -397,7 +397,7 @@ namespace NBC.ActionEditor
             mousePosition = e.mousePosition;
             if (interactingClip == null && e.type == EventType.Layout)
             {
-                foreach (var group in asset.groups)
+                foreach (var group in TimelineGraphAsset.groups)
                 {
                     foreach (var track in group.Tracks)
                     {
@@ -434,14 +434,14 @@ namespace NBC.ActionEditor
                 ShowDragDropInfo = false;
             }
 
-            if (ShowDragDropInfo && asset.groups.Find(g => g.GetType() == typeof(Group)) == null)
+            if (ShowDragDropInfo && TimelineGraphAsset.groups.Find(g => g.GetType() == typeof(GroupAsset)) == null)
             {
                 var label = "Drag & Drop GameObjects or Prefabs in this window to create Actor Groups";
                 var size = new GUIStyle("label").CalcSize(new GUIContent(label));
                 var notificationRect = new Rect(0, 0, size.x, size.y);
                 notificationRect.center =
-                    new Vector2((G.ScreenWidth / 2) + (Styles.LEFT_MARGIN / 2),
-                        (G.ScreenHeight / 2) + Styles.TOP_MARGIN);
+                    new Vector2((G.ScreenWidth / 2) + (Styles.LeftMargin / 2),
+                        (G.ScreenHeight / 2) + Styles.TopMargin);
                 GUI.Label(notificationRect, label);
             }
 
@@ -477,17 +477,17 @@ namespace NBC.ActionEditor
 
         #region Magnet Snap
 
-        void CacheMagnetSnapTimes(ActionClip clip = null)
+        void CacheMagnetSnapTimes(ActionClipAsset clipAsset = null)
         {
             var result = new List<float>();
             result.Add(0);
-            result.Add(asset.Length);
+            result.Add(TimelineGraphAsset.Length);
             result.Add(player.CurrentTime);
 
             foreach (var cw in clipWrappers)
             {
                 var action = cw.Value.action;
-                if (clip == null || (action != clip && action.Parent.Parent == clip.Parent.Parent))
+                if (clipAsset == null || (action != clipAsset && action.Parent.Parent == clipAsset.Parent.Parent))
                 {
                     result.Add(action.StartTime);
                     result.Add(action.EndTime);
@@ -549,15 +549,15 @@ namespace NBC.ActionEditor
                     r.yMin = Mathf.Min(start.y, e.mousePosition.y);
                     r.yMax = Mathf.Max(start.y, e.mousePosition.y);
                     GUI.color = isProSkin ? Color.white : Color.white.WithAlpha(0.3f);
-                    GUI.Box(r, string.Empty, Styles.hollowFrameStyle);
+                    GUI.Box(r, string.Empty, Styles.HollowFrameStyle);
                     GUI.color = Color.white.WithAlpha(0.05f);
-                    GUI.DrawTexture(r, Styles.whiteTexture);
+                    GUI.DrawTexture(r, Styles.WhiteTexture);
                     GUI.color = Color.white;
                     foreach (var wrapper in
                              clipWrappers.Values.Where(b => r.Encapsulates(b.rect) && !b.action.IsLocked))
                     {
                         GUI.color = new Color(0.5f, 0.5f, 1, 0.5f);
-                        GUI.Box(wrapper.rect, string.Empty, Styles.clipBoxStyle);
+                        GUI.Box(wrapper.rect, string.Empty, Styles.ClipBoxStyle);
                         GUI.color = Color.white;
                     }
                 }
@@ -588,8 +588,8 @@ namespace NBC.ActionEditor
                 AddCursorRect(leftDragRect, MouseCursor.ResizeHorizontal);
                 AddCursorRect(rightDragRect, MouseCursor.ResizeHorizontal);
                 GUI.color = isProSkin ? new Color(0.7f, 0.7f, 0.7f) : Color.grey;
-                GUI.DrawTexture(leftDragRect, Styles.whiteTexture);
-                GUI.DrawTexture(rightDragRect, Styles.whiteTexture);
+                GUI.DrawTexture(leftDragRect, Styles.WhiteTexture);
+                GUI.DrawTexture(rightDragRect, Styles.WhiteTexture);
                 GUI.color = Color.white;
 
                 if (e.type == EventType.MouseDown &&
@@ -613,7 +613,7 @@ namespace NBC.ActionEditor
                     {
                         var preTimeMin = preMultiSelectionRetimeMinMax.xMin;
                         var preTimeMax = preMultiSelectionRetimeMinMax.xMax;
-                        var pointerTime = G.SnapTime(asset.PosToTime(mousePosition.x));
+                        var pointerTime = G.SnapTime(TimelineGraphAsset.PosToTime(mousePosition.x));
 
                         var lerpMin = multiSelectionScaleDirection == -1
                             ? Mathf.Clamp(pointerTime, 0, preTimeMax)
@@ -664,7 +664,7 @@ namespace NBC.ActionEditor
             DrawGuideLine(0, isProSkin ? Color.gray : Color.black);
 
             //区间结束时间参考线
-            DrawGuideLine(asset.Length, isProSkin ? Color.white : Color.black);
+            DrawGuideLine(TimelineGraphAsset.Length, isProSkin ? Color.white : Color.black);
 
             //当前播放帧的实际参考线
             if (player.CurrentTime > 0)
@@ -707,12 +707,12 @@ namespace NBC.ActionEditor
         /// <param name="color"></param>
         void DrawGuideLine(float time, Color color)
         {
-            if (time >= asset.ViewTimeMin && time <= asset.ViewTimeMax)
+            if (time >= TimelineGraphAsset.ViewTimeMin && time <= TimelineGraphAsset.ViewTimeMax)
             {
-                var xPos = asset.TimeToPos(time);
+                var xPos = TimelineGraphAsset.TimeToPos(time);
                 var guideRect = new Rect(xPos + CenterRect.x - 1, CenterRect.y, 1, CenterRect.height);
                 GUI.color = color;
-                GUI.DrawTexture(guideRect, Styles.whiteTexture);
+                GUI.DrawTexture(guideRect, Styles.WhiteTexture);
                 GUI.color = Color.white;
             }
         }
@@ -743,7 +743,7 @@ namespace NBC.ActionEditor
             var e = Event.current;
             if (e.type == EventType.MouseDown && G.TopMiddleRect.Contains(mousePosition))
             {
-                var carretPos = asset.TimeToPos(asset.Length) + G.LeftRect.width;
+                var carretPos = TimelineGraphAsset.TimeToPos(TimelineGraphAsset.Length) + G.LeftRect.width;
                 var isEndCarret = Mathf.Abs(mousePosition.x - carretPos) < 10 || e.control;
 
                 if (e.button == 0)
@@ -753,16 +753,16 @@ namespace NBC.ActionEditor
                     App.Pause();
                 }
 
-                if (e.button == 1 && isEndCarret && asset.directables != null)
+                if (e.button == 1 && isEndCarret && TimelineGraphAsset.Directables != null)
                 {
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Set To Last Clip Time"), false, () =>
                     {
-                        var lastClip = asset.directables.Where(d => d is ActionClip).OrderBy(d => d.EndTime)
+                        var lastClip = TimelineGraphAsset.Directables.Where(d => d is ActionClipAsset).OrderBy(d => d.EndTime)
                             .LastOrDefault();
                         if (lastClip != null)
                         {
-                            asset.Length = lastClip.EndTime;
+                            TimelineGraphAsset.Length = lastClip.EndTime;
                         }
                     });
                     menu.ShowAsContext();
@@ -777,21 +777,21 @@ namespace NBC.ActionEditor
                 isMovingEndCarret = false;
             }
 
-            var pointerTime = asset.PosToTime(mousePosition.x);
+            var pointerTime = TimelineGraphAsset.PosToTime(mousePosition.x);
             if (isMovingScrubCarret)
             {
                 player.CurrentTime = G.SnapTime(pointerTime);
-                player.CurrentTime = Mathf.Clamp(player.CurrentTime, Mathf.Max(asset.ViewTimeMin, 0) + float.Epsilon,
-                    asset.ViewTimeMax - float.Epsilon);
+                player.CurrentTime = Mathf.Clamp(player.CurrentTime, Mathf.Max(TimelineGraphAsset.ViewTimeMin, 0) + float.Epsilon,
+                    TimelineGraphAsset.ViewTimeMax - float.Epsilon);
             }
 
             if (isMovingEndCarret)
             {
-                asset.Length = G.SnapTime(pointerTime);
-                var magnetSnap = MagnetSnapTime(asset.Length, magnetSnapTimesCache);
-                asset.Length = magnetSnap != null ? magnetSnap.Value : asset.Length;
-                asset.Length = Mathf.Clamp(asset.Length, asset.ViewTimeMin + float.Epsilon,
-                    asset.ViewTimeMax - float.Epsilon);
+                TimelineGraphAsset.Length = G.SnapTime(pointerTime);
+                var magnetSnap = MagnetSnapTime(TimelineGraphAsset.Length, magnetSnapTimesCache);
+                TimelineGraphAsset.Length = magnetSnap != null ? magnetSnap.Value : TimelineGraphAsset.Length;
+                TimelineGraphAsset.Length = Mathf.Clamp(TimelineGraphAsset.Length, TimelineGraphAsset.ViewTimeMin + float.Epsilon,
+                    TimelineGraphAsset.ViewTimeMax - float.Epsilon);
             }
         }
 
@@ -813,15 +813,15 @@ namespace NBC.ActionEditor
                 if (e.type == EventType.MouseDrag || e.type == EventType.MouseDown || e.type == EventType.MouseUp ||
                     e.type == EventType.ScrollWheel)
                 {
-                    var pointerTimeA = asset.PosToTime(mousePosition.x);
+                    var pointerTimeA = TimelineGraphAsset.PosToTime(mousePosition.x);
                     var delta = e.alt ? -e.delta.x * 0.1f : e.delta.y;
-                    var t = (Mathf.Abs(delta * 25) / CenterRect.width) * asset.ViewTime;
-                    asset.ViewTimeMin += delta > 0 ? -t : t;
-                    asset.ViewTimeMax += delta > 0 ? t : -t;
-                    var pointerTimeB = asset.PosToTime(mousePosition.x + e.delta.x);
+                    var t = (Mathf.Abs(delta * 25) / CenterRect.width) * TimelineGraphAsset.ViewTime;
+                    TimelineGraphAsset.ViewTimeMin += delta > 0 ? -t : t;
+                    TimelineGraphAsset.ViewTimeMax += delta > 0 ? t : -t;
+                    var pointerTimeB = TimelineGraphAsset.PosToTime(mousePosition.x + e.delta.x);
                     var diff = pointerTimeA - pointerTimeB;
-                    asset.ViewTimeMin += diff;
-                    asset.ViewTimeMax += diff;
+                    TimelineGraphAsset.ViewTimeMin += diff;
+                    TimelineGraphAsset.ViewTimeMax += diff;
                     e.Use();
                 }
             }
@@ -832,9 +832,9 @@ namespace NBC.ActionEditor
                 AddCursorRect(CenterRect, MouseCursor.Pan);
                 if (e.type == EventType.MouseDrag || e.type == EventType.MouseDown || e.type == EventType.MouseUp)
                 {
-                    var t = (Mathf.Abs(e.delta.x) / CenterRect.width) * asset.ViewTime;
-                    asset.ViewTimeMin += e.delta.x > 0 ? -t : t;
-                    asset.ViewTimeMax += e.delta.x > 0 ? -t : t;
+                    var t = (Mathf.Abs(e.delta.x) / CenterRect.width) * TimelineGraphAsset.ViewTime;
+                    TimelineGraphAsset.ViewTimeMin += e.delta.x > 0 ? -t : t;
+                    TimelineGraphAsset.ViewTimeMax += e.delta.x > 0 ? -t : t;
                     G.ScrollPos.y -= e.delta.y;
                     e.Use();
                 }
@@ -848,7 +848,7 @@ namespace NBC.ActionEditor
         //初始化动作剪辑包装器
         internal void InitClipWrappers()
         {
-            if (asset == null)
+            if (TimelineGraphAsset == null)
             {
                 return;
             }
@@ -861,12 +861,12 @@ namespace NBC.ActionEditor
             }
 
             clipWrappers = new Dictionary<int, ActionClipWrapper>();
-            clipWrappersMap = new Dictionary<ActionClip, ActionClipWrapper>();
-            for (int g = 0; g < asset.groups.Count; g++)
+            clipWrappersMap = new Dictionary<ActionClipAsset, ActionClipWrapper>();
+            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
             {
-                for (int t = 0; t < asset.groups[g].Tracks.Count; t++)
+                for (int t = 0; t < TimelineGraphAsset.groups[g].Tracks.Count; t++)
                 {
-                    for (int a = 0; a < asset.groups[g].Tracks[t].Clips.Count; a++)
+                    for (int a = 0; a < TimelineGraphAsset.groups[g].Tracks[t].Clips.Count; a++)
                     {
                         var id = UID(g, t, a);
                         if (clipWrappers.ContainsKey(id))
@@ -875,7 +875,7 @@ namespace NBC.ActionEditor
                             continue;
                         }
 
-                        var clip = asset.groups[g].Tracks[t].Clips[a];
+                        var clip = TimelineGraphAsset.groups[g].Tracks[t].Clips[a];
                         var wrapper = new ActionClipWrapper(clip);
                         clipWrappers[id] = wrapper;
                         clipWrappersMap[clip] = wrapper;
@@ -898,13 +898,13 @@ namespace NBC.ActionEditor
         void ShowTimeLines(Rect centerRect)
         {
             var e = Event.current;
-            var bgRect = Rect.MinMaxRect(centerRect.xMin, Styles.TOP_MARGIN + Styles.TOOLBAR_HEIGHT + G.ScrollPos.y,
+            var bgRect = Rect.MinMaxRect(centerRect.xMin, Styles.TopMargin + Styles.ToolbarHeight + G.ScrollPos.y,
                 centerRect.xMax,
-                G.ScreenHeight - Styles.TOOLBAR_HEIGHT + G.ScrollPos.y);
+                G.ScreenHeight - Styles.ToolbarHeight + G.ScrollPos.y);
             GUI.color = Color.black.WithAlpha(0.1f);
-            GUI.DrawTexture(bgRect, Styles.whiteTexture);
+            GUI.DrawTexture(bgRect, Styles.WhiteTexture);
             GUI.color = Color.black.WithAlpha(0.03f);
-            GUI.DrawTextureWithTexCoords(bgRect, Styles.stripes, new Rect(0, 0, bgRect.width / -7, bgRect.height / -7));
+            GUI.DrawTextureWithTexCoords(bgRect, Styles.Stripes, new Rect(0, 0, bgRect.width / -7, bgRect.height / -7));
             GUI.color = Color.white;
 
             // 绘制时间参考线
@@ -920,13 +920,13 @@ namespace NBC.ActionEditor
             
             GUI.BeginGroup(centerRect);
             
-            var nextYPos = Styles.FIRST_GROUP_TOP_MARGIN;
+            var nextYPos = Styles.FirstGroupTopMargin;
             
             BeginWindows();
 
-            for (int g = 0; g < asset.groups.Count; g++)
+            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
             {
-                var group = asset.groups[g];
+                var group = TimelineGraphAsset.groups[g];
                 ShowGroupArea(group, g, e, ref nextYPos);
             }
 
@@ -944,22 +944,22 @@ namespace NBC.ActionEditor
             GUI.EndGroup();
 
             GUI.color = Color.white.WithAlpha(0.2f);
-            GUI.Box(bgRect, string.Empty, Styles.shadowBorderStyle);
+            GUI.Box(bgRect, string.Empty, Styles.ShadowBorderStyle);
             GUI.color = Color.white;
 
             //超出范围的变暗
-            if (asset.ViewTimeMax > asset.Length)
+            if (TimelineGraphAsset.ViewTimeMax > TimelineGraphAsset.Length)
             {
-                var endPos = Mathf.Max(asset.TimeToPos(asset.Length) + G.LeftRect.width, centerRect.xMin);
+                var endPos = Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.Length) + G.LeftRect.width, centerRect.xMin);
                 var darkRect = Rect.MinMaxRect(endPos, centerRect.yMin, centerRect.xMax, centerRect.yMax);
                 GUI.color = Color.black.WithAlpha(0.3f);
                 GUI.Box(darkRect, string.Empty, (GUIStyle)"TextField");
                 GUI.color = Color.white;
             }
             //超出范围的变暗
-            if (asset.ViewTimeMin < 0)
+            if (TimelineGraphAsset.ViewTimeMin < 0)
             {
-                var startPos = Mathf.Min(asset.TimeToPos(0) + G.LeftRect.width, centerRect.xMax);
+                var startPos = Mathf.Min(TimelineGraphAsset.TimeToPos(0) + G.LeftRect.width, centerRect.xMax);
                 var darkRect = Rect.MinMaxRect(centerRect.xMin, centerRect.yMin, startPos, centerRect.yMax);
                 GUI.color = Color.black.WithAlpha(0.3f);
                 GUI.Box(darkRect, string.Empty, (GUIStyle)"TextField");
@@ -978,34 +978,34 @@ namespace NBC.ActionEditor
             }
         }
 
-        void ShowGroupArea(Group group, int groupIndex, Event e, ref float nextYPos)
+        void ShowGroupArea(GroupAsset groupAsset, int groupIndex, Event e, ref float nextYPos)
         {
-            if (G.IsFilteredOutBySearch(group))
+            if (G.IsFilteredOutBySearch(groupAsset))
             {
-                group.IsCollapsed = true;
+                groupAsset.IsCollapsed = true;
                 return;
             }
 
-            var groupRect = Rect.MinMaxRect(Mathf.Max(asset.TimeToPos(asset.ViewTimeMin), asset.TimeToPos(0)), nextYPos,
-                asset.TimeToPos(asset.ViewTimeMax), nextYPos + Styles.GROUP_HEIGHT);
-            nextYPos += Styles.GROUP_HEIGHT;
+            var groupRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(0)), nextYPos,
+                TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), nextYPos + Styles.GroupHeight);
+            nextYPos += Styles.GroupHeight;
 
-            if (group.IsCollapsed)
+            if (groupAsset.IsCollapsed)
             {
                 GUI.color = Color.black.WithAlpha(0.15f);
                 var collapseRect = Rect.MinMaxRect(groupRect.xMin + 2, groupRect.yMin + 2, groupRect.xMax,
                     groupRect.yMax - 4);
-                GUI.DrawTexture(collapseRect, Styles.whiteTexture);
+                GUI.DrawTexture(collapseRect, Styles.WhiteTexture);
                 GUI.color = Color.grey.WithAlpha(0.5f);
-                foreach (var track in group.Tracks)
+                foreach (var track in groupAsset.Tracks)
                 {
                     foreach (var clip in track.Clips)
                     {
-                        var start = asset.TimeToPos(clip.StartTime);
-                        var end = asset.TimeToPos(clip.EndTime);
+                        var start = TimelineGraphAsset.TimeToPos(clip.StartTime);
+                        var end = TimelineGraphAsset.TimeToPos(clip.EndTime);
                         GUI.DrawTexture(
                             Rect.MinMaxRect(start + 0.5f, collapseRect.y + 2, end - 0.5f, collapseRect.yMax - 2),
-                            Styles.whiteTexture);
+                            Styles.WhiteTexture);
                     }
                 }
 
@@ -1013,72 +1013,72 @@ namespace NBC.ActionEditor
                 return;
             }
 
-            for (int t = 0; t < group.Tracks.Count; t++)
+            for (int t = 0; t < groupAsset.Tracks.Count; t++)
             {
-                var track = group.Tracks[t];
+                var track = groupAsset.Tracks[t];
                 ShowTrackArea(track, groupIndex, t, e, ref nextYPos);
             }
 
-            if (ReferenceEquals(DirectorUtility.selectedObject, group))
+            if (ReferenceEquals(DirectorUtility.selectedObject, groupAsset))
             {
                 var r = Rect.MinMaxRect(groupRect.xMin, groupRect.yMin, groupRect.xMax, nextYPos);
                 GUI.color = Color.grey;
-                GUI.Box(r, string.Empty, Styles.hollowFrameHorizontalStyle);
+                GUI.Box(r, string.Empty, Styles.HollowFrameHorizontalStyle);
                 GUI.color = Color.white;
             }
         }
 
-        void ShowTrackArea(Track track, int groupIndex, int trackIndex, Event e, ref float nextYPos)
+        void ShowTrackArea(TrackAsset trackAsset, int groupIndex, int trackIndex, Event e, ref float nextYPos)
         {
             var yPos = nextYPos;
 
             var trackPosRect = Rect.MinMaxRect(
-                Mathf.Max(asset.TimeToPos(asset.ViewTimeMin), asset.TimeToPos(track.StartTime)),
-                yPos, asset.TimeToPos(asset.ViewTimeMax), yPos + track.ShowHeight);
+                Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(trackAsset.StartTime)),
+                yPos, TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), yPos + trackAsset.ShowHeight);
 
-            nextYPos += track.ShowHeight + Styles.TRACK_MARGINS;
+            nextYPos += trackAsset.ShowHeight + Styles.TrackMargins;
 
             //GRAPHICS
             GUI.color = Color.black.WithAlpha(isProSkin ? 0.06f : 0.1f);
-            GUI.DrawTexture(trackPosRect, Styles.whiteTexture);
+            GUI.DrawTexture(trackPosRect, Styles.WhiteTexture);
             Handles.color = ColorUtility.Grey(isProSkin ? 0.15f : 0.4f);
-            Handles.DrawLine(new Vector2(asset.TimeToPos(asset.ViewTimeMin), trackPosRect.y + 1),
+            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.y + 1),
                 new Vector2(trackPosRect.xMax, trackPosRect.y + 1));
-            Handles.DrawLine(new Vector2(asset.TimeToPos(asset.ViewTimeMin), trackPosRect.yMax),
+            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMax),
                 new Vector2(trackPosRect.xMax, trackPosRect.yMax));
 
             Handles.color = Color.white;
-            if (asset.ViewTimeMin < 0)
+            if (TimelineGraphAsset.ViewTimeMin < 0)
             {
                 //just visual clarity
                 GUI.Box(
-                    Rect.MinMaxRect(asset.TimeToPos(asset.ViewTimeMin), trackPosRect.yMin, asset.TimeToPos(0),
+                    Rect.MinMaxRect(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMin, TimelineGraphAsset.TimeToPos(0),
                         trackPosRect.yMax),
                     string.Empty);
             }
 
             // Debug.Log($"track.parent={track.parent}");
-            if (track.StartTime > track.Parent.StartTime || track.EndTime < track.Parent.EndTime)
+            if (trackAsset.StartTime > trackAsset.Parent.StartTime || trackAsset.EndTime < trackAsset.Parent.EndTime)
             {
                 Handles.color = Color.white;
                 GUI.color = Color.black.WithAlpha(0.2f);
-                if (track.StartTime > track.Parent.StartTime)
+                if (trackAsset.StartTime > trackAsset.Parent.StartTime)
                 {
-                    var tStart = asset.TimeToPos(track.StartTime);
-                    var r = Rect.MinMaxRect(asset.TimeToPos(0), yPos, tStart, yPos + track.ShowHeight);
-                    GUI.DrawTexture(r, Styles.whiteTexture);
-                    GUI.DrawTextureWithTexCoords(r, Styles.stripes, new Rect(0, 0, r.width / 7, r.height / 7));
+                    var tStart = TimelineGraphAsset.TimeToPos(trackAsset.StartTime);
+                    var r = Rect.MinMaxRect(TimelineGraphAsset.TimeToPos(0), yPos, tStart, yPos + trackAsset.ShowHeight);
+                    GUI.DrawTexture(r, Styles.WhiteTexture);
+                    GUI.DrawTextureWithTexCoords(r, Styles.Stripes, new Rect(0, 0, r.width / 7, r.height / 7));
                     var a = new Vector2(tStart, trackPosRect.yMin);
                     var b = new Vector2(a.x, trackPosRect.yMax);
                     Handles.DrawLine(a, b);
                 }
 
-                if (track.EndTime < track.Parent.EndTime)
+                if (trackAsset.EndTime < trackAsset.Parent.EndTime)
                 {
-                    var tEnd = asset.TimeToPos(track.EndTime);
-                    var r = Rect.MinMaxRect(tEnd, yPos, asset.TimeToPos(asset.Length), yPos + track.ShowHeight);
-                    GUI.DrawTexture(r, Styles.whiteTexture);
-                    GUI.DrawTextureWithTexCoords(r, Styles.stripes, new Rect(0, 0, r.width / 7, r.height / 7));
+                    var tEnd = TimelineGraphAsset.TimeToPos(trackAsset.EndTime);
+                    var r = Rect.MinMaxRect(tEnd, yPos, TimelineGraphAsset.TimeToPos(TimelineGraphAsset.Length), yPos + trackAsset.ShowHeight);
+                    GUI.DrawTexture(r, Styles.WhiteTexture);
+                    GUI.DrawTextureWithTexCoords(r, Styles.Stripes, new Rect(0, 0, r.width / 7, r.height / 7));
                     var a = new Vector2(tEnd, trackPosRect.yMin);
                     var b = new Vector2(a.x, trackPosRect.yMax);
                     Handles.DrawLine(a, b);
@@ -1091,14 +1091,14 @@ namespace NBC.ActionEditor
             GUI.backgroundColor = Color.white;
 
             //highlight selected track
-            if (ReferenceEquals(DirectorUtility.selectedObject, track))
+            if (ReferenceEquals(DirectorUtility.selectedObject, trackAsset))
             {
                 GUI.color = Color.grey;
-                GUI.Box(trackPosRect.ExpandBy(0, 2), string.Empty, Styles.hollowFrameHorizontalStyle);
+                GUI.Box(trackPosRect.ExpandBy(0, 2), string.Empty, Styles.HollowFrameHorizontalStyle);
                 GUI.color = Color.white;
             }
 
-            if (track.IsLocked)
+            if (trackAsset.IsLocked)
             {
                 if (e.isMouse && trackPosRect.Contains(e.mousePosition))
                 {
@@ -1107,25 +1107,25 @@ namespace NBC.ActionEditor
             }
 
 
-            if (!track.IsActive || track.IsLocked)
+            if (!trackAsset.IsActive || trackAsset.IsLocked)
             {
                 postWindowsGUI += () =>
                 {
                     //overlay dark stripes for disabled tracks
-                    if (!track.IsActive)
+                    if (!trackAsset.IsActive)
                     {
                         GUI.color = Color.black.WithAlpha(0.2f);
-                        GUI.DrawTexture(trackPosRect, Styles.whiteTexture);
-                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.stripes,
+                        GUI.DrawTexture(trackPosRect, Styles.WhiteTexture);
+                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.Stripes,
                             new Rect(0, 0, (trackPosRect.width / 5), (trackPosRect.height / 5)));
                         GUI.color = Color.white;
                     }
 
                     //overlay light stripes for locked tracks
-                    if (track.IsLocked)
+                    if (trackAsset.IsLocked)
                     {
                         GUI.color = Color.black.WithAlpha(0.15f);
-                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.stripes,
+                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.Stripes,
                             new Rect(0, 0, trackPosRect.width / 20, trackPosRect.height / 20));
                         GUI.color = Color.white;
                     }
@@ -1133,46 +1133,46 @@ namespace NBC.ActionEditor
                     if (isProSkin)
                     {
                         string overlayLabel = null;
-                        if (!track.IsActive && track.IsLocked)
+                        if (!trackAsset.IsActive && trackAsset.IsLocked)
                         {
                             overlayLabel = $"{Lan.Disable} & {Lan.Locked}";
                         }
                         else
                         {
-                            if (!track.IsActive)
+                            if (!trackAsset.IsActive)
                             {
                                 overlayLabel = Lan.Disable;
                             }
 
-                            if (track.IsLocked)
+                            if (trackAsset.IsLocked)
                             {
                                 overlayLabel = Lan.Locked;
                             }
                         }
 
-                        var size = Styles.centerLabel.CalcSize(new GUIContent(overlayLabel));
+                        var size = Styles.CenterLabel.CalcSize(new GUIContent(overlayLabel));
                         var bgLabelRect = new Rect(0, 0, size.x, size.y);
                         bgLabelRect.center = trackPosRect.center;
-                        GUI.Label(trackPosRect, $"<b>{overlayLabel}</b>", Styles.centerLabel);
+                        GUI.Label(trackPosRect, $"<b>{overlayLabel}</b>", Styles.CenterLabel);
                         GUI.color = Color.white;
                     }
                 };
             }
 
             //绘制轨道片段
-            for (int a = 0; a < track.Clips.Count; a++)
+            for (int a = 0; a < trackAsset.Clips.Count; a++)
             {
-                ShowClipArea(track, yPos, groupIndex, trackIndex, a, e);
+                ShowClipArea(trackAsset, yPos, groupIndex, trackIndex, a, e);
             }
 
-            var cursorTime = G.SnapTime(asset.PosToTime(mousePosition.x));
+            var cursorTime = G.SnapTime(TimelineGraphAsset.PosToTime(mousePosition.x));
 
-            TrackDraw.DrawTrackContextMenu(track, e, trackPosRect, cursorTime);
+            TrackDraw.DrawTrackContextMenu(trackAsset, e, trackPosRect, cursorTime);
         }
 
-        void ShowClipArea(Track track, float nextYPos, int groupIndex, int trackIndex, int clipIndex, Event e)
+        void ShowClipArea(TrackAsset trackAsset, float nextYPos, int groupIndex, int trackIndex, int clipIndex, Event e)
         {
-            var action = track.Clips[clipIndex];
+            var action = trackAsset.Clips[clipIndex];
             var ID = UID(groupIndex, trackIndex, clipIndex);
 
             if (!clipWrappers.TryGetValue(ID, out var clipWrapper) || clipWrapper.action != action)
@@ -1182,17 +1182,17 @@ namespace NBC.ActionEditor
             }
 
             //查找并存储下一个/上一个剪辑到包装器
-            var nextClip = clipIndex < track.Clips.Count - 1 ? track.Clips[clipIndex + 1] : null;
-            var previousClip = clipIndex != 0 ? track.Clips[clipIndex - 1] : null;
-            clipWrapper.nextClip = nextClip;
-            clipWrapper.previousClip = previousClip;
+            var nextClip = clipIndex < trackAsset.Clips.Count - 1 ? trackAsset.Clips[clipIndex + 1] : null;
+            var previousClip = clipIndex != 0 ? trackAsset.Clips[clipIndex - 1] : null;
+            clipWrapper.NextClipAsset = nextClip;
+            clipWrapper.PreviousClipAsset = previousClip;
 
 
             var clipRect = clipWrapper.rect;
 
             clipRect.y = nextYPos;
-            clipRect.width = Mathf.Max(action.Length / asset.ViewTime * CenterRect.width, 6);
-            clipRect.height = track.ShowHeight;
+            clipRect.width = Mathf.Max(action.Length / TimelineGraphAsset.ViewTime * CenterRect.width, 6);
+            clipRect.height = trackAsset.ShowHeight;
 
 
             //获取动作时间和位置
@@ -1204,9 +1204,9 @@ namespace NBC.ActionEditor
                 var mx = e.mousePosition.x - interactingClip.dragOffset;
 
                 var lastTime = xTime;
-                xTime = asset.PosToTime(mx + G.LeftRect.width);
+                xTime = TimelineGraphAsset.PosToTime(mx + G.LeftRect.width);
                 xTime = G.SnapTime(xTime);
-                xTime = Mathf.Clamp(xTime, 0, asset.MaxTime - 0.1f);
+                xTime = Mathf.Clamp(xTime, 0, TimelineGraphAsset.MaxTime - 0.1f);
 
                 // 处理multisection。限制xmin和xmax的边界
                 if (multiSelection != null && multiSelection.Count > 1)
@@ -1231,12 +1231,12 @@ namespace NBC.ActionEditor
                 //夹紧和交叉混合之间的其他附近的剪辑
                 if (multiSelection == null || multiSelection.Count < 1)
                 {
-                    var cursorTime = G.SnapTime(asset.PosToTime(mousePosition.x));
+                    var cursorTime = G.SnapTime(TimelineGraphAsset.PosToTime(mousePosition.x));
 
                     var preCursorClip =
-                        track.Clips.LastOrDefault(x => x != action && x.StartTime < cursorTime);
+                        trackAsset.Clips.LastOrDefault(x => x != action && x.StartTime < cursorTime);
                     var postCursorClip =
-                        track.Clips.FirstOrDefault(x => x != action && x.EndTime > cursorTime);
+                        trackAsset.Clips.FirstOrDefault(x => x != action && x.EndTime > cursorTime);
 
                     //转变/涟漪剪辑
                     //当移动轨道夹子总是夹到以前的夹子，不需要夹到下一个
@@ -1249,7 +1249,7 @@ namespace NBC.ActionEditor
                     var preTime = preCursorClip != null ? preCursorClip.EndTime : 0;
                     var postTime = postCursorClip != null
                         ? postCursorClip.StartTime
-                        : asset.MaxTime + action.Length;
+                        : TimelineGraphAsset.MaxTime + action.Length;
 
                     //拖拽夹子时磁铁会断裂
                     if (Prefs.magnetSnapping && !e.control)
@@ -1319,7 +1319,7 @@ namespace NBC.ActionEditor
             }
 
             //apply xPos
-            clipRect.x = asset.TimeToPos(xTime);
+            clipRect.x = TimelineGraphAsset.TimeToPos(xTime);
 
             //dont draw if outside of view range and not selected
             var isSelected = ReferenceEquals(DirectorUtility.selectedObject, action) || (multiSelection != null &&
@@ -1337,17 +1337,17 @@ namespace NBC.ActionEditor
             if (isSelected)
             {
                 var selRect = clipRect.ExpandBy(2);
-                GUI.color = Styles.HIGHLIGHT_COLOR;
-                GUI.DrawTexture(selRect, Styles.whiteTexture);
+                GUI.color = Styles.HighlightColor;
+                GUI.DrawTexture(selRect, Styles.WhiteTexture);
                 GUI.color = Color.white;
             }
 
             //determine color and draw clip
             var color = Color.white;
             color = action.isValid ? color : new Color(1, 0.3f, 0.3f);
-            color = track.IsActive ? color : Color.grey;
+            color = trackAsset.IsActive ? color : Color.grey;
             GUI.color = color;
-            GUI.Box(clipRect, string.Empty, Styles.clipBoxHorizontalStyle);
+            GUI.Box(clipRect, string.Empty, Styles.ClipBoxHorizontalStyle);
             clipWrapper.rect = clipRect;
             ShowActionClipWindow(ID, clipRect);
 
@@ -1376,7 +1376,7 @@ namespace NBC.ActionEditor
                     return;
                 }
 
-                menu.AddItem(new GUIContent(Lan.ClipCopy), false, () => { DirectorUtility.CopyClip = action; });
+                menu.AddItem(new GUIContent(Lan.ClipCopy), false, () => { DirectorUtility.CopyClipAsset = action; });
                 menu.AddItem(new GUIContent(Lan.ClipCut), false, () => { DirectorUtility.CutClip(action); });
 
                 if (action is ISubClipContainable subContainable && subContainable.SubClipLength > 0)
@@ -1412,8 +1412,8 @@ namespace NBC.ActionEditor
 
             GUI.color = Color.white;
 
-            var nextPosX = asset.TimeToPos(nextClip != null ? nextClip.StartTime : asset.ViewTimeMax);
-            var prevPosX = asset.TimeToPos(previousClip != null ? previousClip.EndTime : asset.ViewTimeMin);
+            var nextPosX = TimelineGraphAsset.TimeToPos(nextClip != null ? nextClip.StartTime : TimelineGraphAsset.ViewTimeMax);
+            var prevPosX = TimelineGraphAsset.TimeToPos(previousClip != null ? previousClip.EndTime : TimelineGraphAsset.ViewTimeMin);
             var extRectLeft = Rect.MinMaxRect(prevPosX, clipRect.yMin, clipRect.xMin, clipRect.yMax);
             var extRectRight = Rect.MinMaxRect(clipRect.xMax, clipRect.yMin, nextPosX, clipRect.yMax);
             action.ShowClipGUIExternal(extRectLeft, extRectRight);
@@ -1444,7 +1444,7 @@ namespace NBC.ActionEditor
             const float SCALE_RECT_WIDTH = 5;
 
             public float dragOffset;
-            public ActionClip action;
+            public ActionClipAsset action;
             public bool isDragging;
             public bool isScalingStart;
             public bool isScalingEnd;
@@ -1454,8 +1454,8 @@ namespace NBC.ActionEditor
             public float preScaleStartTime;
             public float preScaleEndTime;
 
-            public ActionClip previousClip;
-            public ActionClip nextClip;
+            public ActionClipAsset PreviousClipAsset;
+            public ActionClipAsset NextClipAsset;
 
             private Event e;
             private int clipID;
@@ -1490,7 +1490,7 @@ namespace NBC.ActionEditor
                 set => _rect = value;
             }
 
-            public ActionClipWrapper(ActionClip action)
+            public ActionClipWrapper(ActionClipAsset action)
             {
                 this.action = action;
             }
@@ -1510,12 +1510,12 @@ namespace NBC.ActionEditor
                 this.clipID = clipID;
                 e = Event.current;
 
-                overlapIn = previousClip != null ? Mathf.Max(previousClip.EndTime - action.StartTime, 0) : 0;
-                overlapOut = nextClip != null ? Mathf.Max(action.EndTime - nextClip.StartTime, 0) : 0;
+                overlapIn = PreviousClipAsset != null ? Mathf.Max(PreviousClipAsset.EndTime - action.StartTime, 0) : 0;
+                overlapOut = NextClipAsset != null ? Mathf.Max(action.EndTime - NextClipAsset.StartTime, 0) : 0;
                 blendInPosX = (action.BlendIn / action.Length) * rect.width;
                 blendOutPosX = ((action.Length - action.BlendOut) / action.Length) * rect.width;
 
-                pointerTime = editor.asset.PosToTime(editor.mousePosition.x);
+                pointerTime = editor.TimelineGraphAsset.PosToTime(editor.mousePosition.x);
                 snapedPointerTime = G.SnapTime(pointerTime);
 
                 allowScale = action.CanScale() && action.Length > 0 && rect.width > SCALE_RECT_WIDTH * 2;
@@ -1552,11 +1552,11 @@ namespace NBC.ActionEditor
                 //这种方式避免了在另一边移动剪辑时的问题，但至少在缩放剪辑时保持重叠交互。
                 if (editor.interactingClip == null || !editor.interactingClip.isDragging)
                 {
-                    var overlap = previousClip != null ? Mathf.Max(previousClip.EndTime - action.StartTime, 0) : 0;
+                    var overlap = PreviousClipAsset != null ? Mathf.Max(PreviousClipAsset.EndTime - action.StartTime, 0) : 0;
                     if (overlap > 0)
                     {
                         action.BlendIn = overlap;
-                        previousClip.BlendOut = overlap;
+                        PreviousClipAsset.BlendOut = overlap;
                     }
                 }
 
@@ -1692,7 +1692,7 @@ namespace NBC.ActionEditor
                     {
                         if (controlRectIn.Contains(e.mousePosition))
                         {
-                            GUI.DrawTexture(controlRectIn.ExpandBy(0, -2), Styles.whiteTexture);
+                            GUI.DrawTexture(controlRectIn.ExpandBy(0, -2), Styles.WhiteTexture);
                             if (e.type == EventType.MouseDown && e.button == 0)
                             {
                                 if (allowScale && !e.control)
@@ -1715,7 +1715,7 @@ namespace NBC.ActionEditor
                     {
                         if (controlRectOut.Contains(e.mousePosition))
                         {
-                            GUI.DrawTexture(controlRectOut.ExpandBy(0, -2), Styles.whiteTexture);
+                            GUI.DrawTexture(controlRectOut.ExpandBy(0, -2), Styles.WhiteTexture);
                             if (e.type == EventType.MouseDown && e.button == 0)
                             {
                                 if (allowScale && !e.control)
@@ -1747,7 +1747,7 @@ namespace NBC.ActionEditor
 
                 if (isScalingStart)
                 {
-                    var prevTime = previousClip?.EndTime ?? 0;
+                    var prevTime = PreviousClipAsset?.EndTime ?? 0;
                     //magnet snap
                     if (Prefs.magnetSnapping && !e.control)
                     {
@@ -1759,9 +1759,9 @@ namespace NBC.ActionEditor
                         }
                     }
 
-                    if (action.CanCrossBlend(previousClip))
+                    if (action.CanCrossBlend(PreviousClipAsset))
                     {
-                        prevTime -= Mathf.Min(action.Length / 2, previousClip.Length / 2);
+                        prevTime -= Mathf.Min(action.Length / 2, PreviousClipAsset.Length / 2);
                     }
 
                     action.StartTime = snapedPointerTime;
@@ -1771,7 +1771,7 @@ namespace NBC.ActionEditor
 
                 if (isScalingEnd)
                 {
-                    var nextTime = nextClip != null ? nextClip.StartTime : editor.asset.MaxTime;
+                    var nextTime = NextClipAsset != null ? NextClipAsset.StartTime : editor.TimelineGraphAsset.MaxTime;
                     //magnet snap
                     if (Prefs.magnetSnapping && !e.control)
                     {
@@ -1783,9 +1783,9 @@ namespace NBC.ActionEditor
                         }
                     }
 
-                    if (action.CanCrossBlend(nextClip))
+                    if (action.CanCrossBlend(NextClipAsset))
                     {
-                        nextTime += Mathf.Min(action.Length / 2, nextClip.Length / 2);
+                        nextTime += Mathf.Min(action.Length / 2, NextClipAsset.Length / 2);
                     }
 
                     action.EndTime = snapedPointerTime;
@@ -1830,7 +1830,7 @@ namespace NBC.ActionEditor
                     var dopeRect = new Rect(0, rect.height - CLIP_BLOCK_COLOR_HEIGHT, rect.width,
                         CLIP_BLOCK_COLOR_HEIGHT);
                     GUI.color = colorAttribute.Color;
-                    GUI.Box(dopeRect, string.Empty, Styles.headerBoxStyle);
+                    GUI.Box(dopeRect, string.Empty, Styles.HeaderBoxStyle);
                     GUI.color = Color.white;
                 }
             }

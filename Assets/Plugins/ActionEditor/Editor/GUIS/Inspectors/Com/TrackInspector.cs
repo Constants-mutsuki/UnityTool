@@ -1,17 +1,17 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
-    public abstract class TrackInspector<T> : TrackInspector where T : Track
+    public abstract class TrackInspector<T> : TrackInspector where T : TrackAsset
     {
         protected T action => (T)target;
     }
 
-    [CustomInspectors(typeof(Track), true)]
+    [CustomInspectors(typeof(TrackAsset), true)]
     public class TrackInspector : InspectorsBase
     {
-        private Track action => (Track)target;
+        private TrackAsset action => (TrackAsset)target;
 
         public override void OnInspectorGUI()
         {

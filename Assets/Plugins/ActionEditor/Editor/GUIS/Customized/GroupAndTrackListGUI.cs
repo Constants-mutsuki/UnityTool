@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using NBC.ActionEditor.Draws;
+using Darkness.Draws;
 using UnityEditor;
 using UnityEngine;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public class GroupAndTrackListGUI : ICustomized
     {
@@ -11,13 +11,13 @@ namespace NBC.ActionEditor
         private static readonly Color GROUP_COLOR = new Color(0f, 0f, 0f, 0.25f);
 
         private AssetPlayer player => AssetPlayer.Inst;
-        public Asset asset => App.AssetData;
+        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
 
         private Rect leftRect;
         private bool isResizingLeftMargin;
-        private Group pickedGroup;
-        private Track _copyTrack;
-        private Track _pickedTrack;
+        private GroupAsset m_pickedGroupAsset;
+        private TrackAsset m_copyTrackAsset;
+        private TrackAsset m_pickedTrackAsset;
 
         /// <summary>
         /// 轨道/轨道组 列表
@@ -37,7 +37,7 @@ namespace NBC.ActionEditor
 
             if (isResizingLeftMargin)
             {
-                Styles.LEFT_MARGIN = e.mousePosition.x + 2;
+                Styles.LeftMargin = e.mousePosition.x + 2;
             }
 
             if (e.rawType == EventType.MouseUp)
@@ -47,18 +47,18 @@ namespace NBC.ActionEditor
 
             GUI.enabled = player.CurrentTime <= 0;
 
-            var nextYPos = Styles.FIRST_GROUP_TOP_MARGIN;
+            var nextYPos = Styles.FirstGroupTopMargin;
             var wasEnabled = GUI.enabled;
             GUI.enabled = true;
             var collapseAllRect = Rect.MinMaxRect(leftRect.x + 5, leftRect.y + 4, 20, leftRect.y + 20 - 1);
             var searchRect = Rect.MinMaxRect(leftRect.x + 20, leftRect.y + 4, leftRect.xMax - 18, leftRect.y + 20 - 1);
             var searchCancelRect = Rect.MinMaxRect(searchRect.xMax, searchRect.y, leftRect.xMax - 4, searchRect.yMax);
-            var anyExpanded = asset.groups.Any(g => !g.IsCollapsed);
+            var anyExpanded = TimelineGraphAsset.groups.Any(g => !g.IsCollapsed);
             ActionEditorWindow.current.AddCursorRect(collapseAllRect, MouseCursor.Link);
             GUI.color = Color.white.WithAlpha(0.5f);
             if (GUI.Button(collapseAllRect, anyExpanded ? "▼" : "►", (GUIStyle)"label"))
             {
-                foreach (var group in asset.groups)
+                foreach (var group in TimelineGraphAsset.groups)
                 {
                     group.IsCollapsed = anyExpanded;
                 }
@@ -80,20 +80,20 @@ namespace NBC.ActionEditor
 
             G.TotalHeight = nextYPos;
 
-            var addButtonY = G.TotalHeight + Styles.TOP_MARGIN + Styles.TOOLBAR_HEIGHT + 20;
+            var addButtonY = G.TotalHeight + Styles.TopMargin + Styles.ToolbarHeight + 20;
             var addRect = Rect.MinMaxRect(leftRect.xMin + 10, addButtonY, leftRect.xMax - 10, addButtonY + 20);
             GUI.color = Color.white.WithAlpha(0.5f);
             if (GUI.Button(addRect, Lan.GroupAdd))
             {
-                var newGroup = asset.AddGroup<Group>();
+                var newGroup = TimelineGraphAsset.AddGroup<GroupAsset>();
                 DirectorUtility.selectedObject = newGroup;
             }
 
             //clear picks
             if (e.rawType == EventType.MouseUp)
             {
-                pickedGroup = null;
-                _pickedTrack = null;
+                m_pickedGroupAsset = null;
+                m_pickedTrackAsset = null;
             }
 
             GUI.enabled = true;
@@ -103,9 +103,9 @@ namespace NBC.ActionEditor
 
         private void ShowListGroups(Event e, ref float nextYPos)
         {
-            for (int g = 0; g < asset.groups.Count; g++)
+            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
             {
-                var group = asset.groups[g];
+                var group = TimelineGraphAsset.groups[g];
 
                 if (G.IsFilteredOutBySearch(group))
                 {
@@ -113,15 +113,15 @@ namespace NBC.ActionEditor
                     continue;
                 }
 
-                var groupRect = new Rect(4, nextYPos, leftRect.width - Styles.GROUP_RIGHT_MARGIN - 4,
-                    Styles.GROUP_HEIGHT - 3);
+                var groupRect = new Rect(4, nextYPos, leftRect.width - Styles.GroupRightMargin - 4,
+                    Styles.GroupHeight - 3);
                 ActionEditorWindow.current?.AddCursorRect(groupRect,
-                    pickedGroup == null ? MouseCursor.Link : MouseCursor.MoveArrow);
-                nextYPos += Styles.GROUP_HEIGHT;
+                    m_pickedGroupAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
+                nextYPos += Styles.GroupHeight;
 
-                var groupSelected = (ReferenceEquals(group, DirectorUtility.selectedObject) || group == pickedGroup);
+                var groupSelected = (ReferenceEquals(group, DirectorUtility.selectedObject) || group == m_pickedGroupAsset);
                 GUI.color = groupSelected ? LIST_SELECTION_COLOR : GROUP_COLOR;
-                GUI.Box(groupRect, string.Empty, Styles.headerBoxStyle);
+                GUI.Box(groupRect, string.Empty, Styles.HeaderBoxStyle);
                 GUI.color = Color.white;
 
 
@@ -129,7 +129,7 @@ namespace NBC.ActionEditor
                 GUI.color = EditorGUIUtility.isProSkin ? Color.white.WithAlpha(0.5f) : new Color(0.2f, 0.2f, 0.2f);
                 var plusRect = new Rect(groupRect.xMax - 20, groupRect.y + 6, 16, 16);
 
-                if (GUI.Button(plusRect, Styles.menuIcon, GUIStyle.none))
+                if (GUI.Button(plusRect, Styles.MenuIcon, GUIStyle.none))
                 {
                     plusClicked = true;
                 }
@@ -137,7 +137,7 @@ namespace NBC.ActionEditor
                 if (!group.IsActive)
                 {
                     var disableIconRect = new Rect(plusRect.xMin - 20, groupRect.y + 6, 16, 16);
-                    if (GUI.Button(disableIconRect, Styles.hiddenIcon, GUIStyle.none))
+                    if (GUI.Button(disableIconRect, Styles.HiddenIcon, GUIStyle.none))
                     {
                         group.IsActive = true;
                     }
@@ -146,7 +146,7 @@ namespace NBC.ActionEditor
                 if (group.IsLocked)
                 {
                     var lockIconRect = new Rect(plusRect.xMin - (group.IsActive ? 20 : 36), groupRect.y + 6, 16, 16);
-                    if (GUI.Button(lockIconRect, Styles.lockIcon, GUIStyle.none))
+                    if (GUI.Button(lockIconRect, Styles.LockIcon, GUIStyle.none))
                     {
                         group.IsLocked = false;
                     }
@@ -163,7 +163,7 @@ namespace NBC.ActionEditor
                 if ((e.type == EventType.ContextClick && groupRect.Contains(e.mousePosition)) || plusClicked)
                 {
                     var menu = new GenericMenu();
-                    foreach (var _info in EditorTools.GetTypeMetaDerivedFrom(typeof(Track)))
+                    foreach (var _info in EditorTools.GetTypeMetaDerivedFrom(typeof(TrackAsset)))
                     {
                         var info = _info;
                         if (info.attachableTypes == null || !info.attachableTypes.Contains(group.GetType()))
@@ -193,11 +193,11 @@ namespace NBC.ActionEditor
                     }
 
                     menu.AddSeparator("");
-                    if (group.CanAddTrack(_copyTrack))
+                    if (group.CanAddTrack(m_copyTrackAsset))
                     {
                         menu.AddItem(new GUIContent(Lan.MenuPasteTrack), false, () =>
                         {
-                            var t = group.PasteTrack(_copyTrack);
+                            var t = group.PasteTrack(m_copyTrackAsset);
                             DirectorUtility.selectedObject = t;
                             ActionEditorWindow.current.InitClipWrappers();
                         });
@@ -216,7 +216,7 @@ namespace NBC.ActionEditor
 
                     menu.AddItem(new GUIContent(Lan.GroupReplica), false, () =>
                     {
-                        asset.PasteGroup(group);
+                        TimelineGraphAsset.PasteGroup(group);
                         ActionEditorWindow.current.InitClipWrappers();
                     });
 
@@ -232,7 +232,7 @@ namespace NBC.ActionEditor
                             if (EditorUtility.DisplayDialog(Lan.GroupDelete, Lan.GroupDeleteTips, Lan.TipsConfirm,
                                     Lan.TipsCancel))
                             {
-                                asset.DeleteGroup(group);
+                                TimelineGraphAsset.DeleteGroup(group);
                                 ActionEditorWindow.current.InitClipWrappers();
                             }
                         });
@@ -247,28 +247,28 @@ namespace NBC.ActionEditor
                 {
                     DirectorUtility.selectedObject = group;
 
-                    pickedGroup = group;
+                    m_pickedGroupAsset = group;
                     
                     e.Use();
                 }
 
-                if (pickedGroup != null && pickedGroup != group) // && !(group is DirectorGroup))
+                if (m_pickedGroupAsset != null && m_pickedGroupAsset != group) // && !(group is DirectorGroup))
                 {
                     if (groupRect.Contains(e.mousePosition))
                     {
                         var markRect = new Rect(groupRect.x,
-                            (asset.groups.IndexOf(pickedGroup) < g) ? groupRect.yMax - 2 : groupRect.y,
+                            (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y,
                             groupRect.width, 2);
                         GUI.color = Color.grey;
-                        GUI.DrawTexture(markRect, Styles.whiteTexture);
+                        GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
                     }
 
                     if (e.rawType == EventType.MouseUp && e.button == 0 && groupRect.Contains(e.mousePosition))
                     {
-                        asset.groups.Remove(pickedGroup);
-                        asset.groups.Insert(g, pickedGroup);
-                        pickedGroup = null;
+                        TimelineGraphAsset.groups.Remove(m_pickedGroupAsset);
+                        TimelineGraphAsset.groups.Insert(g, m_pickedGroupAsset);
+                        m_pickedGroupAsset = null;
                         e.Use();
                     }
                 }
@@ -278,7 +278,7 @@ namespace NBC.ActionEditor
                     ShowListTracks(e, group, ref nextYPos);
                     GUI.color = groupSelected ? LIST_SELECTION_COLOR : GROUP_COLOR;
                     var verticalRect = Rect.MinMaxRect(groupRect.x, groupRect.yMax, groupRect.x + 3, nextYPos - 2);
-                    GUI.DrawTexture(verticalRect, Styles.whiteTexture);
+                    GUI.DrawTexture(verticalRect, Styles.WhiteTexture);
                     GUI.color = Color.white;
                 }
             }
@@ -287,33 +287,33 @@ namespace NBC.ActionEditor
         /// <summary>
         /// 显示轨道列表
         /// </summary>
-        void ShowListTracks(Event e, Group group, ref float nextYPos)
+        void ShowListTracks(Event e, GroupAsset groupAsset, ref float nextYPos)
         {
-            for (int t = 0; t < group.Tracks.Count; t++)
+            for (int t = 0; t < groupAsset.Tracks.Count; t++)
             {
-                var track = group.Tracks[t];
+                var track = groupAsset.Tracks[t];
                 var yPos = nextYPos;
 
-                var trackRect = new Rect(10, yPos, leftRect.width - Styles.TRACK_RIGHT_MARGIN - 10, track.ShowHeight);
-                nextYPos += track.ShowHeight + Styles.TRACK_MARGINS;
+                var trackRect = new Rect(10, yPos, leftRect.width - Styles.TrackRightMargin - 10, track.ShowHeight);
+                nextYPos += track.ShowHeight + Styles.TrackMargins;
 
                 GUI.color = ColorUtility.Grey(EditorGUIUtility.isProSkin
                     ? (track.IsActive ? 0.25f : 0.2f)
                     : (track.IsActive ? 0.9f : 0.8f));
-                GUI.DrawTexture(trackRect, Styles.whiteTexture);
+                GUI.DrawTexture(trackRect, Styles.WhiteTexture);
                 GUI.color = Color.white.WithAlpha(0.25f);
                 GUI.Box(trackRect, string.Empty, (GUIStyle)"flow node 0");
-                if (ReferenceEquals(track, DirectorUtility.selectedObject) || track == _pickedTrack)
+                if (ReferenceEquals(track, DirectorUtility.selectedObject) || track == m_pickedTrackAsset)
                 {
                     GUI.color = LIST_SELECTION_COLOR;
-                    GUI.DrawTexture(trackRect, Styles.whiteTexture);
+                    GUI.DrawTexture(trackRect, Styles.WhiteTexture);
                 }
 
                 if (track.IsActive && track.Color != Color.white && track.Color.a > 0.2f)
                 {
                     GUI.color = track.Color;
                     var colorRect = new Rect(trackRect.xMax + 1, trackRect.yMin, 2, track.ShowHeight);
-                    GUI.DrawTexture(colorRect, Styles.whiteTexture);
+                    GUI.DrawTexture(colorRect, Styles.WhiteTexture);
                 }
 
                 GUI.color = Color.white;
@@ -323,7 +323,7 @@ namespace NBC.ActionEditor
                 GUI.EndGroup();
 
                 ActionEditorWindow.current.AddCursorRect(trackRect,
-                    _pickedTrack == null ? MouseCursor.Link : MouseCursor.MoveArrow);
+                    m_pickedTrackAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
 
                 //右键菜单
                 if (e.type == EventType.ContextClick && trackRect.Contains(e.mousePosition))
@@ -336,13 +336,13 @@ namespace NBC.ActionEditor
 
                     menu.AddSeparator("");
 
-                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () => { _copyTrack = track; });
+                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () => { m_copyTrackAsset = track; });
 
                     if (track.GetType().RTGetAttribute<UniqueAttribute>(true) == null)
                     {
                         menu.AddItem(new GUIContent(Lan.TrackReplica), false, () =>
                         {
-                            var t1 = group.PasteTrack(track);
+                            var t1 = groupAsset.PasteTrack(track);
                             ActionEditorWindow.current.InitClipWrappers();
                             DirectorUtility.selectedObject = t1;
                         });
@@ -364,7 +364,7 @@ namespace NBC.ActionEditor
                             if (EditorUtility.DisplayDialog(Lan.TrackDelete, Lan.TrackDeleteTips, Lan.TipsConfirm,
                                     Lan.TipsCancel))
                             {
-                                group.DeleteTrack(track);
+                                groupAsset.DeleteTrack(track);
                                 ActionEditorWindow.current.InitClipWrappers();
                             }
                         });
@@ -378,28 +378,28 @@ namespace NBC.ActionEditor
                 if (e.type == EventType.MouseDown && e.button == 0 && trackRect.Contains(e.mousePosition))
                 {
                     DirectorUtility.selectedObject = track;
-                    _pickedTrack = track;
+                    m_pickedTrackAsset = track;
                     e.Use();
                 }
 
-                if (_pickedTrack != null && _pickedTrack != track && ReferenceEquals(_pickedTrack.Parent, group))
+                if (m_pickedTrackAsset != null && m_pickedTrackAsset != track && ReferenceEquals(m_pickedTrackAsset.Parent, groupAsset))
                 {
                     if (trackRect.Contains(e.mousePosition))
                     {
                         var markRect = new Rect(trackRect.x,
-                            (group.Tracks.IndexOf(_pickedTrack) < t) ? trackRect.yMax - 2 : trackRect.y,
+                            (groupAsset.Tracks.IndexOf(m_pickedTrackAsset) < t) ? trackRect.yMax - 2 : trackRect.y,
                             trackRect.width,
                             2);
                         GUI.color = Color.grey;
-                        GUI.DrawTexture(markRect, Styles.whiteTexture);
+                        GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
                     }
 
                     if (e.rawType == EventType.MouseUp && e.button == 0 && trackRect.Contains(e.mousePosition))
                     {
-                        group.Tracks.Remove(_pickedTrack);
-                        group.Tracks.Insert(t, _pickedTrack);
-                        _pickedTrack = null;
+                        groupAsset.Tracks.Remove(m_pickedTrackAsset);
+                        groupAsset.Tracks.Insert(t, m_pickedTrackAsset);
+                        m_pickedTrackAsset = null;
                         e.Use();
                     }
                 }

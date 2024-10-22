@@ -1,4 +1,4 @@
-﻿namespace NBC.ActionEditor
+﻿namespace Darkness
 {
     [Name("简体中文")]
     public class LanCHS : ILanguages

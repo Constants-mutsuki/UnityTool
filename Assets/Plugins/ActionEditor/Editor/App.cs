@@ -3,11 +3,11 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace NBC.ActionEditor
+namespace Darkness
 {
     public delegate void CallbackFunction();
 
-    public delegate void OpenAssetFunction(Asset asset);
+    public delegate void OpenAssetFunction(TimelineGraphAsset timelineGraphAsset);
 
     public class App
     {
@@ -19,21 +19,21 @@ namespace NBC.ActionEditor
         public static CallbackFunction OnPlay;
         public static CallbackFunction OnStop;
 
-        public static Asset AssetData { get; set; } = null;
+        public static TimelineGraphAsset TimelineGraphAssetData { get; set; } = null;
 
 
         public static void OnObjectPickerConfig(Object obj)
         {
-            if (obj is Asset a)
+            if (obj is TimelineGraphAsset a)
             {
-                AssetData = a;
+                TimelineGraphAssetData = a;
             }
         }
 
         public static void SaveAsset()
         {
-            if (AssetData != null)
-                EditorUtility.SetDirty(AssetData);
+            if (TimelineGraphAssetData != null)
+                EditorUtility.SetDirty(TimelineGraphAssetData);
         }
 
 
@@ -64,9 +64,9 @@ namespace NBC.ActionEditor
         #region 播放相关
         private static AssetPlayer _player => AssetPlayer.Inst;
 
-        public static bool IsStop => Application.isPlaying ? _player.IsPaused || !_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stoped;
+        public static bool IsStop => Application.isPlaying ? _player.IsPaused || !_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
 
-        internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stoped;
+        internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stopped;
 
         public static WrapMode EditorPlaybackWrapMode = WrapMode.Loop;
 
@@ -90,15 +90,15 @@ namespace NBC.ActionEditor
 
         public static void Pause()
         {
-            EditorPlaybackState = EditorPlaybackState.Stoped;
+            EditorPlaybackState = EditorPlaybackState.Stopped;
             OnStop?.Invoke();
         }
 
         public static void Stop(bool forceRewind)
         {
-            if (AssetData != null)
+            if (TimelineGraphAssetData != null)
                 _player.CurrentTime = 0;
-            EditorPlaybackState = EditorPlaybackState.Stoped;
+            EditorPlaybackState = EditorPlaybackState.Stopped;
             // WillRepaint = true;
 
             OnStop?.Invoke();
