@@ -1,9 +1,10 @@
 ﻿using System;
+using MemoryPack;
 
 namespace Darkness
 {
-    [Serializable]
-    public class Clip
+    [MemoryPackable]
+    public partial  class Clip 
     {
         public float startTime;
         public float endTime;

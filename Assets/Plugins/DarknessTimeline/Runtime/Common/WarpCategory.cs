@@ -5,4 +5,9 @@
         Once,
         Loop,
     }
+    public enum StopMode
+    {
+        Exit,
+        Skip,
+    }
 }

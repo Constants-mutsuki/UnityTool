@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using MemoryPack;
 using UnityEngine;
 
 namespace Darkness
 {
-    [Serializable]
-    public class Group
+    [MemoryPackable]
+    public partial class Group
     {
         public bool active;
         [SerializeReference]

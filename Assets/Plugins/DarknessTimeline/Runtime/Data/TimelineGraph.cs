@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using MemoryPack;
 using UnityEngine;
 
 namespace Darkness
 {
-    [Serializable]
-    public class TimelineGraph
+    [MemoryPackable]
+    public partial  class TimelineGraph
     {
         public float length;
         public WarpCategory warpCategory;
