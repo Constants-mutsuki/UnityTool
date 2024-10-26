@@ -9,12 +9,19 @@ namespace Darkness
     [Attachable(typeof(GroupAsset))]
     public abstract class TrackAsset : DirectableAsset
     {
-        [SerializeField] private List<ActionClipAsset> actionClips = new List<ActionClipAsset>();
+        [SerializeField]
+        private List<ClipAsset> actionClips = new List<ClipAsset>();
 
-        [SerializeField] [HideInInspector] private bool active = true;
-        [SerializeField] [HideInInspector] private bool isLocked = false;
+        [SerializeField]
+        [HideInInspector]
+        private bool active = true;
 
-        [SerializeField] private Color color = Color.white;
+        [SerializeField]
+        [HideInInspector]
+        private bool isLocked = false;
+
+        [SerializeField]
+        private Color color = Color.white;
 
 
         public Color Color => color.a > 0.1f ? color : Color.white;
@@ -28,34 +35,34 @@ namespace Darkness
 
         public virtual string info => string.Empty;
 
-        public virtual GroupAsset Parent
+        public override TimelineGraphAsset Root
+        {
+            get => Parent?.Root;
+            set { }
+        }
+
+        public override DirectableAsset Parent
         {
             get => (GroupAsset)m_parent;
             set => m_parent = value;
         }
 
-        public override bool IsCollapsed => Parent != null && Parent.IsCollapsed;
+        public override bool IsCollapsed => Parent && Parent.IsCollapsed;
 
         public override bool IsActive
         {
-            get => Parent != null && (Parent.IsActive && active);
-            set
-            {
-                if (active != value)
-                {
-                    active = value;
-                }
-            }
+            get => Parent && Parent.IsActive && active;
+            set => active = value;
         }
 
         public override bool IsLocked
         {
-            get => Parent != null && (Parent.IsLocked || isLocked);
+            get => Parent && (Parent.IsLocked || isLocked);
             set => isLocked = value;
         }
 
 
-        public List<ActionClipAsset> Clips
+        public List<ClipAsset> Clips
         {
             get => actionClips;
             set => actionClips = value;
@@ -75,21 +82,19 @@ namespace Darkness
         #region 增删
 
 #if UNITY_EDITOR
-        public T AddAction<T>(float time) where T : ActionClipAsset
+        public T AddClip<T>(float time) where T : ClipAsset
         {
-            return (T)AddAction(typeof(T), time);
+            return (T)AddClip(typeof(T), time);
         }
 
-        public ActionClipAsset AddAction(Type type, float time)
+        public ClipAsset AddClip(Type type, float time)
         {
-            var catAtt =
-                type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() as CategoryAttribute;
-            if (catAtt != null && Clips.Count == 0)
+            if (type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() is CategoryAttribute catAtt && Clips.Count == 0)
             {
                 Name = catAtt.category + " Track";
             }
 
-            var newAction = CreateInstance(type) as ActionClipAsset;
+            var newAction = CreateInstance(type) as ClipAsset;
 
             CreateUtilities.SaveAssetIntoObject(newAction, this);
             DirectorUtility.selectedObject = newAction;
@@ -110,7 +115,7 @@ namespace Darkness
             return newAction;
         }
 
-        public void DeleteAction(ActionClipAsset action)
+        public void DeleteClip(ClipAsset action)
         {
             Clips.Remove(action);
             if (ReferenceEquals(DirectorUtility.selectedObject, action))
@@ -119,7 +124,7 @@ namespace Darkness
             }
         }
 
-        public ActionClipAsset PasteClip(ActionClipAsset clipAsset, float time = 0)
+        public ClipAsset PasteClip(ClipAsset clipAsset, float time = 0)
         {
             var newClip = Instantiate(clipAsset);
             if (newClip != null)
@@ -144,7 +149,7 @@ namespace Darkness
 #endif
 
         #endregion
-        
+
 
         internal bool IsCompilable()
         {

@@ -182,7 +182,7 @@ namespace Darkness.Draws
                     existing?.GetType().GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() as
                         CategoryAttribute;
 
-                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ActionClipAsset)))
+                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ClipAsset)))
                 {
                     if (!clip.attachableTypes.Contains(trackAsset.GetType()))
                     {
@@ -211,7 +211,7 @@ namespace Darkness.Draws
                         var category = string.IsNullOrEmpty(info.category) ? string.Empty : (info.category + "/");
                         var tName = info.name;
                         menu.AddItem(new GUIContent(category + tName), false,
-                            () => { trackAsset.AddAction(info.type, cursorTime); });
+                            () => { trackAsset.AddClip(info.type, cursorTime); });
                     }
 
                     var copyType = DirectorUtility.GetCopyType();

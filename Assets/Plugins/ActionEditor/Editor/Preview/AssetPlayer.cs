@@ -74,12 +74,10 @@ namespace Darkness
         public void Sample(float time)
         {
             CurrentTime = time;
-            // if (currentTime == 0 || Math.Abs(currentTime - Length) < 0.0001f)
             if ((m_currentTime == 0 || m_currentTime == Length) && PreviousTime == m_currentTime)
             {
                 return;
             }
-            // Debug.Log($"CurrentTime={CurrentTime}");
 
             if (!m_preInitialized && m_currentTime > 0 && PreviousTime == 0)
             {
@@ -153,7 +151,7 @@ namespace Darkness
             m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
-            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewBase));
+            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
             foreach (var t in childs)
             {
                 var arrs = t.type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
@@ -189,7 +187,7 @@ namespace Darkness
                     var tType = track.GetType();
                     if (typeDic.TryGetValue(tType, out var t1))
                     {
-                        if (Activator.CreateInstance(t1) is PreviewBase preview)
+                        if (Activator.CreateInstance(t1) is PreviewLogic preview)
                         {
                             preview.SetTarget(track);
                             var p3 = new StartTimePointer(preview);
@@ -205,7 +203,7 @@ namespace Darkness
                         var cType = clip.GetType();
                         if (typeDic.TryGetValue(cType, out var t))
                         {
-                            if (Activator.CreateInstance(t) is PreviewBase preview)
+                            if (Activator.CreateInstance(t) is PreviewLogic preview)
                             {
                                 preview.SetTarget(clip);
                                 var p3 = new StartTimePointer(preview);

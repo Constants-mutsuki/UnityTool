@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Darkness
 {
-    public abstract class ActionClipInspector<T> : ActionClipInspector where T : ActionClipAsset
+    public abstract class ActionClipInspector<T> : ActionClipInspector where T : ClipAsset
     {
         protected T action => (T)target;
     }
 
-    [CustomInspectors(typeof(ActionClipAsset), true)]
+    [CustomInspectors(typeof(ClipAsset), true)]
     public class ActionClipInspector : InspectorsBase
     {
-        private ActionClipAsset action => (ActionClipAsset)target;
+        private ClipAsset action => (ClipAsset)target;
 
         public override void OnInspectorGUI()
         {

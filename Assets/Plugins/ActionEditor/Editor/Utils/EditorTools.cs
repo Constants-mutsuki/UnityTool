@@ -202,8 +202,8 @@ namespace Darkness
             infos = infos.OrderBy(i => i.name).ThenBy(i => i.category).ToList();
             return infos;
         }
-        
-        
+
+
         /// <summary>
         /// 查找类型的最后子类
         /// </summary>
@@ -222,6 +222,5 @@ namespace Darkness
                 }
             }
         }
-        
     }
 }

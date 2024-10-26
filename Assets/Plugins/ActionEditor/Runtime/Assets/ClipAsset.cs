@@ -5,13 +5,20 @@ namespace Darkness
 {
     [Serializable]
     [Attachable(typeof(TrackAsset))]
-    public abstract class ActionClipAsset : DirectableAsset
+    public abstract class ClipAsset : DirectableAsset
     {
-        [SerializeField] private float startTime;
+        [SerializeField]
+        private float startTime;
 
-        public virtual TrackAsset Parent
+        public override TimelineGraphAsset Root
         {
-            get => (TrackAsset)m_parent;
+            get => Parent?.Root;
+            set { }
+        }
+
+        public override DirectableAsset Parent
+        {
+            get => m_parent;
             set => m_parent = value;
         }
 
@@ -50,9 +57,8 @@ namespace Darkness
             }
         }
 
-        public override bool IsActive => Parent != null ? Parent.IsActive : false;
+        public override bool IsActive => Parent && Parent.IsActive;
         public override bool IsCollapsed => Parent != null && Parent.IsCollapsed;
-
         public override bool IsLocked => Parent != null && Parent.IsLocked;
 
         public virtual float Length
@@ -60,29 +66,28 @@ namespace Darkness
             get => 0;
             set { }
         }
-        
+
 
         public virtual string info
         {
             get
             {
-                var nameAtt = this.GetType().RTGetAttribute<NameAttribute>(true);
+                var nameAtt = GetType().RTGetAttribute<NameAttribute>(true);
                 if (nameAtt != null)
                 {
                     return nameAtt.name;
                 }
 
-                return this.GetType().Name.SplitCamelCase();
+                return GetType().Name.SplitCamelCase();
             }
         }
 
-        public virtual bool isValid => false;
+        public virtual bool isValid => true;
 
-        
 
-        public ActionClipAsset GetNextClip()
+        public ClipAsset GetNextClip()
         {
-            return this.GetNextSibling<ActionClipAsset>();
+            return this.GetNextSibling<ClipAsset>();
         }
 
         public float GetClipWeight(float time)
@@ -102,9 +107,9 @@ namespace Darkness
 
         public void TryMatchSubClipLength()
         {
-            if (this is ISubClipContainable)
+            if (this is ISubClipContainable subClipContainable)
             {
-                Length = ((ISubClipContainable)this).SubClipLength / ((ISubClipContainable)this).SubClipSpeed;
+                Length = subClipContainable.SubClipLength / subClipContainable.SubClipSpeed;
             }
         }
 
@@ -152,6 +157,7 @@ namespace Darkness
         }
 
 #endif
+
         #endregion
     }
 }

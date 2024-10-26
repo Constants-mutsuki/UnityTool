@@ -3,7 +3,7 @@ namespace Darkness
 {
     public interface IDirectableTimePointer
     {
-        PreviewBase target { get; }
+        PreviewLogic target { get; }
         float time { get; }
         void TriggerForward(float currentTime, float previousTime);
         void TriggerBackward(float currentTime, float previousTime);
@@ -14,10 +14,10 @@ namespace Darkness
     {
         private bool triggered;
         private float lastTargetStartTime;
-        public PreviewBase target { get; private set; }
+        public PreviewLogic target { get; private set; }
         float IDirectableTimePointer.time => target.directable.StartTime;
 
-        public StartTimePointer(PreviewBase target)
+        public StartTimePointer(PreviewLogic target)
         {
             this.target = target;
             triggered = false;
@@ -71,10 +71,10 @@ namespace Darkness
     public struct EndTimePointer : IDirectableTimePointer
     {
         private bool triggered;
-        public PreviewBase target { get; private set; }
+        public PreviewLogic target { get; private set; }
         float IDirectableTimePointer.time => target.directable.EndTime;
 
-        public EndTimePointer(PreviewBase target)
+        public EndTimePointer(PreviewLogic target)
         {
             this.target = target;
             triggered = false;

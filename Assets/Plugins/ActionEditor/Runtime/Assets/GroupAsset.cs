@@ -8,20 +8,28 @@ namespace Darkness
     [Serializable]
     public class GroupAsset : DirectableAsset
     {
-        [SerializeField, HideInInspector] private List<TrackAsset> tracks = new List<TrackAsset>();
-        [SerializeField, HideInInspector] private bool isCollapsed = false;
-        [SerializeField, HideInInspector] private bool active = true;
-        [SerializeField, HideInInspector] private bool isLocked = false;
+        [SerializeField, HideInInspector]
+        private List<TrackAsset> tracks = new();
 
+        [SerializeField, HideInInspector]
+        private bool isCollapsed = false;
 
-        public virtual TimelineGraphAsset Parent
+        [SerializeField, HideInInspector]
+        private bool active = true;
+
+        [SerializeField, HideInInspector]
+        private bool isLocked = false;
+
+        public override TimelineGraphAsset Root { get; set; }
+
+        public override DirectableAsset Parent
         {
-            get => (TimelineGraphAsset)m_parent;
-            set => m_parent = value;
+            get => m_parent;
+            set { }
         }
 
         public override float StartTime => 0;
-        public override float EndTime => Parent.Length;
+        public override float EndTime => Root.Length;
 
         public string Name
         {
@@ -58,7 +66,6 @@ namespace Darkness
             get => isLocked;
             set => isLocked = value;
         }
-
 
         #region 增删
 
@@ -120,7 +127,6 @@ namespace Darkness
             {
                 DirectorUtility.selectedObject = null;
             }
-
             // Undo.DestroyObjectImmediate(track);
             // EditorUtility.SetDirty(this);
             // root?.Validate();

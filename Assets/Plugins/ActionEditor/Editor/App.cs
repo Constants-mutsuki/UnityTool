@@ -26,6 +26,7 @@ namespace Darkness
             if (obj is TimelineGraphAsset a)
             {
                 GraphAsset = a;
+                GraphAsset.Validate();
             }
         }
 
