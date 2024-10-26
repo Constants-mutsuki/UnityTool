@@ -16,8 +16,8 @@ namespace Darkness
 
         public virtual TimelineGraphAsset Parent
         {
-            get => (TimelineGraphAsset)_parent;
-            set => _parent = value;
+            get => (TimelineGraphAsset)m_parent;
+            set => m_parent = value;
         }
 
         public override float StartTime => 0;

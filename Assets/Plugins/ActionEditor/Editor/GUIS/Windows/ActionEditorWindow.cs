@@ -16,8 +16,8 @@ namespace Darkness
         [NonSerialized] internal bool WillRepaint;
         [NonSerialized] internal bool ShowDragDropInfo;
 
-        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
-        public AssetPlayer player => AssetPlayer.Inst;
+        public TimelineGraphAsset TimelineGraphAsset => App.GraphAsset;
+        public AssetPlayer player => AssetPlayer.Instance;
 
         int UID(int g, int t, int a)
         {
@@ -106,7 +106,7 @@ namespace Darkness
             App.OnPlay -= OnPlay;
 
             Tools.hidden = false;
-            if (App.TimelineGraphAssetData != null && !Application.isPlaying)
+            if (App.GraphAsset != null && !Application.isPlaying)
             {
                 App.Stop(true);
             }
@@ -129,7 +129,7 @@ namespace Darkness
 
         void OnEditorUpdate()
         {
-            if (App.TimelineGraphAssetData == null)
+            if (App.GraphAsset == null)
             {
                 return;
             }
@@ -153,7 +153,7 @@ namespace Darkness
                 return;
             }
 
-            if (player.CurrentTime >= App.TimelineGraphAssetData.Length &&
+            if (player.CurrentTime >= App.GraphAsset.Length &&
                 App.EditorPlaybackState == EditorPlaybackState.PlayingForwards)
             {
                 if (App.EditorPlaybackWrapMode == WrapMode.Once)
@@ -200,7 +200,7 @@ namespace Darkness
             EditorStyles.foldout.richText = true;
             var e = Event.current;
 
-            if (App.TimelineGraphAssetData == null)
+            if (App.GraphAsset == null)
             {
                 DrawTools.Draw<WelcomeGUI>();
                 return;
@@ -233,7 +233,7 @@ namespace Darkness
 
 
             DrawTools.Draw<HeaderGUI>();
-            if (App.TimelineGraphAssetData == null) return;
+            if (App.GraphAsset == null) return;
             DrawTools.Draw<HeaderTimeInfoGUI>();
             DrawTimelineInfo();
             DrawTools.Draw<BottomGUI>();
@@ -243,7 +243,7 @@ namespace Darkness
 
         void OnWillSaveScene(UnityEngine.SceneManagement.Scene scene, string path)
         {
-            if (App.TimelineGraphAssetData != null && player.CurrentTime > 0)
+            if (App.GraphAsset != null && player.CurrentTime > 0)
             {
                 App.Stop(true);
                 Debug.LogWarning(
@@ -261,7 +261,7 @@ namespace Darkness
             Prefs.InitializeAssetTypes();
             App.OnInitialize?.Invoke();
             //停止播放
-            if (App.TimelineGraphAssetData != null)
+            if (App.GraphAsset != null)
             {
                 if (!Application.isPlaying)
                 {

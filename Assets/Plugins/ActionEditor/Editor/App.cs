@@ -11,43 +11,43 @@ namespace Darkness
 
     public class App
     {
-        private static TextAsset _textAsset;
-
+        private static TextAsset m_textAsset;
         public static CallbackFunction OnInitialize;
         public static CallbackFunction OnDisable;
         public static OpenAssetFunction OnOpenAsset;
         public static CallbackFunction OnPlay;
         public static CallbackFunction OnStop;
 
-        public static TimelineGraphAsset TimelineGraphAssetData { get; set; } = null;
+        public static TimelineGraphAsset GraphAsset { get; set; }
 
 
         public static void OnObjectPickerConfig(Object obj)
         {
             if (obj is TimelineGraphAsset a)
             {
-                TimelineGraphAssetData = a;
+                GraphAsset = a;
             }
         }
 
         public static void SaveAsset()
         {
-            if (TimelineGraphAssetData != null)
-                EditorUtility.SetDirty(TimelineGraphAssetData);
+            if (GraphAsset)
+                EditorUtility.SetDirty(GraphAsset);
         }
 
 
         #region AutoSave
-        public static DateTime LastSaveTime => _lastSaveTime;
 
-        private static DateTime _lastSaveTime = DateTime.Now;
+        private static DateTime m_lastSaveTime = DateTime.Now;
+        public static DateTime LastSaveTime => m_lastSaveTime;
+
 
         /// <summary>
         /// 尝试自动保存
         /// </summary>
         public static void TryAutoSave()
         {
-            var timespan = DateTime.Now - _lastSaveTime;
+            var timespan = DateTime.Now - m_lastSaveTime;
             if (timespan.Seconds > Prefs.autoSaveSeconds)
             {
                 AutoSave();
@@ -56,21 +56,24 @@ namespace Darkness
 
         public static void AutoSave()
         {
-            _lastSaveTime = DateTime.Now;
+            m_lastSaveTime = DateTime.Now;
             SaveAsset();
         }
+
         #endregion
 
         #region 播放相关
-        private static AssetPlayer _player => AssetPlayer.Inst;
 
-        public static bool IsStop => Application.isPlaying ? _player.IsPaused || !_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
+        private static AssetPlayer m_player => AssetPlayer.Instance;
+
+        public static bool IsStop =>
+            Application.isPlaying ? m_player.IsPaused || !m_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
 
         internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stopped;
 
         public static WrapMode EditorPlaybackWrapMode = WrapMode.Loop;
 
-        public static bool IsPlay => _player.CurrentTime > 0;
+        public static bool IsPlay => m_player.CurrentTime > 0;
 
         public static void Play(Action callback = null)
         {
@@ -96,35 +99,34 @@ namespace Darkness
 
         public static void Stop(bool forceRewind)
         {
-            if (TimelineGraphAssetData != null)
-                _player.CurrentTime = 0;
+            if (GraphAsset)
+                m_player.CurrentTime = 0;
             EditorPlaybackState = EditorPlaybackState.Stopped;
-            // WillRepaint = true;
-
             OnStop?.Invoke();
         }
 
         public static void StepForward()
         {
-            if (Math.Abs(_player.CurrentTime - _player.Length) < 0.00001f)
+            if (Math.Abs(m_player.CurrentTime - m_player.Length) < 0.00001f)
             {
-                _player.CurrentTime = 0;
+                m_player.CurrentTime = 0;
                 return;
             }
 
-            _player.CurrentTime += Prefs.snapInterval;
+            m_player.CurrentTime += Prefs.snapInterval;
         }
 
         public static void StepBackward()
         {
-            if (_player.CurrentTime == 0)
+            if (m_player.CurrentTime == 0)
             {
-                _player.CurrentTime = _player.Length;
+                m_player.CurrentTime = m_player.Length;
                 return;
             }
 
-            _player.CurrentTime -= Prefs.snapInterval;
+            m_player.CurrentTime -= Prefs.snapInterval;
         }
+
         #endregion
     }
 }

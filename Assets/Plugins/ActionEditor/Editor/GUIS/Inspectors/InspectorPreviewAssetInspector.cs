@@ -69,8 +69,8 @@ namespace Darkness
 
         void DoAssetInspector()
         {
-            if (App.TimelineGraphAssetData == null) return;
-            var assetData = App.TimelineGraphAssetData;
+            if (App.GraphAsset == null) return;
+            var assetData = App.GraphAsset;
             GUI.color = new Color(0, 0, 0, 0.2f);
             GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
@@ -151,7 +151,7 @@ namespace Darkness
         /// </summary>
         void ShowPreliminaryInspector()
         {
-            if (App.TimelineGraphAssetData == null) return;
+            if (App.GraphAsset == null) return;
             var type = DirectorUtility.selectedObject.GetType();
             var nameAtt = type.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() as NameAttribute;
             var name = nameAtt != null ? nameAtt.name : type.Name.SplitCamelCase();

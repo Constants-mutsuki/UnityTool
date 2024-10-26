@@ -7,45 +7,34 @@ namespace Darkness
 {
     public class AssetPlayer
     {
-        private static AssetPlayer _inst;
+        private static AssetPlayer m_instance;
 
-        public static AssetPlayer Inst
+        public static AssetPlayer Instance
         {
-            get
-            {
-                if (_inst == null)
-                {
-                    _inst = new AssetPlayer();
-                }
-
-                return _inst;
-            }
+            get { return m_instance ??= new AssetPlayer(); }
         }
 
-        private List<IDirectableTimePointer> timePointers;
+        private float m_playTimeMin;
+        private float m_playTimeMax;
+        private float m_currentTime;
+        private bool m_preInitialized;
+        private List<IDirectableTimePointer> m_timePointers;
 
         /// <summary>
         /// 预览器
         /// </summary>
-        private List<IDirectableTimePointer> unsortedStartTimePointers;
+        private List<IDirectableTimePointer> m_unsortedStartTimePointers;
 
-        private float playTimeMin;
-        private float playTimeMax;
-        private float currentTime;
-
-        public float previousTime { get; private set; }
-
-        private bool preInitialized;
-
-        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
+        public float PreviousTime { get; private set; }
+        public TimelineGraphAsset SelectedGraph => App.GraphAsset;
 
         /// <summary>
         /// 当前时间
         /// </summary>
         public float CurrentTime
         {
-            get => currentTime;
-            set => currentTime = Mathf.Clamp(value, 0, Length);
+            get => m_currentTime;
+            set => m_currentTime = Mathf.Clamp(value, 0, Length);
         }
 
         public bool IsActive { get; set; }
@@ -54,23 +43,23 @@ namespace Darkness
 
         public float PlayTimeMin
         {
-            get => playTimeMin;
-            set => playTimeMin = Mathf.Clamp(value, 0, PlayTimeMax);
+            get => m_playTimeMin;
+            set => m_playTimeMin = Mathf.Clamp(value, 0, PlayTimeMax);
         }
 
         public float PlayTimeMax
         {
-            get => playTimeMax;
-            set => playTimeMax = Mathf.Clamp(value, PlayTimeMin, Length);
+            get => m_playTimeMax;
+            set => m_playTimeMax = Mathf.Clamp(value, PlayTimeMin, Length);
         }
 
         public float Length
         {
             get
             {
-                if (TimelineGraphAsset != null)
+                if (SelectedGraph != null)
                 {
-                    return TimelineGraphAsset.Length;
+                    return SelectedGraph.Length;
                 }
 
                 return 0;
@@ -79,38 +68,38 @@ namespace Darkness
 
         public void Sample()
         {
-            Sample(currentTime);
+            Sample(m_currentTime);
         }
 
         public void Sample(float time)
         {
             CurrentTime = time;
             // if (currentTime == 0 || Math.Abs(currentTime - Length) < 0.0001f)
-            if ((currentTime == 0 || currentTime == Length) && previousTime == currentTime)
+            if ((m_currentTime == 0 || m_currentTime == Length) && PreviousTime == m_currentTime)
             {
                 return;
             }
             // Debug.Log($"CurrentTime={CurrentTime}");
 
-            if (!preInitialized && currentTime > 0 && previousTime == 0)
+            if (!m_preInitialized && m_currentTime > 0 && PreviousTime == 0)
             {
                 InitializePreviewPointers();
             }
 
 
-            if (timePointers != null)
+            if (m_timePointers != null)
             {
-                InternalSamplePointers(currentTime, previousTime);
+                InternalSamplePointers(m_currentTime, PreviousTime);
             }
 
-            previousTime = currentTime;
+            PreviousTime = m_currentTime;
         }
 
         void InternalSamplePointers(float currentTime, float previousTime)
         {
             if (!Application.isPlaying || currentTime > previousTime)
             {
-                foreach (var t in timePointers)
+                foreach (var t in m_timePointers)
                 {
                     try
                     {
@@ -126,11 +115,11 @@ namespace Darkness
 
             if (!Application.isPlaying || currentTime < previousTime)
             {
-                for (var i = timePointers.Count - 1; i >= 0; i--)
+                for (var i = m_timePointers.Count - 1; i >= 0; i--)
                 {
                     try
                     {
-                        timePointers[i].TriggerBackward(currentTime, previousTime);
+                        m_timePointers[i].TriggerBackward(currentTime, previousTime);
                     }
                     catch (System.Exception e)
                     {
@@ -139,9 +128,9 @@ namespace Darkness
                 }
             }
 
-            if (unsortedStartTimePointers != null)
+            if (m_unsortedStartTimePointers != null)
             {
-                foreach (var t in unsortedStartTimePointers)
+                foreach (var t in m_unsortedStartTimePointers)
                 {
                     try
                     {
@@ -160,8 +149,8 @@ namespace Darkness
         /// </summary>
         public void InitializePreviewPointers()
         {
-            timePointers = new List<IDirectableTimePointer>();
-            unsortedStartTimePointers = new List<IDirectableTimePointer>();
+            m_timePointers = new List<IDirectableTimePointer>();
+            m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
             var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewBase));
@@ -191,7 +180,7 @@ namespace Darkness
                 }
             }
 
-            foreach (var group in TimelineGraphAsset.groups.AsEnumerable().Reverse())
+            foreach (var group in SelectedGraph.groups.AsEnumerable().Reverse())
             {
                 if (!group.IsActive) continue;
                 foreach (var track in group.Tracks.AsEnumerable().Reverse())
@@ -204,13 +193,13 @@ namespace Darkness
                         {
                             preview.SetTarget(track);
                             var p3 = new StartTimePointer(preview);
-                            timePointers.Add(p3);
-                
-                            unsortedStartTimePointers.Add(p3);
-                            timePointers.Add(new EndTimePointer(preview));
+                            m_timePointers.Add(p3);
+
+                            m_unsortedStartTimePointers.Add(p3);
+                            m_timePointers.Add(new EndTimePointer(preview));
                         }
                     }
-                
+
                     foreach (var clip in track.Clips)
                     {
                         var cType = clip.GetType();
@@ -220,17 +209,17 @@ namespace Darkness
                             {
                                 preview.SetTarget(clip);
                                 var p3 = new StartTimePointer(preview);
-                                timePointers.Add(p3);
-                
-                                unsortedStartTimePointers.Add(p3);
-                                timePointers.Add(new EndTimePointer(preview));
+                                m_timePointers.Add(p3);
+
+                                m_unsortedStartTimePointers.Add(p3);
+                                m_timePointers.Add(new EndTimePointer(preview));
                             }
                         }
                     }
                 }
             }
 
-            preInitialized = true;
+            m_preInitialized = true;
         }
     }
 }

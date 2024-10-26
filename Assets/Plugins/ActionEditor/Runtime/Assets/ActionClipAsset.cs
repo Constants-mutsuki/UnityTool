@@ -11,8 +11,8 @@ namespace Darkness
 
         public virtual TrackAsset Parent
         {
-            get => (TrackAsset)_parent;
-            set => _parent = value;
+            get => (TrackAsset)m_parent;
+            set => m_parent = value;
         }
 
         public string Name

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Darkness
 {
     public abstract class DirectableAsset : ScriptableObject, IData
     {
-        [SerializeField, HideInInspector] internal DirectableAsset _parent;
-        public virtual DirectableAsset parent => _parent;
+        [SerializeField, HideInInspector]
+        internal DirectableAsset m_parent;
+
+        public virtual DirectableAsset parent => m_parent;
 
         public virtual bool IsActive { get; set; }
         public virtual bool IsLocked { get; set; }
@@ -16,8 +19,8 @@ namespace Darkness
 
         public virtual float BlendIn { get; set; }
         public virtual float BlendOut { get; set; }
-        public virtual bool CanCrossBlend { get;set; }
-        
+        public virtual bool CanCrossBlend { get; set; }
+
         public virtual void SaveToAssets()
         {
         }

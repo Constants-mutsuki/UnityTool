@@ -5,7 +5,7 @@ namespace Darkness
 {
     public class HeaderGUI : ICustomized
     {
-        protected AssetPlayer player => AssetPlayer.Inst;
+        protected AssetPlayer player => AssetPlayer.Instance;
 
         public virtual void OnGUI()
         {
@@ -127,7 +127,7 @@ namespace Darkness
             if (GUILayout.Button(new GUIContent(Styles.BackIcon, Lan.BackMenuTips), EditorStyles.toolbarButton,
                     GUILayout.Width(26)))
             {
-                App.TimelineGraphAssetData = null;
+                App.GraphAsset = null;
                 GUILayout.EndHorizontal();
                 return;
             }
@@ -141,8 +141,8 @@ namespace Darkness
             Prefs.magnetSnapping = GUILayout.Toggle(Prefs.magnetSnapping, new GUIContent(Styles.MagnetIcon, Lan.OpenMagnetSnappingTips),
                 EditorStyles.toolbarButton);
 
-            var gName = App.TimelineGraphAssetData != null
-                ? App.TimelineGraphAssetData.name
+            var gName = App.GraphAsset != null
+                ? App.GraphAsset.name
                 : string.Empty;
 
             var con = new GUIContent(string.Format(Lan.HeaderSelectAsset, gName), Lan.SelectAssetTips);
@@ -150,7 +150,7 @@ namespace Darkness
                     GUILayout.Width(120)))
             {
                 App.AutoSave(); //先保存当前的
-                ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.TimelineGraphAssetData, App.OnObjectPickerConfig,
+                ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.GraphAsset, App.OnObjectPickerConfig,
                     Prefs.savePath);
             }
         }

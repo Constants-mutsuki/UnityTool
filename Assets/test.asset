@@ -64,9 +64,9 @@ MonoBehaviour:
   m_Name: test
   m_EditorClassIdentifier: 
   _parent: {fileID: 0}
-  length: 3.8
-  viewTimeMin: 0.3970968
-  viewTimeMax: 7.887601
+  length: 3
+  viewTimeMin: 0
+  viewTimeMax: 7.529297
   groups:
   - {fileID: -2693431977691410960}
   - {fileID: 5658346137398168510}

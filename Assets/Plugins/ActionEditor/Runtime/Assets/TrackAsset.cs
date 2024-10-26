@@ -30,8 +30,8 @@ namespace Darkness
 
         public virtual GroupAsset Parent
         {
-            get => (GroupAsset)_parent;
-            set => _parent = value;
+            get => (GroupAsset)m_parent;
+            set => m_parent = value;
         }
 
         public override bool IsCollapsed => Parent != null && Parent.IsCollapsed;

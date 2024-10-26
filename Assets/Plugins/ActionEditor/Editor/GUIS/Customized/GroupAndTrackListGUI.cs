@@ -10,8 +10,8 @@ namespace Darkness
         private static readonly Color LIST_SELECTION_COLOR = new Color(0.5f, 0.5f, 1, 0.3f);
         private static readonly Color GROUP_COLOR = new Color(0f, 0f, 0f, 0.25f);
 
-        private AssetPlayer player => AssetPlayer.Inst;
-        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
+        private AssetPlayer player => AssetPlayer.Instance;
+        public TimelineGraphAsset TimelineGraphAsset => App.GraphAsset;
 
         private Rect leftRect;
         private bool isResizingLeftMargin;

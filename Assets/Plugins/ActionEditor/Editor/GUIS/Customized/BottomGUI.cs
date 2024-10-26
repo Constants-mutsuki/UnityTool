@@ -18,7 +18,7 @@ namespace Darkness
         void ShowTimeSlider(Rect rect)
         {
             GUILayout.BeginArea(rect);
-            var asset = App.TimelineGraphAssetData;
+            var asset = App.GraphAsset;
             //最小最大值滑块
             var _timeMin = asset.ViewTimeMin;
             var _timeMax = asset.ViewTimeMax;
