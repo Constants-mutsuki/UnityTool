@@ -9,7 +9,6 @@ namespace Darkness
     public partial class Group
     {
         public bool active;
-        [SerializeReference]
         public List<Track> tracks;
     }
 }

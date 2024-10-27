@@ -9,7 +9,6 @@ namespace Darkness
     public partial  class Track
     {
         public bool active;
-        [SerializeReference]
         public List<Clip> clips;
     }
 }

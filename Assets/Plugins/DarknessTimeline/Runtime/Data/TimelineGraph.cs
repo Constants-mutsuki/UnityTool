@@ -10,7 +10,6 @@ namespace Darkness
     {
         public float length;
         public WarpCategory warpCategory;
-        [SerializeReference]
         public List<Group> groups;
     }
 }
