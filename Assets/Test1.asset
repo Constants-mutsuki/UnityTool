@@ -1,6 +1,24 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6555017535478949130
+--- !u!114 &-8539024984120088609
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800459746578499fba9dafaab31f831e, type: 3}
+  m_Name: 22222
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -4346854750122615498}
+  actionClips:
+  - {fileID: 6598853516095389705}
+  active: 1
+  isLocked: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &-5009052898146838168
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,14 +28,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
-  m_Name: 3
+  m_Name: New Group
   m_EditorClassIdentifier: 
-  _parent: {fileID: 11400000}
+  m_parent: {fileID: 0}
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
---- !u!114 &-2693431977691410960
+--- !u!114 &-4346854750122615498
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -27,14 +45,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
-  m_Name: 1
+  m_Name: 11111
   m_EditorClassIdentifier: 
-  _parent: {fileID: 11400000}
+  m_parent: {fileID: 0}
+  tracks:
+  - {fileID: -8539024984120088609}
+  isCollapsed: 0
+  active: 1
+  isLocked: 0
+--- !u!114 &-3075218850349766518
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
+  m_Name: New Group
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 0}
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
---- !u!114 &-1911764612475091618
+--- !u!114 &-1471650833230000987
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,9 +80,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
-  m_Name: 5
+  m_Name: New Group
   m_EditorClassIdentifier: 
-  _parent: {fileID: 11400000}
+  m_parent: {fileID: 0}
   tracks: []
   isCollapsed: 0
   active: 1
@@ -60,20 +96,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c3bd1ee9d148b9b9e9f6be93c572ee, type: 3}
-  m_Name: test
+  m_Script: {fileID: 11500000, guid: 5a29e83d2d7624c45a871814f041acc6, type: 3}
+  m_Name: Test1
   m_EditorClassIdentifier: 
-  _parent: {fileID: 0}
-  length: 3.8
-  viewTimeMin: 0.3970968
-  viewTimeMax: 7.887601
+  length: 4
+  viewTimeMin: 0
+  viewTimeMax: 4
   groups:
-  - {fileID: -2693431977691410960}
-  - {fileID: 5658346137398168510}
-  - {fileID: -1911764612475091618}
-  - {fileID: -6555017535478949130}
-  - {fileID: 2737962694555012720}
---- !u!114 &2737962694555012720
+  - {fileID: -4346854750122615498}
+--- !u!114 &4822193062677031292
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -83,14 +114,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
-  m_Name: 4
+  m_Name: New Group
   m_EditorClassIdentifier: 
-  _parent: {fileID: 11400000}
+  m_parent: {fileID: 0}
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
---- !u!114 &5658346137398168510
+--- !u!114 &6598853516095389705
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ed38d2478ec41edaef2aad400df2101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -8539024984120088609}
+  startTime: 0.4
+--- !u!114 &6972688913714640555
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,9 +145,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
-  m_Name: 2
+  m_Name: New Group
   m_EditorClassIdentifier: 
-  _parent: {fileID: 11400000}
+  m_parent: {fileID: 0}
   tracks: []
   isCollapsed: 0
   active: 1

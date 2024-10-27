@@ -6,17 +6,25 @@ using UnityEngine;
 namespace Darkness
 {
     [Serializable]
-    public abstract partial class TimelineGraphAsset : DirectableAsset, IDirector
+    [Name("时间轴")]
+    [ShowIcon(typeof(Animator))]
+    public sealed class TimelineGraphAsset : ScriptableObject, IData
     {
         [SerializeField]
         private float length = 5f;
+
         [SerializeField]
         private float viewTimeMin = 0f;
+
         [SerializeField]
         private float viewTimeMax = 5f;
+
         [NonSerialized]
         private TrackAsset[] m_cacheOutputTracks;
+
+        [SerializeReference]
         public List<GroupAsset> groups = new();
+
         public float Length
         {
             get => length;
@@ -38,7 +46,6 @@ namespace Darkness
             set => viewTimeMax = Mathf.Max(value, ViewTimeMin + 0.25f, 0);
         }
 
-
         public float MaxTime => Mathf.Max(ViewTimeMax, Length);
         public float ViewTime => ViewTimeMax - ViewTimeMin;
 
@@ -48,11 +55,10 @@ namespace Darkness
         {
             var newGroup = CreateInstance<T>();
             newGroup.Name = "New Group";
-            newGroup.Parent = this;
+            newGroup.Root = this;
             groups.Add(newGroup);
             CreateUtilities.SaveAssetIntoObject(newGroup, this);
             DirectorUtility.selectedObject = newGroup;
-
             return newGroup;
         }
 
@@ -66,7 +72,7 @@ namespace Darkness
             var newGroup = Instantiate(groupAsset);
             if (newGroup != null)
             {
-                newGroup.Parent = this;
+                newGroup.Root = this;
                 groups.Add(newGroup);
                 CreateUtilities.SaveAssetIntoObject(newGroup, this);
                 newGroup.Tracks.Clear();
@@ -79,7 +85,15 @@ namespace Darkness
             return newGroup;
         }
 
-        public override void SaveToAssets()
+        public void Validate()
+        {
+            foreach (var groupAsset in groups)
+            {
+                groupAsset.Root = this;
+            }
+        }
+
+        public void SaveToAssets()
         {
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);

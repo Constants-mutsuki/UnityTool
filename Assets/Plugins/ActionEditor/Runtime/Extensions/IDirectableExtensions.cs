@@ -22,7 +22,7 @@ namespace Darkness
             return time - directable.StartTime;
         }
 
-        public static bool CanCrossBlend(this ActionClipAsset directable, ActionClipAsset other)
+        public static bool CanCrossBlend(this ClipAsset directable, ClipAsset other)
         {
             if (directable == null || other == null)
             {
@@ -37,29 +37,31 @@ namespace Darkness
             return false;
         }
 
-        public static bool CanBlendIn(this ActionClipAsset directable)
+        public static bool CanBlendIn(this ClipAsset directable)
         {
             var blendInProp = directable.GetType().GetProperty("BlendIn", BindingFlags.Instance | BindingFlags.Public);
-            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f && blendInProp.DeclaringType != typeof(DirectableAsset);
+            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f &&
+                   blendInProp.DeclaringType != typeof(DirectableAsset);
         }
 
-        public static bool CanBlendOut(this ActionClipAsset directable)
+        public static bool CanBlendOut(this ClipAsset directable)
         {
             var blendOutProp = directable.GetType().GetProperty("BlendOut", BindingFlags.Instance | BindingFlags.Public);
-            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f && blendOutProp.DeclaringType != typeof(DirectableAsset);
+            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f &&
+                   blendOutProp.DeclaringType != typeof(DirectableAsset);
         }
 
-        public static bool CanScale(this ActionClipAsset directable)
+        public static bool CanScale(this ClipAsset directable)
         {
             var lengthProp = directable.GetType().GetProperty("Length", BindingFlags.Instance | BindingFlags.Public);
-            return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ActionClipAsset);
+            return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ClipAsset);
         }
 
-        public static ActionClipAsset GetPreviousSibling(this ActionClipAsset directable)
+        public static ClipAsset GetPreviousSibling(this ClipAsset directable)
         {
-            if (directable.Parent != null)
+            if (directable.Parent is TrackAsset trackAsset)
             {
-                return directable.Parent.Clips.LastOrDefault(d => d != directable && d.StartTime < directable.StartTime);
+                return trackAsset.Clips.LastOrDefault(d => d != directable && d.StartTime < directable.StartTime);
             }
 
             return null;
@@ -71,16 +73,16 @@ namespace Darkness
         /// <param name="directable"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T GetNextSibling<T>(this ActionClipAsset directable) where T : ActionClipAsset
+        public static T GetNextSibling<T>(this ClipAsset directable) where T : ClipAsset
         {
             return (T)GetNextSibling(directable);
         }
 
-        public static ActionClipAsset GetNextSibling(this ActionClipAsset directable)
+        public static ClipAsset GetNextSibling(this ClipAsset directable)
         {
-            if (directable.Parent != null)
+            if (directable.Parent is TrackAsset trackAsset)
             {
-                return directable.Parent.Clips.FirstOrDefault(d => d != directable && d.StartTime > directable.StartTime);
+                return trackAsset.Clips.FirstOrDefault(d => d != directable && d.StartTime > directable.StartTime);
             }
 
             return null;
@@ -88,18 +90,18 @@ namespace Darkness
 
 
         ///The weight at specified local time based on its blend properties.
-        public static float GetWeight(this ActionClipAsset directable, float time)
+        public static float GetWeight(this ClipAsset directable, float time)
         {
             return GetWeight(directable, time, directable.BlendIn, directable.BlendOut);
         }
 
         ///The weight at specified local time based on provided override blend in/out properties
-        public static float GetWeight(this ActionClipAsset directable, float time, float blendInOut)
+        public static float GetWeight(this ClipAsset directable, float time, float blendInOut)
         {
             return GetWeight(directable, time, blendInOut, blendInOut);
         }
 
-        public static float GetWeight(this ActionClipAsset directable, float time, float blendIn, float blendOut)
+        public static float GetWeight(this ClipAsset directable, float time, float blendIn, float blendOut)
         {
             var length = GetLength(directable);
             if (time <= 0)

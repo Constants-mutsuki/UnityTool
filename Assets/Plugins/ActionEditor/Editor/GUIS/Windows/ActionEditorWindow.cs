@@ -11,13 +11,17 @@ namespace Darkness
 {
     public class ActionEditorWindow : EditorWindow
     {
-        [NonSerialized] private float editorPreviousTime;
+        [NonSerialized]
+        private float editorPreviousTime;
 
-        [NonSerialized] internal bool WillRepaint;
-        [NonSerialized] internal bool ShowDragDropInfo;
+        [NonSerialized]
+        internal bool WillRepaint;
 
-        public TimelineGraphAsset TimelineGraphAsset => App.TimelineGraphAssetData;
-        public AssetPlayer player => AssetPlayer.Inst;
+        [NonSerialized]
+        internal bool ShowDragDropInfo;
+
+        public TimelineGraphAsset TimelineGraphAsset => App.GraphAsset;
+        public AssetPlayer player => AssetPlayer.Instance;
 
         int UID(int g, int t, int a)
         {
@@ -106,7 +110,7 @@ namespace Darkness
             App.OnPlay -= OnPlay;
 
             Tools.hidden = false;
-            if (App.TimelineGraphAssetData != null && !Application.isPlaying)
+            if (App.GraphAsset != null && !Application.isPlaying)
             {
                 App.Stop(true);
             }
@@ -129,7 +133,7 @@ namespace Darkness
 
         void OnEditorUpdate()
         {
-            if (App.TimelineGraphAssetData == null)
+            if (App.GraphAsset == null)
             {
                 return;
             }
@@ -153,7 +157,7 @@ namespace Darkness
                 return;
             }
 
-            if (player.CurrentTime >= App.TimelineGraphAssetData.Length &&
+            if (player.CurrentTime >= App.GraphAsset.Length &&
                 App.EditorPlaybackState == EditorPlaybackState.PlayingForwards)
             {
                 if (App.EditorPlaybackWrapMode == WrapMode.Once)
@@ -200,7 +204,7 @@ namespace Darkness
             EditorStyles.foldout.richText = true;
             var e = Event.current;
 
-            if (App.TimelineGraphAssetData == null)
+            if (App.GraphAsset == null)
             {
                 DrawTools.Draw<WelcomeGUI>();
                 return;
@@ -233,7 +237,7 @@ namespace Darkness
 
 
             DrawTools.Draw<HeaderGUI>();
-            if (App.TimelineGraphAssetData == null) return;
+            if (App.GraphAsset == null) return;
             DrawTools.Draw<HeaderTimeInfoGUI>();
             DrawTimelineInfo();
             DrawTools.Draw<BottomGUI>();
@@ -243,7 +247,7 @@ namespace Darkness
 
         void OnWillSaveScene(UnityEngine.SceneManagement.Scene scene, string path)
         {
-            if (App.TimelineGraphAssetData != null && player.CurrentTime > 0)
+            if (App.GraphAsset != null && player.CurrentTime > 0)
             {
                 App.Stop(true);
                 Debug.LogWarning(
@@ -261,7 +265,7 @@ namespace Darkness
             Prefs.InitializeAssetTypes();
             App.OnInitialize?.Invoke();
             //停止播放
-            if (App.TimelineGraphAssetData != null)
+            if (App.GraphAsset != null)
             {
                 if (!Application.isPlaying)
                 {
@@ -346,16 +350,21 @@ namespace Darkness
 
         private Dictionary<int, ActionClipWrapper> clipWrappers = new Dictionary<int, ActionClipWrapper>();
 
-        private Dictionary<ActionClipAsset, ActionClipWrapper> clipWrappersMap =
-            new Dictionary<ActionClipAsset, ActionClipWrapper>();
+        private Dictionary<ClipAsset, ActionClipWrapper> clipWrappersMap =
+            new Dictionary<ClipAsset, ActionClipWrapper>();
 
         ActionClipWrapper interactingClip;
 
 
-        [NonSerialized] private Vector2? multiSelectStartPos;
+        [NonSerialized]
+        private Vector2? multiSelectStartPos;
 
-        [NonSerialized] private Rect preMultiSelectionRetimeMinMax;
-        [NonSerialized] private int multiSelectionScaleDirection;
+        [NonSerialized]
+        private Rect preMultiSelectionRetimeMinMax;
+
+        [NonSerialized]
+        private int multiSelectionScaleDirection;
+
         List<ActionClipWrapper> multiSelection;
 
         internal List<GuideLine> pendingGuides;
@@ -477,7 +486,7 @@ namespace Darkness
 
         #region Magnet Snap
 
-        void CacheMagnetSnapTimes(ActionClipAsset clipAsset = null)
+        void CacheMagnetSnapTimes(ClipAsset clipAsset = null)
         {
             var result = new List<float>();
             result.Add(0);
@@ -524,7 +533,7 @@ namespace Darkness
 
             return null;
         }
-        
+
         #endregion
 
         #region 多选
@@ -758,7 +767,7 @@ namespace Darkness
                     var menu = new GenericMenu();
                     menu.AddItem(new GUIContent("Set To Last Clip Time"), false, () =>
                     {
-                        var lastClip = TimelineGraphAsset.Directables.Where(d => d is ActionClipAsset).OrderBy(d => d.EndTime)
+                        var lastClip = TimelineGraphAsset.Directables.Where(d => d is ClipAsset).OrderBy(d => d.EndTime)
                             .LastOrDefault();
                         if (lastClip != null)
                         {
@@ -861,7 +870,7 @@ namespace Darkness
             }
 
             clipWrappers = new Dictionary<int, ActionClipWrapper>();
-            clipWrappersMap = new Dictionary<ActionClipAsset, ActionClipWrapper>();
+            clipWrappersMap = new Dictionary<ClipAsset, ActionClipWrapper>();
             for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
             {
                 for (int t = 0; t < TimelineGraphAsset.groups[g].Tracks.Count; t++)
@@ -917,11 +926,11 @@ namespace Darkness
                     DrawGuideLine(i, Color.black.WithAlpha(0.05f));
                 }
             }
-            
+
             GUI.BeginGroup(centerRect);
-            
+
             var nextYPos = Styles.FirstGroupTopMargin;
-            
+
             BeginWindows();
 
             for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
@@ -956,6 +965,7 @@ namespace Darkness
                 GUI.Box(darkRect, string.Empty, (GUIStyle)"TextField");
                 GUI.color = Color.white;
             }
+
             //超出范围的变暗
             if (TimelineGraphAsset.ViewTimeMin < 0)
             {
@@ -986,7 +996,8 @@ namespace Darkness
                 return;
             }
 
-            var groupRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(0)), nextYPos,
+            var groupRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(0)),
+                nextYPos,
                 TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), nextYPos + Styles.GroupHeight);
             nextYPos += Styles.GroupHeight;
 
@@ -1323,7 +1334,7 @@ namespace Darkness
 
             //dont draw if outside of view range and not selected
             var isSelected = ReferenceEquals(DirectorUtility.selectedObject, action) || (multiSelection != null &&
-                multiSelection.Select(b => b.action).Contains(action));
+                                                                                         multiSelection.Select(b => b.action).Contains(action));
             var isVisible = Rect.MinMaxRect(0, G.ScrollPos.y, CenterRect.width, CenterRect.height)
                 .Overlaps(clipRect);
             if (!isSelected && !isVisible)
@@ -1363,7 +1374,8 @@ namespace Darkness
                         {
                             foreach (var act in multiSelection.Select(b => b.action).ToArray())
                             {
-                                if (act.Parent != null) act.Parent.DeleteAction(act);
+                                if (act.Parent is TrackAsset parent)
+                                    parent.DeleteClip(act);
                             }
 
                             InitClipWrappers();
@@ -1394,7 +1406,8 @@ namespace Darkness
                 {
                     SafeDoAction(() =>
                     {
-                        if (action.Parent != null) action.Parent.DeleteAction(action);
+                        if (action.Parent is TrackAsset parent)
+                            parent.DeleteClip(action);
                         InitClipWrappers();
                     });
                 });
@@ -1434,7 +1447,7 @@ namespace Darkness
                 GUI.EndClip();
             }
         }
-        
+
         /// <summary>
         /// 轨道片段包装器
         /// </summary>
@@ -1444,7 +1457,7 @@ namespace Darkness
             const float SCALE_RECT_WIDTH = 5;
 
             public float dragOffset;
-            public ActionClipAsset action;
+            public ClipAsset action;
             public bool isDragging;
             public bool isScalingStart;
             public bool isScalingEnd;
@@ -1454,8 +1467,8 @@ namespace Darkness
             public float preScaleStartTime;
             public float preScaleEndTime;
 
-            public ActionClipAsset PreviousClipAsset;
-            public ActionClipAsset NextClipAsset;
+            public ClipAsset PreviousClipAsset;
+            public ClipAsset NextClipAsset;
 
             private Event e;
             private int clipID;
@@ -1490,7 +1503,7 @@ namespace Darkness
                 set => _rect = value;
             }
 
-            public ActionClipWrapper(ActionClipAsset action)
+            public ActionClipWrapper(ClipAsset action)
             {
                 this.action = action;
             }
@@ -1794,7 +1807,6 @@ namespace Darkness
             }
 
 
-           
             public void BeginClipAdjust()
             {
                 preScaleStartTime = action.StartTime;

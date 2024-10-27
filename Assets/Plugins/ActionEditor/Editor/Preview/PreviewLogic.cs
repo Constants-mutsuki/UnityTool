@@ -1,11 +1,11 @@
 ﻿namespace Darkness
 {
-    public abstract class PreviewBase<T> : PreviewBase where T : ActionClipAsset
+    public abstract class PreviewLogic<T> : PreviewLogic where T : ClipAsset
     {
         public T clip => (T)directable;
     }
 
-    public abstract class PreviewBase
+    public abstract class PreviewLogic
     {
         public DirectableAsset directable;
 
@@ -13,7 +13,7 @@
         {
             directable = t;
         }
-        
+
         public virtual void Enter()
         {
         }
@@ -30,7 +30,7 @@
         {
         }
 
-        
+
         public abstract void Update(float time, float previousTime);
     }
 }

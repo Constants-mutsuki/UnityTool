@@ -5,15 +5,18 @@ namespace Darkness
 {
     public static class DirectorUtility
     {
-        private static ActionClipAsset m_copyClipAsset;
+        private static ClipAsset m_copyClipAsset;
         private static System.Type _copyClipType;
-        
-        [System.NonSerialized] private static InspectorPreviewAsset _currentInspectorPreviewAsset;
 
-        [System.NonSerialized] private static ScriptableObject _selectedObject;
+        [System.NonSerialized]
+        private static InspectorPreviewAsset _currentInspectorPreviewAsset;
+
+        [System.NonSerialized]
+        private static ScriptableObject _selectedObject;
+
         public static event System.Action<ScriptableObject> onSelectionChange;
-        
-        public static ActionClipAsset CopyClipAsset
+
+        public static ClipAsset CopyClipAsset
         {
             get => m_copyClipAsset;
             set
@@ -43,13 +46,13 @@ namespace Darkness
         }
 
 
-        public static void CutClip(ActionClipAsset clipAsset)
+        public static void CutClip(ClipAsset clipAsset)
         {
             m_copyClipAsset = clipAsset;
             _copyClipType = clipAsset.GetType();
-            clipAsset.Parent.DeleteAction(clipAsset);
+            (clipAsset.Parent as TrackAsset)?.DeleteClip(clipAsset);
         }
-        
+
 
         public static InspectorPreviewAsset CurrentInspectorPreviewAsset
         {
