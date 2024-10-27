@@ -1,12 +1,12 @@
-﻿using System;
-using MemoryPack;
+﻿using MemoryPack;
 
 namespace Darkness
 {
     [MemoryPackable]
-    public partial  class Clip 
+    [MemoryPackUnion(0,typeof(ExampleClip))]
+    public abstract partial class Clip 
     {
         public float startTime;
-        public float endTime;
+        public float length;
     }
 }

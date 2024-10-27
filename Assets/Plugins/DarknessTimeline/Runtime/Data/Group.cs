@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MemoryPack;
-using UnityEngine;
+
 
 namespace Darkness
 {
     [MemoryPackable]
-    public partial class Group
+    [MemoryPackUnion(0,typeof(ExampleGroup))]
+    public abstract partial class Group
     {
         public bool active;
         public List<Track> tracks;

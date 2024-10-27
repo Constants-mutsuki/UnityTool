@@ -15,7 +15,7 @@ namespace Darkness
     {
         bool Active { get; }
 
-        IDirector Root { get; }
+        ITimelineGraph Root { get; }
 
         IDirectable Parent { get; }
 
