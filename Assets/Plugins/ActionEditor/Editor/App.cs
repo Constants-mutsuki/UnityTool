@@ -20,6 +20,7 @@ namespace Darkness
 
         public static TimelineGraphAsset GraphAsset { get; set; }
 
+        public static TimelineGraph GraphModel { get; set; }
 
         public static void OnObjectPickerConfig(Object obj)
         {
@@ -38,7 +39,6 @@ namespace Darkness
 
 
         #region AutoSave
-
         private static DateTime m_lastSaveTime = DateTime.Now;
         public static DateTime LastSaveTime => m_lastSaveTime;
 
@@ -60,15 +60,12 @@ namespace Darkness
             m_lastSaveTime = DateTime.Now;
             SaveAsset();
         }
-
         #endregion
 
         #region 播放相关
-
         private static AssetPlayer m_player => AssetPlayer.Instance;
 
-        public static bool IsStop =>
-            Application.isPlaying ? m_player.IsPaused || !m_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
+        public static bool IsStop => Application.isPlaying ? m_player.IsPaused || !m_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
 
         internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stopped;
 
@@ -127,7 +124,6 @@ namespace Darkness
 
             m_player.CurrentTime -= Prefs.snapInterval;
         }
-
         #endregion
     }
 }

@@ -11,8 +11,7 @@ namespace Darkness
 {
     public static class Prefs
     {
-        public static readonly string CONFIG_PATH =
-            $"{Application.dataPath}/../ProjectSettings/NBCActionEditor.txt";
+        public static readonly string ConfigPath = $"{Application.dataPath}/../ProjectSettings/NBCActionEditor.txt";
 
         [Serializable]
         public enum TimeStepMode
@@ -45,9 +44,9 @@ namespace Darkness
             {
                 if (_data == null)
                 {
-                    if (File.Exists(CONFIG_PATH))
+                    if (File.Exists(ConfigPath))
                     {
-                        var json = File.ReadAllText(CONFIG_PATH);
+                        var json = File.ReadAllText(ConfigPath);
                         _data = JsonUtility.FromJson<SerializedData>(json);
                     }
 
@@ -174,7 +173,7 @@ namespace Darkness
 
         static void Save()
         {
-            System.IO.File.WriteAllText(CONFIG_PATH, JsonUtility.ToJson(data));
+            System.IO.File.WriteAllText(ConfigPath, JsonUtility.ToJson(data));
         }
 
 
