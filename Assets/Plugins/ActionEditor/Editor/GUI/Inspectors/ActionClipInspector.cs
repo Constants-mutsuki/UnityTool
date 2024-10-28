@@ -5,13 +5,13 @@ namespace Darkness
 {
     public abstract class ActionClipInspector<T> : ActionClipInspector where T : ClipAsset
     {
-        protected T action => (T)target;
+        protected T action => (T)m_target;
     }
 
     [CustomInspectors(typeof(ClipAsset), true)]
     public class ActionClipInspector : InspectorsBase
     {
-        private ClipAsset action => (ClipAsset)target;
+        private ClipAsset action => (ClipAsset)m_target;
 
         public override void OnInspectorGUI()
         {

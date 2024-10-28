@@ -1,22 +1,23 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Darkness.Design.Editor.Inspectors
+namespace Darkness
 {
-    public abstract class GroupInspector<T> : ActionClipInspector where T : GroupAsset
+    public abstract class TrackInspector<T> : TrackInspector where T : TrackAsset
     {
-        protected T action => (T)target;
+        protected T action => (T)m_target;
     }
 
-    [CustomInspectors(typeof(GroupAsset), true)]
-    public class GroupInspector : InspectorsBase
+    [CustomInspectors(typeof(TrackAsset), true)]
+    public class TrackInspector : InspectorsBase
     {
-        private GroupAsset action => (GroupAsset)target;
+        private TrackAsset action => (TrackAsset)m_target;
 
         public override void OnInspectorGUI()
         {
             ShowCommonInspector();
         }
+
 
         protected void ShowCommonInspector(bool showBaseInspector = true)
         {

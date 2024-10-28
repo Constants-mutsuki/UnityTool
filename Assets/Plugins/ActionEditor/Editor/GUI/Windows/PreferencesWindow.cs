@@ -5,28 +5,28 @@ namespace Darkness
 {
     public class PreferencesWindow : PopupWindowContent
     {
-        private static Rect myRect;
-        private bool firstPass = true;
+        private static Rect m_myRect;
+        private bool m_firstPass = true;
 
         public static void Show(Rect rect)
         {
-            myRect = rect;
+            m_myRect = rect;
             PopupWindow.Show(new Rect(rect.x, rect.y, 0, 0), new PreferencesWindow());
         }
 
         public override Vector2 GetWindowSize()
         {
-            return new Vector2(myRect.width, myRect.height);
+            return new Vector2(m_myRect.width, m_myRect.height);
         }
-        
+
         public override void OnGUI(Rect rect)
         {
             DrawTools.Draw<PreferencesGUI>();
-            
-            if (firstPass || Event.current.type == EventType.Repaint)
+
+            if (m_firstPass || Event.current.type == EventType.Repaint)
             {
-                firstPass = false;
-                myRect.height = GUILayoutUtility.GetLastRect().yMax + 5;
+                m_firstPass = false;
+                m_myRect.height = GUILayoutUtility.GetLastRect().yMax + 5;
             }
         }
     }

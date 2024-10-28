@@ -9,9 +9,8 @@ namespace Darkness
     internal class Lan
     {
         #region 静态
-
-        public static readonly Dictionary<string, Type> AllLanguages = new Dictionary<string, Type>();
-        private static string _lan;
+        public static readonly Dictionary<string, Type> AllLanguages = new();
+        private static string m_lan;
 
         internal static void Load()
         {
@@ -28,17 +27,17 @@ namespace Darkness
                 }
             }
 
-            _lan = lan;
+            m_lan = lan;
             ChangeLanguage();
         }
 
-        public static string Language => _lan;
+        public static string Language => m_lan;
 
         internal static void SetLanguage(string key)
         {
             if (AllLanguages.TryGetValue(key, out var type))
             {
-                _lan = key;
+                m_lan = key;
                 EditorPrefs.SetString("NBC.Editor.Lan", key);
                 ChangeLanguage();
             }
@@ -46,7 +45,7 @@ namespace Darkness
 
         private static void ChangeLanguage()
         {
-            if (!AllLanguages.TryGetValue(_lan, out var type)) return;
+            if (!AllLanguages.TryGetValue(m_lan, out var type)) return;
             var properties = type.GetProperties();
             foreach (var property in properties)
             {
@@ -71,10 +70,9 @@ namespace Darkness
                 }
             }
         }
-
         #endregion
 
-        
+
         //**********  Welcome *********
         public static string Title = "行为时间轴编辑器";
         public static string CreateAsset = "创建时间轴";
@@ -135,7 +133,7 @@ namespace Darkness
         public static string PlayTips = "点击播放";
         public static string StopTips = "点击停止播放";
         public static string StepBackwardTips = "跳转上一帧";
-        
+
 
         //**********  Group Menu *********
         public static string MenuAddTrack = "添加轨道";

@@ -7,14 +7,14 @@ namespace Darkness
 {
     public class GroupAndTrackListGUI : ICustomized
     {
-        private static readonly Color LIST_SELECTION_COLOR = new Color(0.5f, 0.5f, 1, 0.3f);
-        private static readonly Color GROUP_COLOR = new Color(0f, 0f, 0f, 0.25f);
+        private static readonly Color s_listSelectionColor = new Color(0.5f, 0.5f, 1, 0.3f);
+        private static readonly Color s_groupColor = new Color(0f, 0f, 0f, 0.25f);
 
-        private AssetPlayer player => AssetPlayer.Instance;
+        private AssetPlayer Player => AssetPlayer.Instance;
         public TimelineGraphAsset TimelineGraphAsset => App.GraphAsset;
 
-        private Rect leftRect;
-        private bool isResizingLeftMargin;
+        private Rect m_leftRect;
+        private bool m_isResizingLeftMargin;
         private GroupAsset m_pickedGroupAsset;
         private TrackAsset m_copyTrackAsset;
         private TrackAsset m_pickedTrackAsset;
@@ -24,35 +24,35 @@ namespace Darkness
         /// </summary>
         public void OnGUI()
         {
-            leftRect = G.LeftRect;
+            m_leftRect = G.LeftRect;
             var e = Event.current;
 
-            var scaleRect = new Rect(leftRect.xMax - 4, leftRect.yMin, 4, leftRect.height);
+            var scaleRect = new Rect(m_leftRect.xMax - 4, m_leftRect.yMin, 4, m_leftRect.height);
             ActionEditorWindow.current.AddCursorRect(scaleRect, MouseCursor.ResizeHorizontal);
             if (e.type == EventType.MouseDown && e.button == 0 && scaleRect.Contains(e.mousePosition))
             {
-                isResizingLeftMargin = true;
+                m_isResizingLeftMargin = true;
                 e.Use();
             }
 
-            if (isResizingLeftMargin)
+            if (m_isResizingLeftMargin)
             {
                 Styles.LeftMargin = e.mousePosition.x + 2;
             }
 
             if (e.rawType == EventType.MouseUp)
             {
-                isResizingLeftMargin = false;
+                m_isResizingLeftMargin = false;
             }
 
-            GUI.enabled = player.CurrentTime <= 0;
+            GUI.enabled = Player.CurrentTime <= 0;
 
             var nextYPos = Styles.FirstGroupTopMargin;
             var wasEnabled = GUI.enabled;
             GUI.enabled = true;
-            var collapseAllRect = Rect.MinMaxRect(leftRect.x + 5, leftRect.y + 4, 20, leftRect.y + 20 - 1);
-            var searchRect = Rect.MinMaxRect(leftRect.x + 20, leftRect.y + 4, leftRect.xMax - 18, leftRect.y + 20 - 1);
-            var searchCancelRect = Rect.MinMaxRect(searchRect.xMax, searchRect.y, leftRect.xMax - 4, searchRect.yMax);
+            var collapseAllRect = Rect.MinMaxRect(m_leftRect.x + 5, m_leftRect.y + 4, 20, m_leftRect.y + 20 - 1);
+            var searchRect = Rect.MinMaxRect(m_leftRect.x + 20, m_leftRect.y + 4, m_leftRect.xMax - 18, m_leftRect.y + 20 - 1);
+            var searchCancelRect = Rect.MinMaxRect(searchRect.xMax, searchRect.y, m_leftRect.xMax - 4, searchRect.yMax);
             var anyExpanded = TimelineGraphAsset.groups.Any(g => !g.IsCollapsed);
             ActionEditorWindow.current.AddCursorRect(collapseAllRect, MouseCursor.Link);
             GUI.color = Color.white.WithAlpha(0.5f);
@@ -74,14 +74,14 @@ namespace Darkness
 
             GUI.enabled = wasEnabled;
 
-            GUI.BeginGroup(leftRect);
+            GUI.BeginGroup(m_leftRect);
             ShowListGroups(e, ref nextYPos);
             GUI.EndGroup();
 
             G.TotalHeight = nextYPos;
 
             var addButtonY = G.TotalHeight + Styles.TopMargin + Styles.ToolbarHeight + 20;
-            var addRect = Rect.MinMaxRect(leftRect.xMin + 10, addButtonY, leftRect.xMax - 10, addButtonY + 20);
+            var addRect = Rect.MinMaxRect(m_leftRect.xMin + 10, addButtonY, m_leftRect.xMax - 10, addButtonY + 20);
             GUI.color = Color.white.WithAlpha(0.5f);
             if (GUI.Button(addRect, Lan.GroupAdd))
             {
@@ -113,14 +113,12 @@ namespace Darkness
                     continue;
                 }
 
-                var groupRect = new Rect(4, nextYPos, leftRect.width - Styles.GroupRightMargin - 4,
-                    Styles.GroupHeight - 3);
-                ActionEditorWindow.current?.AddCursorRect(groupRect,
-                    m_pickedGroupAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
+                var groupRect = new Rect(4, nextYPos, m_leftRect.width - Styles.GroupRightMargin - 4, Styles.GroupHeight - 3);
+                ActionEditorWindow.current?.AddCursorRect(groupRect, m_pickedGroupAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
                 nextYPos += Styles.GroupHeight;
 
                 var groupSelected = (ReferenceEquals(group, DirectorUtility.selectedObject) || group == m_pickedGroupAsset);
-                GUI.color = groupSelected ? LIST_SELECTION_COLOR : GROUP_COLOR;
+                GUI.color = groupSelected ? s_listSelectionColor : s_groupColor;
                 GUI.Box(groupRect, string.Empty, Styles.HeaderBoxStyle);
                 GUI.color = Color.white;
 
@@ -155,8 +153,7 @@ namespace Darkness
                 GUI.color = EditorGUIUtility.isProSkin ? Color.yellow : Color.white;
                 GUI.color = group.IsActive ? GUI.color : Color.grey;
                 var foldRect = new Rect(groupRect.x + 2, groupRect.y + 1, 20, groupRect.height);
-                group.IsCollapsed =
-                    !EditorGUI.Foldout(foldRect, !group.IsCollapsed, $"<b>{@group.Name}</b>");
+                group.IsCollapsed = !EditorGUI.Foldout(foldRect, !group.IsCollapsed, $"<b>{@group.Name}</b>");
                 GUI.color = Color.white;
 
                 //右键菜单
@@ -171,20 +168,19 @@ namespace Darkness
                             continue;
                         }
 
-                        var canAdd = !info.isUnique ||
-                                     (group.Tracks.Find(track => track.GetType() == info.type) == null);
+                        var canAdd = !info.isUnique || (group.Tracks.Find(track => track.GetType() == info.type) == null);
                         if (group.IsLocked)
                         {
                             canAdd = false;
                         }
 
-                        var finalPath = string.IsNullOrEmpty(info.category)
-                            ? info.name
-                            : info.category + "/" + info.name;
+                        var finalPath = string.IsNullOrEmpty(info.category) ? info.name : info.category + "/" + info.name;
                         if (canAdd)
                         {
-                            menu.AddItem(new GUIContent($"{Lan.MenuAddTrack}/" + finalPath), false,
-                                () => { group.AddTrack(info.type); });
+                            menu.AddItem(new GUIContent($"{Lan.MenuAddTrack}/" + finalPath), false, () =>
+                            {
+                                group.AddTrack(info.type);
+                            });
                         }
                         else
                         {
@@ -207,10 +203,14 @@ namespace Darkness
                         menu.AddDisabledItem(new GUIContent(Lan.MenuPasteTrack));
                     }
 
-                    menu.AddItem(new GUIContent(Lan.GroupDisable), !group.IsActive,
-                        () => { group.IsActive = !group.IsActive; });
-                    menu.AddItem(new GUIContent(Lan.GroupLocked), group.IsLocked,
-                        () => { group.IsLocked = !group.IsLocked; });
+                    menu.AddItem(new GUIContent(Lan.GroupDisable), !group.IsActive, () =>
+                    {
+                        group.IsActive = !group.IsActive;
+                    });
+                    menu.AddItem(new GUIContent(Lan.GroupLocked), group.IsLocked, () =>
+                    {
+                        group.IsLocked = !group.IsLocked;
+                    });
 
                     menu.AddSeparator("");
 
@@ -229,8 +229,7 @@ namespace Darkness
                     {
                         menu.AddItem(new GUIContent(Lan.GroupDelete), false, () =>
                         {
-                            if (EditorUtility.DisplayDialog(Lan.GroupDelete, Lan.GroupDeleteTips, Lan.TipsConfirm,
-                                    Lan.TipsCancel))
+                            if (EditorUtility.DisplayDialog(Lan.GroupDelete, Lan.GroupDeleteTips, Lan.TipsConfirm, Lan.TipsCancel))
                             {
                                 TimelineGraphAsset.DeleteGroup(group);
                                 ActionEditorWindow.current.InitClipWrappers();
@@ -248,7 +247,7 @@ namespace Darkness
                     DirectorUtility.selectedObject = group;
 
                     m_pickedGroupAsset = group;
-                    
+
                     e.Use();
                 }
 
@@ -256,9 +255,7 @@ namespace Darkness
                 {
                     if (groupRect.Contains(e.mousePosition))
                     {
-                        var markRect = new Rect(groupRect.x,
-                            (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y,
-                            groupRect.width, 2);
+                        var markRect = new Rect(groupRect.x, (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y, groupRect.width, 2);
                         GUI.color = Color.grey;
                         GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
@@ -276,7 +273,7 @@ namespace Darkness
                 if (!group.IsCollapsed)
                 {
                     ShowListTracks(e, group, ref nextYPos);
-                    GUI.color = groupSelected ? LIST_SELECTION_COLOR : GROUP_COLOR;
+                    GUI.color = groupSelected ? s_listSelectionColor : s_groupColor;
                     var verticalRect = Rect.MinMaxRect(groupRect.x, groupRect.yMax, groupRect.x + 3, nextYPos - 2);
                     GUI.DrawTexture(verticalRect, Styles.WhiteTexture);
                     GUI.color = Color.white;
@@ -294,18 +291,16 @@ namespace Darkness
                 var track = groupAsset.Tracks[t];
                 var yPos = nextYPos;
 
-                var trackRect = new Rect(10, yPos, leftRect.width - Styles.TrackRightMargin - 10, track.ShowHeight);
+                var trackRect = new Rect(10, yPos, m_leftRect.width - Styles.TrackRightMargin - 10, track.ShowHeight);
                 nextYPos += track.ShowHeight + Styles.TrackMargins;
 
-                GUI.color = ColorUtility.Grey(EditorGUIUtility.isProSkin
-                    ? (track.IsActive ? 0.25f : 0.2f)
-                    : (track.IsActive ? 0.9f : 0.8f));
+                GUI.color = ColorUtility.Grey(EditorGUIUtility.isProSkin ? (track.IsActive ? 0.25f : 0.2f) : (track.IsActive ? 0.9f : 0.8f));
                 GUI.DrawTexture(trackRect, Styles.WhiteTexture);
                 GUI.color = Color.white.WithAlpha(0.25f);
                 GUI.Box(trackRect, string.Empty, (GUIStyle)"flow node 0");
                 if (ReferenceEquals(track, DirectorUtility.selectedObject) || track == m_pickedTrackAsset)
                 {
-                    GUI.color = LIST_SELECTION_COLOR;
+                    GUI.color = s_listSelectionColor;
                     GUI.DrawTexture(trackRect, Styles.WhiteTexture);
                 }
 
@@ -322,21 +317,27 @@ namespace Darkness
                 TrackDraw.Draw(track, trackRect);
                 GUI.EndGroup();
 
-                ActionEditorWindow.current.AddCursorRect(trackRect,
-                    m_pickedTrackAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
+                ActionEditorWindow.current.AddCursorRect(trackRect, m_pickedTrackAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
 
                 //右键菜单
                 if (e.type == EventType.ContextClick && trackRect.Contains(e.mousePosition))
                 {
                     var menu = new GenericMenu();
-                    menu.AddItem(new GUIContent(Lan.TrackDisable), !track.IsActive,
-                        () => { track.IsActive = !track.IsActive; });
-                    menu.AddItem(new GUIContent(Lan.TrackLocked), track.IsLocked,
-                        () => { track.IsLocked = !track.IsLocked; });
+                    menu.AddItem(new GUIContent(Lan.TrackDisable), !track.IsActive, () =>
+                    {
+                        track.IsActive = !track.IsActive;
+                    });
+                    menu.AddItem(new GUIContent(Lan.TrackLocked), track.IsLocked, () =>
+                    {
+                        track.IsLocked = !track.IsLocked;
+                    });
 
                     menu.AddSeparator("");
 
-                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () => { m_copyTrackAsset = track; });
+                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () =>
+                    {
+                        m_copyTrackAsset = track;
+                    });
 
                     if (track.GetType().RTGetAttribute<UniqueAttribute>(true) == null)
                     {
@@ -361,8 +362,7 @@ namespace Darkness
                     {
                         menu.AddItem(new GUIContent(Lan.TrackDelete), false, () =>
                         {
-                            if (EditorUtility.DisplayDialog(Lan.TrackDelete, Lan.TrackDeleteTips, Lan.TipsConfirm,
-                                    Lan.TipsCancel))
+                            if (EditorUtility.DisplayDialog(Lan.TrackDelete, Lan.TrackDeleteTips, Lan.TipsConfirm, Lan.TipsCancel))
                             {
                                 groupAsset.DeleteTrack(track);
                                 ActionEditorWindow.current.InitClipWrappers();
@@ -386,10 +386,7 @@ namespace Darkness
                 {
                     if (trackRect.Contains(e.mousePosition))
                     {
-                        var markRect = new Rect(trackRect.x,
-                            (groupAsset.Tracks.IndexOf(m_pickedTrackAsset) < t) ? trackRect.yMax - 2 : trackRect.y,
-                            trackRect.width,
-                            2);
+                        var markRect = new Rect(trackRect.x, (groupAsset.Tracks.IndexOf(m_pickedTrackAsset) < t) ? trackRect.yMax - 2 : trackRect.y, trackRect.width, 2);
                         GUI.color = Color.grey;
                         GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;

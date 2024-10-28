@@ -9,11 +9,11 @@ namespace Darkness
 {
     public class InspectorsBase
     {
-        protected object target;
+        protected object m_target;
 
         public void SetTarget(object t)
         {
-            target = t;
+            m_target = t;
         }
 
         public virtual void OnInspectorGUI()
@@ -23,7 +23,7 @@ namespace Darkness
 
         public void DrawDefaultInspector()
         {
-            var t = target.GetType();
+            var t = m_target.GetType();
             //得到字段的值,只能得到public类型的字典的值
             FieldInfo[] fieldInfos = t.GetFields();
             //排序一下，子类的字段在后，父类的在前
@@ -42,7 +42,7 @@ namespace Darkness
                         var relate = Array.Find(fieldInfos, f1 => f1.Name == option.argsName);
                         if (relate != null)
                         {
-                            var value = relate.GetValue(target);
+                            var value = relate.GetValue(m_target);
                             var index = Array.FindIndex(option.argsValue, v1 => v1.Equals(value));
                             if (index < 0)
                             {
@@ -69,7 +69,7 @@ namespace Darkness
         {
             var fieldType = field.FieldType;
             var showType = field.FieldType;
-            var value = field.GetValue(target);
+            var value = field.GetValue(m_target);
             var newValue = value;
 
             //首字母大写
@@ -132,7 +132,7 @@ namespace Darkness
             }
             else if (showType == typeof(AnimationCurve))
             {
-                AnimationCurve curve = field.GetValue(target) as AnimationCurve;
+                AnimationCurve curve = field.GetValue(m_target) as AnimationCurve;
                 if (curve == null)
                 {
                     curve = new AnimationCurve();
@@ -218,7 +218,7 @@ namespace Darkness
             }
 
             if (value != newValue)
-                field.SetValue(target, newValue);
+                field.SetValue(m_target, newValue);
         }
 
         private int FieldsSprtBy(FieldInfo f1, FieldInfo f2)

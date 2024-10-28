@@ -9,25 +9,20 @@ namespace Darkness.Test
 {
     public static class EditorInspectorFactory
     {
-        private static bool _initDic;
+        private static bool m_initDic;
 
-        private static readonly Dictionary<Type, Type> _inspectorsDic = new Dictionary<Type, Type>();
+        private static readonly Dictionary<Type, Type> s_inspectorsDic = new();
 
         public static InspectorsBase GetInspector(IData directable)
         {
             InitDic();
-
             var type = directable.GetType();
             InspectorsBase b = null;
-            if (_inspectorsDic.TryGetValue(type, out var t))
+            if (s_inspectorsDic.TryGetValue(type, out var t))
             {
                 b = Activator.CreateInstance(t) as InspectorsBase;
             }
-
-            if (b == null)
-            {
-                b = new InspectorsBase();
-            }
+            b ??= new InspectorsBase();
 
             b.SetTarget(directable);
             return b;
@@ -35,14 +30,11 @@ namespace Darkness.Test
 
         public static void InitDic()
         {
-            if (_initDic) return;
-
-            _initDic = true;
-
-            //先获取有绑定关系的所有对象和面板对象映射
+            if (m_initDic) return;
+            m_initDic = true;
             Type type = typeof(InspectorsBase);
-            GetTypeLastSubclass(type, _inspectorsDic);
-            GetNotFindType(typeof(IData), _inspectorsDic);
+            GetTypeLastSubclass(type, s_inspectorsDic);
+            GetNotFindType(typeof(IData), s_inspectorsDic);
         }
 
         public static void GetTypeLastSubclass(Type type, Dictionary<Type, Type> dictionary)
@@ -74,7 +66,7 @@ namespace Darkness.Test
                 }
             }
         }
-        
+
         /// <summary>
         /// 找出没有映射关系的对象，并绑定其最近父类的面板对象
         /// </summary>
@@ -82,9 +74,7 @@ namespace Darkness.Test
         /// <param name="dictionary"></param>
         public static void GetNotFindType(Type type, Dictionary<Type, Type> dictionary)
         {
-            var types = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes().Where(t => t.GetInterfaces().Contains(type)))
-                .ToArray();
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Where(t => t.GetInterfaces().Contains(type))).ToArray();
             foreach (var t in types)
             {
                 if (t.IsAbstract) continue;

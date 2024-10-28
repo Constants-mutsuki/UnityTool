@@ -703,7 +703,7 @@ namespace Darkness
 
             for (var i = 0; i < pendingGuides.Count; i++)
             {
-                DrawGuideLine(pendingGuides[i].time, pendingGuides[i].color);
+                DrawGuideLine(pendingGuides[i].Time, pendingGuides[i].Color);
             }
 
             pendingGuides.Clear();
