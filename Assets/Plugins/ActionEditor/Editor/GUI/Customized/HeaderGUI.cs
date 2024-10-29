@@ -158,6 +158,8 @@ namespace Darkness
             {
                 PreferencesWindow.Show(new Rect(G.ScreenWidth - 5 - 400, Styles.ToolbarHeight + 5, 400, G.ScreenHeight - Styles.ToolbarHeight - 50));
             }
+
+            InspectorWindow.Initial();
         }
     }
 }

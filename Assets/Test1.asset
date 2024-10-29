@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 4
   viewTimeMin: 0
-  viewTimeMax: 4
+  viewTimeMax: 6.3190384
   groups:
   - {fileID: -4346854750122615498}
 --- !u!114 &4822193062677031292
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_parent: {fileID: -8539024984120088609}
-  startTime: 0.4
+  startTime: 0.089999996
 --- !u!114 &6972688913714640555
 MonoBehaviour:
   m_ObjectHideFlags: 1

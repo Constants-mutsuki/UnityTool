@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Darkness.Test;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,29 +9,25 @@ namespace Darkness
     [CustomEditor(typeof(InspectorPreviewAsset))]
     public class InspectorPreviewAssetInspector : Editor
     {
-        private bool _optionsAssetFold = true;
-
+        private bool m_optionsAssetFold = true;
         private static TimelineGraphAsset m_lastTimelineGraphAsset;
-        private static bool _willResample;
-
-        private static Dictionary<IData, InspectorsBase> directableEditors =
-            new Dictionary<IData, InspectorsBase>();
-
-        private static InspectorsBase _currentDirectableEditor;
-        private static InspectorsBase _currentAssetEditor;
+        private static bool m_willResample;
+        private static Dictionary<IData, InspectorsBase> m_directableEditors = new();
+        private static InspectorsBase m_currentDirectableEditor;
+        private static InspectorsBase m_currentAssetEditor;
 
 
         void OnEnable()
         {
-            _currentDirectableEditor = null;
-            _willResample = false;
+            m_currentDirectableEditor = null;
+            m_willResample = false;
         }
 
         void OnDisable()
         {
-            _currentDirectableEditor = null;
-            directableEditors.Clear();
-            _willResample = false;
+            m_currentDirectableEditor = null;
+            m_directableEditors.Clear();
+            m_willResample = false;
         }
 
         protected override void OnHeaderGUI()
@@ -57,10 +52,13 @@ namespace Darkness
             DoSelectionInspector();
 
 
-            if (_willResample)
+            if (m_willResample)
             {
-                _willResample = false;
-                EditorApplication.delayCall += () => { Debug.Log("cutscene.ReSample();"); };
+                m_willResample = false;
+                EditorApplication.delayCall += () =>
+                {
+                    Debug.Log("cutscene.ReSample();");
+                };
             }
 
             Repaint();
@@ -75,8 +73,7 @@ namespace Darkness
             GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
             var title = string.Format(Lan.InsBaseInfo, Prefs.GetAssetTypeName(assetData.GetType()));
-            GUILayout.Label(
-                $"<b><size=18>{(_optionsAssetFold ? "▼" : "▶")} {title}</size></b>");
+            GUILayout.Label($"<b><size=18>{(m_optionsAssetFold ? "▼" : "▶")} {title}</size></b>");
             GUILayout.EndHorizontal();
 
             var lastRect = GUILayoutUtility.GetLastRect();
@@ -84,27 +81,24 @@ namespace Darkness
 
             if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
             {
-                _optionsAssetFold = !_optionsAssetFold;
+                m_optionsAssetFold = !m_optionsAssetFold;
                 Event.current.Use();
             }
 
             GUILayout.Space(2);
-            if (_optionsAssetFold)
+            if (m_optionsAssetFold)
             {
-                if (!directableEditors.TryGetValue(assetData, out var newEditor))
+                if (!m_directableEditors.TryGetValue(assetData, out var newEditor))
                 {
-                    directableEditors[assetData] = newEditor = EditorInspectorFactory.GetInspector(assetData);
+                    m_directableEditors[assetData] = newEditor = EditorInspectorFactory.GetInspector(assetData);
                 }
 
-                if (_currentAssetEditor != newEditor)
+                if (m_currentAssetEditor != newEditor)
                 {
-                    _currentAssetEditor = newEditor;
+                    m_currentAssetEditor = newEditor;
                 }
 
-                if (_currentAssetEditor != null)
-                {
-                    _currentAssetEditor.OnInspectorGUI();
-                }
+                m_currentAssetEditor?.OnInspectorGUI();
             }
         }
 
@@ -114,36 +108,33 @@ namespace Darkness
 
             if (selection == null)
             {
-                _currentDirectableEditor = null;
+                m_currentDirectableEditor = null;
                 return;
             }
 
             if (!(selection is IData data)) return;
 
-            if (!directableEditors.TryGetValue(data, out var newEditor))
+            if (!m_directableEditors.TryGetValue(data, out var newEditor))
             {
-                directableEditors[data] =
-                    newEditor = EditorInspectorFactory.GetInspector(data);
+                m_directableEditors[data] = newEditor = EditorInspectorFactory.GetInspector(data);
             }
 
-            if (_currentDirectableEditor != newEditor)
+            if (m_currentDirectableEditor != newEditor)
             {
-                var enableMethod = newEditor.GetType().GetMethod("OnEnable",
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
-                    BindingFlags.FlattenHierarchy);
+                var enableMethod = newEditor.GetType().GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
                 if (enableMethod != null)
                 {
                     enableMethod.Invoke(newEditor, null);
                 }
 
-                _currentDirectableEditor = newEditor;
+                m_currentDirectableEditor = newEditor;
             }
 
             EditorTools.BoldSeparator();
             GUILayout.Space(4);
             ShowPreliminaryInspector();
 
-            if (_currentDirectableEditor != null) _currentDirectableEditor.OnInspectorGUI();
+            if (m_currentDirectableEditor != null) m_currentDirectableEditor.OnInspectorGUI();
         }
 
         /// <summary>
@@ -161,12 +152,11 @@ namespace Darkness
             GUI.color = Color.white;
 
             GUILayout.Label($"<b><size=18>{name}</size></b>");
-            
-            
+
+
             GUILayout.EndHorizontal();
 
-            var desAtt =
-                type.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
+            var desAtt = type.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
             var description = desAtt != null ? desAtt.description : string.Empty;
             if (!string.IsNullOrEmpty(description))
             {

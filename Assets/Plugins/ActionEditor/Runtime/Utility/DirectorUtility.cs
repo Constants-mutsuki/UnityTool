@@ -6,14 +6,11 @@ namespace Darkness
     public static class DirectorUtility
     {
         private static ClipAsset m_copyClipAsset;
-        private static System.Type _copyClipType;
-
+        private static System.Type m_copyClipType;
         [System.NonSerialized]
-        private static InspectorPreviewAsset _currentInspectorPreviewAsset;
-
+        private static InspectorPreviewAsset m_currentInspectorPreviewAsset;
         [System.NonSerialized]
-        private static ScriptableObject _selectedObject;
-
+        private static ScriptableObject m_selectedObject;
         public static event System.Action<ScriptableObject> onSelectionChange;
 
         public static ClipAsset CopyClipAsset
@@ -22,34 +19,25 @@ namespace Darkness
             set
             {
                 m_copyClipAsset = value;
-                if (value != null)
-                {
-                    _copyClipType = value.GetType();
-                }
-                else
-                {
-                    _copyClipType = default;
-                }
+                m_copyClipType = value ? value.GetType() : default;
             }
         }
 
         public static System.Type GetCopyType()
         {
-            return _copyClipType;
+            return m_copyClipType;
         }
-
 
         public static void FlushCopyClip()
         {
-            _copyClipType = null;
+            m_copyClipType = null;
             m_copyClipAsset = null;
         }
-
 
         public static void CutClip(ClipAsset clipAsset)
         {
             m_copyClipAsset = clipAsset;
-            _copyClipType = clipAsset.GetType();
+            m_copyClipType = clipAsset.GetType();
             (clipAsset.Parent as TrackAsset)?.DeleteClip(clipAsset);
         }
 
@@ -58,23 +46,23 @@ namespace Darkness
         {
             get
             {
-                if (_currentInspectorPreviewAsset == null)
+                if (m_currentInspectorPreviewAsset == null)
                 {
-                    _currentInspectorPreviewAsset = ScriptableObject.CreateInstance<InspectorPreviewAsset>();
+                    m_currentInspectorPreviewAsset = ScriptableObject.CreateInstance<InspectorPreviewAsset>();
                 }
 
-                return _currentInspectorPreviewAsset;
+                return m_currentInspectorPreviewAsset;
             }
         }
 
 
         public static ScriptableObject selectedObject
         {
-            get => _selectedObject;
+            get => m_selectedObject;
             set
             {
-                _selectedObject = value;
-                if (value != null)
+                m_selectedObject = value;
+                if (value)
                 {
 #if UNITY_EDITOR
                     Selection.activeObject = CurrentInspectorPreviewAsset;
@@ -82,10 +70,7 @@ namespace Darkness
 #endif
                 }
 
-                if (onSelectionChange != null)
-                {
-                    onSelectionChange(value);
-                }
+                onSelectionChange?.Invoke(value);
             }
         }
     }

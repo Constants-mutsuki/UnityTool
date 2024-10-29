@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
-namespace Darkness.Test
+namespace Darkness
 {
     public static class EditorInspectorFactory
     {
