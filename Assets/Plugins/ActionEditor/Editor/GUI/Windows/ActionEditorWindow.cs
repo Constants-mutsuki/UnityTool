@@ -435,7 +435,7 @@ namespace Darkness
             {
                 if (CenterRect.Contains(mousePosition))
                 {
-                    DirectorUtility.selectedObject = null;
+                    DirectorUtility.SelectedObject = null;
                     multiSelection = null;
                 }
 
@@ -580,7 +580,7 @@ namespace Darkness
                         .ToList();
                     if (multiSelection.Count == 1)
                     {
-                        DirectorUtility.selectedObject = multiSelection[0].action;
+                        DirectorUtility.SelectedObject = multiSelection[0].action;
                         multiSelection = null;
                     }
                 }
@@ -1030,7 +1030,7 @@ namespace Darkness
                 ShowTrackArea(track, groupIndex, t, e, ref nextYPos);
             }
 
-            if (ReferenceEquals(DirectorUtility.selectedObject, groupAsset))
+            if (ReferenceEquals(DirectorUtility.SelectedObject, groupAsset))
             {
                 var r = Rect.MinMaxRect(groupRect.xMin, groupRect.yMin, groupRect.xMax, nextYPos);
                 GUI.color = Color.grey;
@@ -1102,7 +1102,7 @@ namespace Darkness
             GUI.backgroundColor = Color.white;
 
             //highlight selected track
-            if (ReferenceEquals(DirectorUtility.selectedObject, trackAsset))
+            if (ReferenceEquals(DirectorUtility.SelectedObject, trackAsset))
             {
                 GUI.color = Color.grey;
                 GUI.Box(trackPosRect.ExpandBy(0, 2), string.Empty, Styles.HollowFrameHorizontalStyle);
@@ -1333,7 +1333,7 @@ namespace Darkness
             clipRect.x = TimelineGraphAsset.TimeToPos(xTime);
 
             //dont draw if outside of view range and not selected
-            var isSelected = ReferenceEquals(DirectorUtility.selectedObject, action) || (multiSelection != null &&
+            var isSelected = ReferenceEquals(DirectorUtility.SelectedObject, action) || (multiSelection != null &&
                                                                                          multiSelection.Select(b => b.action).Contains(action));
             var isVisible = Rect.MinMaxRect(0, G.ScrollPos.y, CenterRect.width, CenterRect.height)
                 .Overlaps(clipRect);
@@ -1604,7 +1604,7 @@ namespace Darkness
                     }
                     else
                     {
-                        DirectorUtility.selectedObject = action;
+                        DirectorUtility.SelectedObject = action;
                         if (multiSelection != null && !multiSelection.Select(cw => cw.action).Contains(action))
                         {
                             multiSelection = null;
@@ -1632,7 +1632,7 @@ namespace Darkness
                 }
                 else if (e.type == EventType.MouseDown)
                 {
-                    if (DirectorUtility.selectedObject == action)
+                    if (DirectorUtility.SelectedObject == action)
                     {
                         e.Use();
                     }

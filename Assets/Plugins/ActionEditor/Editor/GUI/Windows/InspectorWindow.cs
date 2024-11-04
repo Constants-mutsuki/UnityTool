@@ -5,8 +5,9 @@ using UnityEngine;
 
 namespace Darkness
 {
-    public class InspectorWindow : PopupWindowContent
+    public class InspectorWindow : EditorWindow
     {
+        private static InspectorWindow m_instance;
         private static Rect m_rect;
         private static bool m_willResample;
         private static Dictionary<IData, InspectorsBase> m_directableEditors = new();
@@ -15,36 +16,39 @@ namespace Darkness
         private bool m_flag = true;
         private bool m_graphFoldout = true;
 
-
-        public static void Initial()
+        public static void Init()
         {
             DirectorUtility.onSelectionChange -= OnSelectionChange;
             DirectorUtility.onSelectionChange += OnSelectionChange;
         }
 
+        private static void ShowWindow()
+        {
+            m_instance = GetWindow<InspectorWindow>("Inspector Window");
+            m_instance.minSize = new Vector2(400, 200);
+        }
+
+        private void OnDisable()
+        {
+            DirectorUtility.onSelectionChange -= OnSelectionChange;
+        }
+
         private static void OnSelectionChange(ScriptableObject obj)
         {
+            if (!m_instance)
+            {
+                ShowWindow();
+            }
             if (obj)
             {
                 m_selection = obj;
-                Show(new Rect(G.ScreenWidth - 5 - 400, Styles.ToolbarHeight + 5, 400, G.ScreenHeight - Styles.ToolbarHeight - 50));
+                m_instance?.Repaint();
             }
         }
 
-        public static void Show(Rect rect)
+        private void OnGUI()
         {
-            m_rect = rect;
-            PopupWindow.Show(new Rect(rect.x, rect.y, 0, 0), new InspectorWindow());
-        }
-
-        public override Vector2 GetWindowSize()
-        {
-            return new Vector2(m_rect.width, m_rect.height);
-        }
-
-        public override void OnGUI(Rect rect)
-        {
-            if (!DirectorUtility.selectedObject)
+            if (!DirectorUtility.SelectedObject)
             {
                 EditorGUILayout.HelpBox(Lan.NotSelectAsset, MessageType.Info);
                 return;
@@ -56,31 +60,39 @@ namespace Darkness
             if (m_flag || Event.current.type == EventType.Repaint)
             {
                 m_flag = false;
-                m_rect.height = GUILayoutUtility.GetLastRect().yMax + 5;
+                minSize = new Vector2(400, GUILayoutUtility.GetLastRect().yMax + 10);
             }
-        
+        }
+
+        private void UpdateWindowHeight()
+        {
+            float contentHeight = GUILayoutUtility.GetLastRect().yMax + 10; // 获取最后一个控件的底部坐标
+            float newHeight = Mathf.Max(contentHeight, 400); // 确保最小高度为 400
+            minSize = new Vector2(400, newHeight); // 设置窗口的最小尺寸
+            maxSize = new Vector2(400, float.MaxValue); // 允许高度无上限
         }
 
         private void DrawGraphInspector()
         {
-            if (!App.GraphAsset)
-            {
-                return;
-            }
+            if (!App.GraphAsset) return;
+
             var graphAsset = App.GraphAsset;
             GUI.color = new Color(0, 0, 0, 0.2f);
             GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
-            var title = "时间轴基础信息";
-            GUILayout.Label($"{(m_graphFoldout ? "▼" : "▶")} {title}");
+            var inspectorTitle = "时间轴基础信息";
+            GUILayout.Label($"{(m_graphFoldout ? "▼" : "▶")} {inspectorTitle}");
             GUILayout.EndHorizontal();
+
             var lastRect = GUILayoutUtility.GetLastRect();
             EditorGUIUtility.AddCursorRect(lastRect, MouseCursor.Link);
+
             if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
             {
                 m_graphFoldout = !m_graphFoldout;
                 Event.current.Use();
             }
+
             GUILayout.Space(1);
             if (m_graphFoldout)
             {
@@ -104,10 +116,7 @@ namespace Darkness
             if (m_currentDirectableEditor != drawer)
             {
                 var enableMethod = drawer.GetType().GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-                if (enableMethod != null)
-                {
-                    enableMethod.Invoke(drawer, null);
-                }
+                enableMethod?.Invoke(drawer, null);
 
                 m_currentDirectableEditor = drawer;
             }
@@ -121,17 +130,20 @@ namespace Darkness
         private void DrawSelectionInfo()
         {
             if (!m_selection) return;
+
             var type = m_selection.GetType();
-            NameAttribute nameAttribute = type.GetCustomAttribute<NameAttribute>();
+            var nameAttribute = type.GetCustomAttribute<NameAttribute>();
             string nameInfo = nameAttribute != null ? nameAttribute.name : type.Name.SplitCamelCase();
+
             GUI.color = new Color(0, 0, 0, 0.2f);
             GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
             GUI.color = Color.white;
             GUILayout.Label(nameInfo);
             GUILayout.EndHorizontal();
 
-            DescriptionAttribute description = type.GetCustomAttribute<DescriptionAttribute>();
-            string desc = description != null ? description.description : string.Empty;
+            var description = type.GetCustomAttribute<DescriptionAttribute>();
+            string desc = description?.description ?? string.Empty;
+
             if (!string.IsNullOrEmpty(desc))
             {
                 EditorGUILayout.HelpBox(desc, MessageType.None);

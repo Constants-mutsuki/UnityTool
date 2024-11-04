@@ -118,7 +118,7 @@ namespace Darkness.Draws
             {
                 var iconRect = new Rect(0, 0, 16, 16);
                 iconRect.center = iconBGRect.center;
-                GUI.color = ReferenceEquals(DirectorUtility.selectedObject, trackAsset)
+                GUI.color = ReferenceEquals(DirectorUtility.SelectedObject, trackAsset)
                     ? Color.white
                     : new Color(1, 1, 1, 0.8f);
                 GUI.DrawTexture(iconRect, icon);

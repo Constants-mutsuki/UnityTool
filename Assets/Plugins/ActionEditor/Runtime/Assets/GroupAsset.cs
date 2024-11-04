@@ -111,7 +111,7 @@ namespace Darkness
                 Tracks.Add(track);
 
                 CreateUtilities.SaveAssetIntoObject(track, this);
-                DirectorUtility.selectedObject = track;
+                DirectorUtility.SelectedObject = track;
 
                 return track;
             }
@@ -123,9 +123,9 @@ namespace Darkness
         {
             // Undo.RegisterCompleteObjectUndo(this, "Delete Track");
             Tracks.Remove(trackAsset);
-            if (ReferenceEquals(DirectorUtility.selectedObject, trackAsset))
+            if (ReferenceEquals(DirectorUtility.SelectedObject, trackAsset))
             {
-                DirectorUtility.selectedObject = null;
+                DirectorUtility.SelectedObject = null;
             }
             // Undo.DestroyObjectImmediate(track);
             // EditorUtility.SetDirty(this);

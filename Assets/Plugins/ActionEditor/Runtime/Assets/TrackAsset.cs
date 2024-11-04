@@ -97,7 +97,7 @@ namespace Darkness
             var newAction = CreateInstance(type) as ClipAsset;
 
             CreateUtilities.SaveAssetIntoObject(newAction, this);
-            DirectorUtility.selectedObject = newAction;
+            DirectorUtility.SelectedObject = newAction;
 
             if (newAction != null)
             {
@@ -118,9 +118,9 @@ namespace Darkness
         public void DeleteClip(ClipAsset action)
         {
             Clips.Remove(action);
-            if (ReferenceEquals(DirectorUtility.selectedObject, action))
+            if (ReferenceEquals(DirectorUtility.SelectedObject, action))
             {
-                DirectorUtility.selectedObject = null;
+                DirectorUtility.SelectedObject = null;
             }
         }
 

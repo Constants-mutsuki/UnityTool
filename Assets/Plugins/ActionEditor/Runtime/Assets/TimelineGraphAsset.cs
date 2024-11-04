@@ -58,7 +58,7 @@ namespace Darkness
             newGroup.Root = this;
             groups.Add(newGroup);
             CreateUtilities.SaveAssetIntoObject(newGroup, this);
-            DirectorUtility.selectedObject = newGroup;
+            DirectorUtility.SelectedObject = newGroup;
             return newGroup;
         }
 

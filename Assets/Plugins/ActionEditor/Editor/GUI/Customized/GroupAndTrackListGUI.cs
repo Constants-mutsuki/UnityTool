@@ -65,8 +65,8 @@ namespace Darkness
             }
 
             GUI.color = Color.white;
-            G.SearchString = EditorGUI.TextField(searchRect, G.SearchString, (GUIStyle)"ToolbarSeachTextField");
-            if (GUI.Button(searchCancelRect, string.Empty, "ToolbarSeachCancelButton"))
+            G.SearchString = EditorGUI.TextField(searchRect, G.SearchString, (GUIStyle)"ToolbarSearchTextField");
+            if (GUI.Button(searchCancelRect, string.Empty, "ToolbarSearchCancelButton"))
             {
                 G.SearchString = string.Empty;
                 GUIUtility.keyboardControl = 0;
@@ -86,7 +86,7 @@ namespace Darkness
             if (GUI.Button(addRect, Lan.GroupAdd))
             {
                 var newGroup = TimelineGraphAsset.AddGroup<GroupAsset>();
-                DirectorUtility.selectedObject = newGroup;
+                DirectorUtility.SelectedObject = newGroup;
             }
 
             //clear picks
@@ -117,7 +117,7 @@ namespace Darkness
                 ActionEditorWindow.current?.AddCursorRect(groupRect, m_pickedGroupAsset == null ? MouseCursor.Link : MouseCursor.MoveArrow);
                 nextYPos += Styles.GroupHeight;
 
-                var groupSelected = (ReferenceEquals(group, DirectorUtility.selectedObject) || group == m_pickedGroupAsset);
+                var groupSelected = (ReferenceEquals(group, DirectorUtility.SelectedObject) || group == m_pickedGroupAsset);
                 GUI.color = groupSelected ? s_listSelectionColor : s_groupColor;
                 GUI.Box(groupRect, string.Empty, Styles.HeaderBoxStyle);
                 GUI.color = Color.white;
@@ -194,7 +194,7 @@ namespace Darkness
                         menu.AddItem(new GUIContent(Lan.MenuPasteTrack), false, () =>
                         {
                             var t = group.PasteTrack(m_copyTrackAsset);
-                            DirectorUtility.selectedObject = t;
+                            DirectorUtility.SelectedObject = t;
                             ActionEditorWindow.current.InitClipWrappers();
                         });
                     }
@@ -244,7 +244,7 @@ namespace Darkness
 
                 if (e.type == EventType.MouseDown && e.button == 0 && groupRect.Contains(e.mousePosition))
                 {
-                    DirectorUtility.selectedObject = group;
+                    DirectorUtility.SelectedObject = group;
 
                     m_pickedGroupAsset = group;
 
@@ -298,7 +298,7 @@ namespace Darkness
                 GUI.DrawTexture(trackRect, Styles.WhiteTexture);
                 GUI.color = Color.white.WithAlpha(0.25f);
                 GUI.Box(trackRect, string.Empty, (GUIStyle)"flow node 0");
-                if (ReferenceEquals(track, DirectorUtility.selectedObject) || track == m_pickedTrackAsset)
+                if (ReferenceEquals(track, DirectorUtility.SelectedObject) || track == m_pickedTrackAsset)
                 {
                     GUI.color = s_listSelectionColor;
                     GUI.DrawTexture(trackRect, Styles.WhiteTexture);
@@ -345,7 +345,7 @@ namespace Darkness
                         {
                             var t1 = groupAsset.PasteTrack(track);
                             ActionEditorWindow.current.InitClipWrappers();
-                            DirectorUtility.selectedObject = t1;
+                            DirectorUtility.SelectedObject = t1;
                         });
                     }
                     else
@@ -377,7 +377,7 @@ namespace Darkness
                 //选中
                 if (e.type == EventType.MouseDown && e.button == 0 && trackRect.Contains(e.mousePosition))
                 {
-                    DirectorUtility.selectedObject = track;
+                    DirectorUtility.SelectedObject = track;
                     m_pickedTrackAsset = track;
                     e.Use();
                 }
