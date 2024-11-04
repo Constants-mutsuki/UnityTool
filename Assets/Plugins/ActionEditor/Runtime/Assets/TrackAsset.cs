@@ -23,6 +23,9 @@ namespace Darkness
         [SerializeField]
         private Color color = Color.white;
 
+        //Data
+        private Track m_track;
+
 
         public Color Color => color.a > 0.1f ? color : Color.white;
 
@@ -149,6 +152,15 @@ namespace Darkness
 #endif
 
         #endregion
+
+        public void SetUp(Track track)
+        {
+            m_track = track;
+            for (int i = 0; i < Clips.Count; i++)
+            {
+                Clips[i].SetUp(m_track.clips[i]);
+            }
+        }
 
 
         internal bool IsCompilable()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 #if USE_FIXED_POINT
 using CMath = Box2DSharp.Common.FMath;
@@ -20,6 +21,8 @@ namespace Darkness
         IDirectable Parent { get; }
 
         IEnumerable<IDirectable> Children { get; }
+        
+        GameObject Owner { get; }
 
         public CFloat Length { get; }
         public CFloat StartTime { get; }

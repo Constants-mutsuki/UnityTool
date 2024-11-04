@@ -8,6 +8,9 @@ namespace Darkness
     [Serializable]
     public class GroupAsset : DirectableAsset
     {
+        //Data
+        private Group m_group;
+        
         [SerializeField, HideInInspector]
         private List<TrackAsset> tracks = new();
 
@@ -65,6 +68,15 @@ namespace Darkness
         {
             get => isLocked;
             set => isLocked = value;
+        }
+        
+        public void SetUp(Group group)
+        {
+            m_group = group;
+            for (int i = 0; i < Tracks.Count; i++)
+            {
+                Tracks[i].SetUp(m_group.tracks[i]);
+            }
         }
 
         #region 增删

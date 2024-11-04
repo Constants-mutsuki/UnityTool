@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 #if USE_FIXED_POINT
 using CMath = Box2DSharp.Common.FMath;
@@ -33,7 +34,8 @@ namespace Darkness
         public CFloat EndTime => data.startTime + data.length;
         
         protected Clip Data => data;
-        
+
+        public GameObject Owner => Root.Owner;
         public CFloat Length => data.length;
         
         public ITimelineGraph Root { get; private set; }

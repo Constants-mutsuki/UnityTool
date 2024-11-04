@@ -7,6 +7,10 @@ namespace Darkness
     [Attachable(typeof(TrackAsset))]
     public abstract class ClipAsset : DirectableAsset
     {
+
+        private Clip m_clip;
+        
+        
         [SerializeField]
         private float startTime;
 
@@ -132,6 +136,11 @@ namespace Darkness
                     Length = targetLength;
                 }
             }
+        }
+
+        public void SetUp(Clip clip)
+        {
+            m_clip = clip;
         }
 
         #region Unity Editor
