@@ -57,7 +57,7 @@ namespace Darkness
         {
             get
             {
-                if (SelectedGraph != null)
+                if (SelectedGraph)
                 {
                     return SelectedGraph.Length;
                 }
@@ -74,7 +74,7 @@ namespace Darkness
         public void Sample(float time)
         {
             CurrentTime = time;
-            if ((m_currentTime == 0 || m_currentTime == Length) && PreviousTime == m_currentTime)
+            if ((m_currentTime == 0 || Mathf.Approximately(m_currentTime, Length)) && Mathf.Approximately(PreviousTime, m_currentTime))
             {
                 return;
             }
@@ -151,8 +151,8 @@ namespace Darkness
             m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
-            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
-            foreach (var t in childs)
+            var children = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
+            foreach (var t in children)
             {
                 var arrs = t.type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
                 foreach (var arr in arrs)

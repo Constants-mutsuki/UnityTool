@@ -15,53 +15,53 @@ namespace Darkness
         private bool triggered;
         private float lastTargetStartTime;
         public PreviewLogic target { get; private set; }
-        float IDirectableTimePointer.time => target.directable.StartTime;
+        float IDirectableTimePointer.time => target.Directable.StartTime;
 
         public StartTimePointer(PreviewLogic target)
         {
             this.target = target;
             triggered = false;
-            lastTargetStartTime = target.directable.StartTime;
+            lastTargetStartTime = target.Directable.StartTime;
         }
 
         void IDirectableTimePointer.TriggerForward(float currentTime, float previousTime)
         {
-            if (!target.directable.IsActive) return;
-            if (currentTime >= target.directable.StartTime)
+            if (!target.Directable.IsActive) return;
+            if (currentTime >= target.Directable.StartTime)
             {
                 if (!triggered)
                 {
                     triggered = true;
                     target.Enter();
-                    target.Update(target.directable.ToLocalTime(currentTime), 0);
+                    target.Update(target.Directable.ToLocalTime(currentTime), 0);
                 }
             }
         }
 
         void IDirectableTimePointer.Update(float currentTime, float previousTime)
         {
-            if (!target.directable.IsActive) return;
-            if (currentTime >= target.directable.StartTime && currentTime < target.directable.EndTime &&
+            if (!target.Directable.IsActive) return;
+            if (currentTime >= target.Directable.StartTime && currentTime < target.Directable.EndTime &&
                 currentTime > 0)
             {
-                var deltaMoveClip = target.directable.StartTime - lastTargetStartTime;
-                var localCurrentTime = target.directable.ToLocalTime(currentTime);
-                var localPreviousTime = target.directable.ToLocalTime(previousTime + deltaMoveClip);
+                var deltaMoveClip = target.Directable.StartTime - lastTargetStartTime;
+                var localCurrentTime = target.Directable.ToLocalTime(currentTime);
+                var localPreviousTime = target.Directable.ToLocalTime(previousTime + deltaMoveClip);
 
                 target.Update(localCurrentTime, localPreviousTime);
-                lastTargetStartTime = target.directable.StartTime;
+                lastTargetStartTime = target.Directable.StartTime;
             }
         }
 
         void IDirectableTimePointer.TriggerBackward(float currentTime, float previousTime)
         {
-            if (!target.directable.IsActive) return;
-            if (currentTime < target.directable.StartTime || currentTime <= 0)
+            if (!target.Directable.IsActive) return;
+            if (currentTime < target.Directable.StartTime || currentTime <= 0)
             {
                 if (triggered)
                 {
                     triggered = false;
-                    target.Update(0, target.directable.ToLocalTime(previousTime));
+                    target.Update(0, target.Directable.ToLocalTime(previousTime));
                     target.Reverse();
                 }
             }
@@ -72,7 +72,7 @@ namespace Darkness
     {
         private bool triggered;
         public PreviewLogic target { get; private set; }
-        float IDirectableTimePointer.time => target.directable.EndTime;
+        float IDirectableTimePointer.time => target.Directable.EndTime;
 
         public EndTimePointer(PreviewLogic target)
         {
@@ -82,13 +82,13 @@ namespace Darkness
 
         void IDirectableTimePointer.TriggerForward(float currentTime, float previousTime)
         {
-            if (!target.directable.IsActive) return;
-            if (currentTime >= target.directable.EndTime)
+            if (!target.Directable.IsActive) return;
+            if (currentTime >= target.Directable.EndTime)
             {
                 if (!triggered)
                 {
                     triggered = true;
-                    target.Update(target.directable.GetLength(), target.directable.ToLocalTime(previousTime));
+                    target.Update(target.Directable.GetLength(), target.Directable.ToLocalTime(previousTime));
                     target.Exit();
                 }
             }
@@ -103,14 +103,14 @@ namespace Darkness
 
         void IDirectableTimePointer.TriggerBackward(float currentTime, float previousTime)
         {
-            if (!target.directable.IsActive) return;
-            if (currentTime < target.directable.EndTime || currentTime <= 0)
+            if (!target.Directable.IsActive) return;
+            if (currentTime < target.Directable.EndTime || currentTime <= 0)
             {
                 if (triggered)
                 {
                     triggered = false;
                     target.ReverseEnter();
-                    target.Update(target.directable.ToLocalTime(currentTime), target.directable.GetLength());
+                    target.Update(target.Directable.ToLocalTime(currentTime), target.Directable.GetLength());
                 }
             }
         }

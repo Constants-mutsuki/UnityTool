@@ -2,16 +2,16 @@
 {
     public abstract class PreviewLogic<T> : PreviewLogic where T : ClipAsset
     {
-        public T clip => (T)directable;
+        public T Clip => (T)Directable;
     }
 
     public abstract class PreviewLogic
     {
-        public DirectableAsset directable;
+        public DirectableAsset Directable;
 
         public void SetTarget(DirectableAsset t)
         {
-            directable = t;
+            Directable = t;
         }
 
         public virtual void Enter()
