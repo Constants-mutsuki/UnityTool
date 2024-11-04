@@ -135,7 +135,6 @@ namespace Darkness
         }
 
         #region Unity Editor
-
 #if UNITY_EDITOR
 
         public void ShowClipGUI(Rect rect)
@@ -157,7 +156,6 @@ namespace Darkness
         }
 
 #endif
-
         #endregion
     }
 }

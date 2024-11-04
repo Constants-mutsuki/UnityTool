@@ -3,11 +3,11 @@
 namespace Darkness
 {
     [Serializable]
-    [Name("动画轨道")]
-    [Description("播放动画片段")]
+    [Name("子弹")]
+    [Description("生成子弹")]
     [Color(r: 0.0f, 1f, 1f)]
     [Attachable(typeof(AbilityTrackAsset))]
-    public class AnimancerClipAsset : ClipAsset
+    public class BulletClipAsset : ClipAsset
     {
     }
 }

@@ -131,7 +131,7 @@ namespace Darkness
 
             Prefs.magnetSnapping = GUILayout.Toggle(Prefs.magnetSnapping, new GUIContent(Styles.MagnetIcon, Lan.OpenMagnetSnappingTips), EditorStyles.toolbarButton);
 
-            var gName = App.GraphAsset != null ? App.GraphAsset.name : string.Empty;
+            var gName = App.GraphAsset ? App.GraphAsset.name : string.Empty;
 
             var con = new GUIContent(string.Format(Lan.HeaderSelectAsset, gName), Lan.SelectAssetTips);
             if (GUILayout.Button(con, EditorStyles.toolbarDropDown, GUILayout.Width(120)))
@@ -139,6 +139,11 @@ namespace Darkness
                 App.AutoSave(); //先保存当前的
                 ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.GraphAsset, App.OnObjectPickerConfig, Prefs.savePath);
             }
+
+            //绘制ObjectField
+            /*GUIStyle customStyle = new GUIStyle(EditorStyles.objectField); 
+            GUILayoutOption option=new */
+            App.Owner = EditorGUILayout.ObjectField("",App.Owner, typeof(GameObject), true) as GameObject;
         }
 
         protected virtual void DrawToolbarRight()

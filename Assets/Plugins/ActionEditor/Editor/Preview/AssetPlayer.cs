@@ -8,26 +8,24 @@ namespace Darkness
     public class AssetPlayer
     {
         private static AssetPlayer m_instance;
-
         public static AssetPlayer Instance
         {
             get { return m_instance ??= new AssetPlayer(); }
         }
-
+        private GameObject m_owner;
         private float m_playTimeMin;
         private float m_playTimeMax;
         private float m_currentTime;
         private bool m_preInitialized;
         private List<IDirectableTimePointer> m_timePointers;
-
-        /// <summary>
-        /// 预览器
-        /// </summary>
         private List<IDirectableTimePointer> m_unsortedStartTimePointers;
-
         public float PreviousTime { get; private set; }
         public TimelineGraphAsset SelectedGraph => App.GraphAsset;
-
+        public GameObject Owner
+        {
+            get => m_owner;
+            set => m_owner = value;
+        }
         /// <summary>
         /// 当前时间
         /// </summary>

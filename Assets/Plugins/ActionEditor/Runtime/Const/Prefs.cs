@@ -29,6 +29,7 @@ namespace Darkness
 
             public int AutoSaveSeconds;
             public string SavePath = "Assets/";
+            public string SerialieSavePath = "Assets/";
             public bool ScrollWheelZooms = true;
 
             public bool MagnetSnapping = true;
@@ -103,6 +104,18 @@ namespace Darkness
             }
         }
 
+        public static string SerializeSavePath
+        {
+            get => data.SerialieSavePath;
+            set
+            {
+                if (data.SerialieSavePath != value)
+                {
+                    data.SerialieSavePath = value;
+                    Save();
+                }
+            }
+        }
 
         public static bool magnetSnapping
         {

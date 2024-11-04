@@ -19,8 +19,7 @@ namespace Darkness
             GUILayout.Space(2);
 
             GUILayout.BeginVertical("box");
-            var lan = EditorTools.CleanPopup<string>("Language", Lan.Language,
-                Lan.AllLanguages.Keys.ToList());
+            var lan = EditorTools.CleanPopup<string>("Language", Lan.Language, Lan.AllLanguages.Keys.ToList());
             if (lan != Lan.Language)
             {
                 Lan.SetLanguage(lan);
@@ -29,44 +28,27 @@ namespace Darkness
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical("box");
-            Prefs.timeStepMode =
-                (Prefs.TimeStepMode)EditorGUILayout.EnumPopup(Lan.PreferencesTimeStepMode, Prefs.timeStepMode);
+            Prefs.timeStepMode = (Prefs.TimeStepMode)EditorGUILayout.EnumPopup(Lan.PreferencesTimeStepMode, Prefs.timeStepMode);
             if (Prefs.timeStepMode == Prefs.TimeStepMode.Seconds)
             {
-                Prefs.snapInterval = EditorTools.CleanPopup<float>(Lan.PreferencesSnapInterval, Prefs.snapInterval,
-                    Prefs.snapIntervals.ToList());
+                Prefs.snapInterval = EditorTools.CleanPopup<float>(Lan.PreferencesSnapInterval, Prefs.snapInterval, Prefs.snapIntervals.ToList());
             }
             else
             {
-                Prefs.frameRate = EditorTools.CleanPopup<int>(Lan.PreferencesFrameRate, Prefs.frameRate,
-                    Prefs.frameRates.ToList());
+                Prefs.frameRate = EditorTools.CleanPopup<int>(Lan.PreferencesFrameRate, Prefs.frameRate, Prefs.frameRates.ToList());
             }
 
             GUILayout.EndVertical();
-
             GUILayout.BeginVertical("box");
-            Prefs.magnetSnapping =
-                EditorGUILayout.Toggle(new GUIContent(Lan.PreferencesMagnetSnapping, Lan.PreferencesMagnetSnappingTips),
-                    Prefs.magnetSnapping);
-            Prefs.scrollWheelZooms =
-                EditorGUILayout.Toggle(
-                    new GUIContent(Lan.PreferencesScrollWheelZooms, Lan.PreferencesScrollWheelZoomsTips),
-                    Prefs.scrollWheelZooms);
+            Prefs.magnetSnapping = EditorGUILayout.Toggle(new GUIContent(Lan.PreferencesMagnetSnapping, Lan.PreferencesMagnetSnappingTips), Prefs.magnetSnapping);
+            Prefs.scrollWheelZooms = EditorGUILayout.Toggle(new GUIContent(Lan.PreferencesScrollWheelZooms, Lan.PreferencesScrollWheelZoomsTips), Prefs.scrollWheelZooms);
             GUILayout.EndVertical();
-
             GUILayout.BeginVertical("box");
-
-            Prefs.savePath = EditorTools.GUILayoutGetFolderPath(Lan.PreferencesSavePath, Lan.PreferencesSavePathTips,
-                Prefs.savePath, true);
-
-            Prefs.autoSaveSeconds = EditorGUILayout.IntSlider(
-                new GUIContent(Lan.PreferencesAutoSaveTime, Lan.PreferencesAutoSaveTimeTips), Prefs.autoSaveSeconds, 5,
-                120);
+            Prefs.savePath = EditorTools.GUILayoutGetFolderPath(Lan.PreferencesSavePath, Lan.PreferencesSavePathTips, Prefs.savePath, true);
+            Prefs.SerializeSavePath = EditorTools.GUILayoutGetFolderPath(Lan.SerializeSavePath, "序列化文件保存地址", Prefs.SerializeSavePath, true);
+            Prefs.autoSaveSeconds = EditorGUILayout.IntSlider(new GUIContent(Lan.PreferencesAutoSaveTime, Lan.PreferencesAutoSaveTimeTips), Prefs.autoSaveSeconds, 5, 120);
             GUILayout.EndVertical();
-
-
             GUILayout.EndVertical();
-
             DrawHelpButton();
         }
 

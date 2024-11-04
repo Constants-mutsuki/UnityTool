@@ -100,6 +100,7 @@ namespace Darkness
         public static string PreferencesScrollWheelZooms = "滚轮缩放";
         public static string PreferencesScrollWheelZoomsTips = "是否开启滚轮缩放时间轴区域";
         public static string PreferencesSavePath = "配置保存地址";
+        public static string SerializeSavePath = "序列化文件地址";
         public static string PreferencesSavePathTips = "创建和选择时的默认地址";
         public static string PreferencesAutoSaveTime = "自动保存时间";
         public static string PreferencesAutoSaveTimeTips = "定时自动保存操作的间隔时间";
