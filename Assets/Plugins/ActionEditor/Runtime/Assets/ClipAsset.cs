@@ -5,9 +5,10 @@ namespace Darkness
 {
     [Serializable]
     [Attachable(typeof(TrackAsset))]
-    public abstract class ClipAsset : DirectableAsset
+    public class ClipAsset : DirectableAsset
     {
-        private Clip m_clip;
+        [SerializeReference]
+        public Clip ClipModel;
         
         [SerializeField]
         private float startTime;
@@ -24,7 +25,7 @@ namespace Darkness
             set => m_parent = value;
         }
 
-        public string Name
+        public string NameClip
         {
             get => name;
             set => name = value;
@@ -135,11 +136,7 @@ namespace Darkness
                 }
             }
         }
-
-        public void SetUp(Clip clip)
-        {
-            m_clip = clip;
-        }
+        
 
         #region Unity Editor
 #if UNITY_EDITOR

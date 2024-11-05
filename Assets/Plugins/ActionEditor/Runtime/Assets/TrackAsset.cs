@@ -95,7 +95,7 @@ namespace Darkness
                 Name = catAtt.Category + " Track";
             }
 
-            var newAction = CreateInstance(type) as ClipAsset;
+            var newAction = CreateInstance<ClipAsset>() ;
 
             CreateUtilities.SaveAssetIntoObject(newAction, this);
             DirectorUtility.SelectedObject = newAction;
@@ -104,6 +104,7 @@ namespace Darkness
             {
                 newAction.Parent = this;
                 newAction.StartTime = time;
+                newAction.ClipModel = Activator.CreateInstance(type) as Clip;
                 Clips.Add(newAction);
 
                 var nextAction = Clips.FirstOrDefault(a => a.StartTime > newAction.StartTime);
@@ -150,14 +151,7 @@ namespace Darkness
 #endif
         #endregion
 
-        public void SetUp(Track track)
-        {
-            trackModel = track;
-            for (int i = 0; i < Clips.Count; i++)
-            {
-                Clips[i].SetUp(trackModel.clips[i]);
-            }
-        }
+        
 
 
         internal bool IsCompilable()

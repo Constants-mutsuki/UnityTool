@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using MemoryPack;
+using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,8 +14,7 @@ namespace Darkness
     [ShowIcon(typeof(Animator))]
     public sealed class TimelineGraphAsset : ScriptableObject, IData
     {
-        private TimelineGraph m_timelineGraph;
-
+        
         [SerializeField]
         private float length = 5f;
 
@@ -52,15 +55,7 @@ namespace Darkness
         public float ViewTime => ViewTimeMax - ViewTimeMin;
 
         public List<DirectableAsset> Directables { get; private set; }
-
-        public void SetUp(TimelineGraph graph)
-        {
-            m_timelineGraph = graph;
-            for (int i = 0; i < groups.Count; i++)
-            {
-                groups[i].SetUp(graph.groups[i]);
-            }
-        }
+        
 
         public T AddGroup<T>() where T : GroupAsset, new()
         {
@@ -95,6 +90,46 @@ namespace Darkness
             }
 
             return newGroup;
+        }
+
+        [Button]
+        public void SerializaGraphModel()
+        {
+            var graphmodel = new TimelineGraph();
+            graphmodel.groups = new List<Group>();
+
+            foreach (var groupAsset in groups)
+            {
+                var groupModel = groupAsset.groupModel; 
+                groupModel.tracks = new List<Track>();
+
+                foreach (var trackAsset in groupAsset.Tracks)
+                {
+                    var trackModel = trackAsset.trackModel; 
+                    trackModel.clips = new List<Clip>();
+
+                    foreach (var clipAsset in trackAsset.Clips)
+                    {
+                        var clipModel = clipAsset.ClipModel; 
+                        
+                        //对Clip属性做同步
+                        clipModel.startTime = clipAsset.StartTime;
+                        clipModel.length = clipAsset.Length;
+                        trackModel.clips.Add(clipModel);
+                    }
+                    
+                    groupModel.tracks.Add(trackModel);
+                }
+                
+                graphmodel.groups.Add(groupModel);
+            }
+            
+            
+            byte[] serializedData = MemoryPackSerializer.Serialize(graphmodel);
+            using (FileStream file = File.Create($"{EditorConfig.SavePath}/{name}.bytes"))
+            {
+                file.Write(serializedData, 0, serializedData.Length);
+            }
         }
 
         public void Validate()

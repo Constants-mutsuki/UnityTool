@@ -70,15 +70,7 @@ namespace Darkness
             get => isLocked;
             set => isLocked = value;
         }
-
-        public void SetUp(Group group)
-        {
-            groupModel = group;
-            for (int i = 0; i < Tracks.Count; i++)
-            {
-                Tracks[i].SetUp(groupModel.tracks[i]);
-            }
-        }
+        
 
         #region 增删
         public bool CanAddTrack(TrackAsset trackAsset)

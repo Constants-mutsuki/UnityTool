@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MemoryPack;
 
 
 namespace Darkness
 {
+    [Serializable]
     [MemoryPackable]
-    public partial  class TimelineGraph
+    public partial class TimelineGraph
     {
         public float length;
         public WarpCategory warpCategory;
