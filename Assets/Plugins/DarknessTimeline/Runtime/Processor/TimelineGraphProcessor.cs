@@ -28,8 +28,16 @@ namespace Darkness
         private List<GroupProcessor> groups;
         private BlackboardProcessor<string> context;
         private Events<string> events;
+        private GameObject m_owner;
+        public GameObject Owner
+        {
+            get => m_owner;
+            set => m_owner = value;
+        }
+        
         
         public WarpCategory PlayingWarpMode => data.warpCategory;
+        
         
         public CFloat StartTime
         {

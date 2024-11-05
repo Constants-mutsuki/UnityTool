@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 #if USE_FIXED_POINT
 using CMath = Box2DSharp.Common.FMath;
@@ -24,6 +25,8 @@ namespace Darkness
         CFloat Length { get; }
         CFloat CurrentTime { get; set; }
         CFloat PreviousTime { get; }
+
+        GameObject Owner { get; set; }
 
         void Reset();
     }

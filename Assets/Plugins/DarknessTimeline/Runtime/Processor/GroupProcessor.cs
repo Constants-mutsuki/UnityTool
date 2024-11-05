@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 #if USE_FIXED_POINT
 using CMath = Box2DSharp.Common.FMath;
 using CFloat = Box2DSharp.Common.FP;
@@ -34,6 +35,8 @@ namespace Darkness
         public ITimelineGraph Root { get; private set; }
         public IDirectable Parent => null;
 
+        public GameObject Owner => Root.Owner;
+        
         protected Group Data => data;
         
         public IEnumerable<IDirectable> Children => tracks != null ? tracks : Array.Empty<IDirectable>();
