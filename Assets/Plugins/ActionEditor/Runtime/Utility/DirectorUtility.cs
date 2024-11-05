@@ -1,15 +1,21 @@
-﻿using UnityEditor;
+﻿using System;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 namespace Darkness
 {
     public static class DirectorUtility
     {
+        [NonSerialized]
+        private static InspectorAsset m_currentInspector;
         private static ClipAsset m_copyClipAsset;
-        private static System.Type m_copyClipType;
-        [System.NonSerialized]
+        private static Type m_copyClipType;
+        [NonSerialized]
         private static ScriptableObject m_selectedObject;
-        public static event System.Action<ScriptableObject> onSelectionChange;
+        public static event Action<ScriptableObject> OnSelectionChange;
+
+        public static InspectorAsset CurrentInspector => m_currentInspector ??= ScriptableObject.CreateInstance<InspectorAsset>();
 
         public static ClipAsset CopyClipAsset
         {
@@ -45,7 +51,12 @@ namespace Darkness
             set
             {
                 m_selectedObject = value;
-                onSelectionChange?.Invoke(value);
+                OnSelectionChange?.Invoke(value);
+/*#if UNITY_EDITOR
+                CurrentInspector.Target = m_selectedObject;
+                Selection.activeObject = CurrentInspector;
+                EditorUtility.SetDirty(CurrentInspector);
+#endif*/
             }
         }
     }

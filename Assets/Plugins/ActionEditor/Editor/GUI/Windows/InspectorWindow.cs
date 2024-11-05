@@ -18,8 +18,8 @@ namespace Darkness
 
         public static void Init()
         {
-            DirectorUtility.onSelectionChange -= OnSelectionChange;
-            DirectorUtility.onSelectionChange += OnSelectionChange;
+            DirectorUtility.OnSelectionChange -= OnSelectionChange;
+            DirectorUtility.OnSelectionChange += OnSelectionChange;
         }
 
         private static void ShowWindow()
@@ -30,7 +30,7 @@ namespace Darkness
 
         private void OnDisable()
         {
-            DirectorUtility.onSelectionChange -= OnSelectionChange;
+            DirectorUtility.OnSelectionChange -= OnSelectionChange;
         }
 
         private static void OnSelectionChange(ScriptableObject obj)
@@ -63,15 +63,7 @@ namespace Darkness
                 minSize = new Vector2(400, GUILayoutUtility.GetLastRect().yMax + 10);
             }
         }
-
-        private void UpdateWindowHeight()
-        {
-            float contentHeight = GUILayoutUtility.GetLastRect().yMax + 10; // 获取最后一个控件的底部坐标
-            float newHeight = Mathf.Max(contentHeight, 400); // 确保最小高度为 400
-            minSize = new Vector2(400, newHeight); // 设置窗口的最小尺寸
-            maxSize = new Vector2(400, float.MaxValue); // 允许高度无上限
-        }
-
+        
         private void DrawGraphInspector()
         {
             if (!App.GraphAsset) return;

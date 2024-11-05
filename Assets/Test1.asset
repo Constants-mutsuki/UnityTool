@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_parent: {fileID: -8539024984120088609}
-  startTime: 0.81
+  startTime: 0.61
 --- !u!114 &6972688913714640555
 MonoBehaviour:
   m_ObjectHideFlags: 1
