@@ -35,12 +35,12 @@ namespace Darkness
 
         private static void OnSelectionChange(ScriptableObject obj)
         {
-            if (!m_instance)
-            {
-                ShowWindow();
-            }
             if (obj)
             {
+                if (!m_instance)
+                {
+                    ShowWindow();
+                }
                 m_selection = obj;
                 m_instance?.Repaint();
             }
@@ -63,7 +63,7 @@ namespace Darkness
                 minSize = new Vector2(400, GUILayoutUtility.GetLastRect().yMax + 10);
             }
         }
-        
+
         private void DrawGraphInspector()
         {
             if (!App.GraphAsset) return;
@@ -125,7 +125,7 @@ namespace Darkness
 
             var type = m_selection.GetType();
             var nameAttribute = type.GetCustomAttribute<NameAttribute>();
-            string nameInfo = nameAttribute != null ? nameAttribute.name : type.Name.SplitCamelCase();
+            string nameInfo = nameAttribute != null ? nameAttribute.Name : type.Name.SplitCamelCase();
 
             GUI.color = new Color(0, 0, 0, 0.2f);
             GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
@@ -134,7 +134,7 @@ namespace Darkness
             GUILayout.EndHorizontal();
 
             var description = type.GetCustomAttribute<DescriptionAttribute>();
-            string desc = description?.description ?? string.Empty;
+            string desc = description?.Description ?? string.Empty;
 
             if (!string.IsNullOrEmpty(desc))
             {

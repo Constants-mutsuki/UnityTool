@@ -10,9 +10,8 @@ namespace Darkness
     [ShowIcon(typeof(Animator))]
     public sealed class TimelineGraphAsset : ScriptableObject, IData
     {
-
         private TimelineGraph m_timelineGraph;
-        
+
         [SerializeField]
         private float length = 5f;
 
@@ -53,7 +52,7 @@ namespace Darkness
         public float ViewTime => ViewTimeMax - ViewTimeMin;
 
         public List<DirectableAsset> Directables { get; private set; }
-        
+
         public void SetUp(TimelineGraph graph)
         {
             m_timelineGraph = graph;
@@ -68,6 +67,7 @@ namespace Darkness
             var newGroup = CreateInstance<T>();
             newGroup.Name = "New Group";
             newGroup.Root = this;
+            newGroup.groupModel = new Group();
             groups.Add(newGroup);
             CreateUtilities.SaveAssetIntoObject(newGroup, this);
             DirectorUtility.SelectedObject = newGroup;
@@ -112,6 +112,5 @@ namespace Darkness
             AssetDatabase.SaveAssets();
 #endif
         }
-        
     }
 }

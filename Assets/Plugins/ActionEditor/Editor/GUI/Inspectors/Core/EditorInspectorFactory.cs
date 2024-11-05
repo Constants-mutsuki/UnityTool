@@ -42,13 +42,13 @@ namespace Darkness
             var children = EditorTools.GetTypeMetaDerivedFrom(type);
             foreach (var t in children)
             {
-                var arrs = t.type.GetCustomAttributes(typeof(CustomInspectors), true);
+                var arrs = t.Type.GetCustomAttributes(typeof(CustomInspectors), true);
                 foreach (var arr in arrs)
                 {
                     if (arr is CustomInspectors c)
                     {
-                        var bindT = c._inspectedType;
-                        var iT = t.type;
+                        var bindT = c.InspectedType;
+                        var iT = t.Type;
                         if (!dictionary.ContainsKey(bindT))
                         {
                             if (!iT.IsAbstract) dictionary[bindT] = iT;

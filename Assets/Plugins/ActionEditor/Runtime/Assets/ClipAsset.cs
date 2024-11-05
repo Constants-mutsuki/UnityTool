@@ -7,9 +7,7 @@ namespace Darkness
     [Attachable(typeof(TrackAsset))]
     public abstract class ClipAsset : DirectableAsset
     {
-
         private Clip m_clip;
-        
         
         [SerializeField]
         private float startTime;
@@ -79,7 +77,7 @@ namespace Darkness
                 var nameAtt = GetType().RTGetAttribute<NameAttribute>(true);
                 if (nameAtt != null)
                 {
-                    return nameAtt.name;
+                    return nameAtt.Name;
                 }
 
                 return GetType().Name.SplitCamelCase();

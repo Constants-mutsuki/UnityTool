@@ -39,11 +39,11 @@ namespace Darkness
                 {
                     if (attribute is OptionRelateParamAttribute option)
                     {
-                        var relate = Array.Find(fieldInfos, f1 => f1.Name == option.argsName);
+                        var relate = Array.Find(fieldInfos, f1 => f1.Name == option.ArgsName);
                         if (relate != null)
                         {
                             var value = relate.GetValue(m_target);
-                            var index = Array.FindIndex(option.argsValue, v1 => v1.Equals(value));
+                            var index = Array.FindIndex(option.ArgsValue, v1 => v1.Equals(value));
                             if (index < 0)
                             {
                                 need = false;
@@ -83,7 +83,7 @@ namespace Darkness
                 var t = attribute.GetType();
                 if (attribute is MenuNameAttribute menuNameAttribute)
                 {
-                    name = menuNameAttribute.showName;
+                    name = menuNameAttribute.ShowName;
                 }
                 else if (attribute is RangeAttribute rangeAttribute && fieldType == typeof(float))
                 {
@@ -93,12 +93,12 @@ namespace Darkness
                 else if (attribute is OptionParamAttribute option)
                 {
                     showType = t;
-                    args = new List<object> { option.classType };
+                    args = new List<object> { option.ClassType };
                 }
                 else if (attribute is SelectObjectPathAttribute selectObjectPathAttribute)
                 {
                     showType = t;
-                    args = new List<object> { selectObjectPathAttribute.type };
+                    args = new List<object> { selectObjectPathAttribute.Type };
                 }
             }
 
@@ -191,7 +191,7 @@ namespace Darkness
                 foreach (var f in fields)
                 {
                     var menuNameAttr = f.GetCustomAttribute<MenuNameAttribute>();
-                    title.Add(menuNameAttr != null ? menuNameAttr.showName : f.Name);
+                    title.Add(menuNameAttr != null ? menuNameAttr.ShowName : f.Name);
                 }
 
                 mask = (int)value;
@@ -248,12 +248,12 @@ namespace Darkness
             var i2 = 99;
             if (sort1 != null)
             {
-                i1 = sort1.sort;
+                i1 = sort1.Sort;
             }
 
             if (sort2 != null)
             {
-                i2 = sort2.sort;
+                i2 = sort2.Sort;
             }
 
             return i1 - i2;

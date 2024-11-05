@@ -23,12 +23,12 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public sealed class MenuNameAttribute : Attribute
     {
+        public string ShowName;
+
         public MenuNameAttribute(string name)
         {
-            showName = name;
+            ShowName = name;
         }
-
-        public string showName;
     }
 
     /// <summary>
@@ -37,11 +37,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Field)]
     public class OptionParamAttribute : Attribute
     {
-        public Type classType;
+        public Type ClassType;
 
         public OptionParamAttribute(Type type)
         {
-            classType = type;
+            ClassType = type;
         }
     }
 
@@ -51,11 +51,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Field)]
     public class OptionSortAttribute : Attribute
     {
-        public int sort;
+        public int Sort;
 
         public OptionSortAttribute(int sort)
         {
-            this.sort = sort;
+            this.Sort = sort;
         }
     }
 
@@ -65,13 +65,13 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Field)]
     public class OptionRelateParamAttribute : Attribute
     {
-        public string argsName;
-        public object[] argsValue;
+        public string ArgsName;
+        public object[] ArgsValue;
 
         public OptionRelateParamAttribute(string name, params object[] values)
         {
-            argsName = name;
-            argsValue = values;
+            ArgsName = name;
+            ArgsValue = values;
         }
     }
 
@@ -81,11 +81,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Field)]
     public class SelectObjectPathAttribute : Attribute
     {
-        public Type type;
+        public Type Type;
 
         public SelectObjectPathAttribute(Type type)
         {
-            this.type = type;
+            this.Type = type;
         }
     }
 
@@ -95,18 +95,18 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Class)]
     public class CustomInspectors : Attribute
     {
-        public Type _inspectedType;
-        public bool _editorForChildClasses;
+        public Type InspectedType;
+        public bool EditorForChildClasses;
 
         public CustomInspectors(Type inspectedType)
         {
-            _inspectedType = inspectedType;
+            InspectedType = inspectedType;
         }
 
         public CustomInspectors(Type inspectedType, bool editorForChildClasses)
         {
-            _inspectedType = inspectedType;
-            _editorForChildClasses = editorForChildClasses;
+            InspectedType = inspectedType;
+            EditorForChildClasses = editorForChildClasses;
         }
     }
 
@@ -116,11 +116,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Class)]
     public class NameAttribute : Attribute
     {
-        public readonly string name;
+        public readonly string Name;
 
         public NameAttribute(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
     }
 
@@ -131,11 +131,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Class)]
     public class CategoryAttribute : Attribute
     {
-        public readonly string category;
+        public readonly string Category;
 
         public CategoryAttribute(string category)
         {
-            this.category = category;
+            this.Category = category;
         }
     }
 
@@ -145,11 +145,11 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Class)]
     public class DescriptionAttribute : Attribute
     {
-        public readonly string description;
+        public readonly string Description;
 
         public DescriptionAttribute(string description)
         {
-            this.description = description;
+            this.Description = description;
         }
     }
 
@@ -159,23 +159,23 @@ namespace Darkness
     [AttributeUsage(AttributeTargets.Class)]
     public class ShowIconAttribute : Attribute
     {
-        public readonly string iconPath;
-        public readonly Type fromType;
-        public readonly Texture texture;
+        public readonly string IconPath;
+        public readonly Type FromType;
+        public readonly Texture Texture;
 
         public ShowIconAttribute(Texture texture)
         {
-            this.texture = texture;
+            this.Texture = texture;
         }
 
         public ShowIconAttribute(string iconPath)
         {
-            this.iconPath = iconPath;
+            this.IconPath = iconPath;
         }
 
         public ShowIconAttribute(Type fromType)
         {
-            this.fromType = fromType;
+            this.FromType = fromType;
         }
     }
 

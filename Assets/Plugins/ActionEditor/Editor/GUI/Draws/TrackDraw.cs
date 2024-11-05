@@ -28,30 +28,30 @@ namespace Darkness.Draws
 
             if (att != null)
             {
-                if (att.texture != null)
+                if (att.Texture != null)
                 {
-                    icon = att.texture;
+                    icon = att.Texture;
                 }
-                else if (!string.IsNullOrEmpty(att.iconPath))
+                else if (!string.IsNullOrEmpty(att.IconPath))
                 {
-                    if (att.iconPath.StartsWith("Assets/"))
+                    if (att.IconPath.StartsWith("Assets/"))
                     {
-                        icon = AssetDatabase.LoadAssetAtPath<Texture>(att.iconPath);
+                        icon = AssetDatabase.LoadAssetAtPath<Texture>(att.IconPath);
                     }
                     else
                     {
-                        icon = Resources.Load(att.iconPath) as Texture;
+                        icon = Resources.Load(att.IconPath) as Texture;
                     }
                 }
 
-                if (icon == null && !string.IsNullOrEmpty(att.iconPath))
+                if (icon == null && !string.IsNullOrEmpty(att.IconPath))
                 {
-                    icon = EditorGUIUtility.FindTexture(att.iconPath);
+                    icon = EditorGUIUtility.FindTexture(att.IconPath);
                 }
 
-                if (icon == null && att.fromType != null)
+                if (icon == null && att.FromType != null)
                 {
-                    icon = AssetPreview.GetMiniTypeThumbnail(att.fromType);
+                    icon = AssetPreview.GetMiniTypeThumbnail(att.FromType);
                 }
             }
 
@@ -184,14 +184,14 @@ namespace Darkness.Draws
 
                 foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ClipAsset)))
                 {
-                    if (!clip.attachableTypes.Contains(trackAsset.GetType()))
+                    if (!clip.AttachableTypes.Contains(trackAsset.GetType()))
                     {
                         continue;
                     }
 
                     if (existingCatAtt != null)
                     {
-                        if (existingCatAtt.category == clip.category)
+                        if (existingCatAtt.Category == clip.Category)
                         {
                             attachableTypeInfos.Add(clip);
                         }
@@ -208,14 +208,14 @@ namespace Darkness.Draws
                     foreach (var _info in attachableTypeInfos)
                     {
                         var info = _info;
-                        var category = string.IsNullOrEmpty(info.category) ? string.Empty : (info.category + "/");
-                        var tName = info.name;
+                        var category = string.IsNullOrEmpty(info.Category) ? string.Empty : (info.Category + "/");
+                        var tName = info.Name;
                         menu.AddItem(new GUIContent(category + tName), false,
-                            () => { trackAsset.AddClip(info.type, cursorTime); });
+                            () => { trackAsset.AddClip(info.Type, cursorTime); });
                     }
 
                     var copyType = DirectorUtility.GetCopyType();
-                    if (copyType != null && attachableTypeInfos.Select(i => i.type).Contains(copyType))
+                    if (copyType != null && attachableTypeInfos.Select(i => i.Type).Contains(copyType))
                     {
                         menu.AddSeparator("/");
                         menu.AddItem(new GUIContent(string.Format(Lan.ClipPaste, copyType.Name)), false,

@@ -7,8 +7,11 @@ namespace Darkness
 {
     [Serializable]
     [Attachable(typeof(GroupAsset))]
-    public abstract class TrackAsset : DirectableAsset
+    public class TrackAsset : DirectableAsset
     {
+        [SerializeReference]
+        public Track trackModel;
+
         [SerializeField]
         private List<ClipAsset> actionClips = new List<ClipAsset>();
 
@@ -22,10 +25,6 @@ namespace Darkness
 
         [SerializeField]
         private Color color = Color.white;
-
-        //Data
-        private Track m_track;
-
 
         public Color Color => color.a > 0.1f ? color : Color.white;
 
@@ -83,7 +82,6 @@ namespace Darkness
 
 
         #region 增删
-
 #if UNITY_EDITOR
         public T AddClip<T>(float time) where T : ClipAsset
         {
@@ -94,7 +92,7 @@ namespace Darkness
         {
             if (type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() is CategoryAttribute catAtt && Clips.Count == 0)
             {
-                Name = catAtt.category + " Track";
+                Name = catAtt.Category + " Track";
             }
 
             var newAction = CreateInstance(type) as ClipAsset;
@@ -150,15 +148,14 @@ namespace Darkness
             return newClip;
         }
 #endif
-
         #endregion
 
         public void SetUp(Track track)
         {
-            m_track = track;
+            trackModel = track;
             for (int i = 0; i < Clips.Count; i++)
             {
-                Clips[i].SetUp(m_track.clips[i]);
+                Clips[i].SetUp(trackModel.clips[i]);
             }
         }
 
@@ -169,14 +166,14 @@ namespace Darkness
         }
 
 
-        bool m_CacheSorted;
+        bool m_cacheSorted;
 
         public void SortClips()
         {
-            if (!m_CacheSorted)
+            if (!m_cacheSorted)
             {
                 Clips.Sort((clip1, clip2) => clip1.StartTime.CompareTo(clip2.StartTime));
-                m_CacheSorted = true;
+                m_cacheSorted = true;
             }
         }
     }

@@ -200,7 +200,7 @@ namespace Darkness
             var types = ReflectionTools.GetImplementationsOf(typeof(TimelineGraphAsset));
             foreach (var t in types)
             {
-                var typeName = t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.name : t.Name.SplitCamelCase();
+                var typeName = t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.Name : t.Name.SplitCamelCase();
                 AssetTypes[typeName] = t;
                 AssetNames.Add(typeName);
             }

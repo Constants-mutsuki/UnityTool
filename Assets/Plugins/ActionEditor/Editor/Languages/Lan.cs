@@ -19,7 +19,7 @@ namespace Darkness
             foreach (var t in types)
             {
                 var nameAtt = (NameAttribute)t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault();
-                var name = nameAtt != null ? nameAtt.name : t.Name.SplitCamelCase();
+                var name = nameAtt != null ? nameAtt.Name : t.Name.SplitCamelCase();
                 AllLanguages[name] = t;
                 if (string.IsNullOrEmpty(lan) && t == typeof(LanCHS))
                 {

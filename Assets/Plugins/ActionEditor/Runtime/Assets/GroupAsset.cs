@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Darkness
 {
     [Serializable]
     public class GroupAsset : DirectableAsset
     {
-        //Data
-        private Group m_group;
-        
+        [SerializeReference]
+        public Group groupModel;
+
         [SerializeField, HideInInspector]
         private List<TrackAsset> tracks = new();
 
@@ -69,21 +70,20 @@ namespace Darkness
             get => isLocked;
             set => isLocked = value;
         }
-        
+
         public void SetUp(Group group)
         {
-            m_group = group;
+            groupModel = group;
             for (int i = 0; i < Tracks.Count; i++)
             {
-                Tracks[i].SetUp(m_group.tracks[i]);
+                Tracks[i].SetUp(groupModel.tracks[i]);
             }
         }
 
         #region 增删
-
         public bool CanAddTrack(TrackAsset trackAsset)
         {
-            return trackAsset != null && CanAddTrackOfType(trackAsset.GetType());
+            return trackAsset && CanAddTrackOfType(trackAsset.GetType());
         }
 
         public bool CanAddTrackOfType(Type type)
@@ -93,8 +93,7 @@ namespace Darkness
                 return false;
             }
 
-            if (type.IsDefined(typeof(UniqueAttribute), true) &&
-                Tracks.FirstOrDefault(t => t.GetType() == type) != null)
+            if (type.IsDefined(typeof(UniqueAttribute), true) && Tracks.FirstOrDefault(t => t.GetType() == type) != null)
             {
                 return false;
             }
@@ -108,27 +107,16 @@ namespace Darkness
             return true;
         }
 
-        public T AddTrack<T>(string _name = null) where T : TrackAsset
+        public TrackAsset AddTrack(Type type, string trackName = null)
         {
-            return (T)AddTrack(typeof(T), _name);
-        }
-
-        public TrackAsset AddTrack(Type type, string _name = null)
-        {
-            var newTrack = CreateInstance(type);
-            if (newTrack is TrackAsset track)
-            {
-                track.Name = type.Name;
-                track.Parent = this;
-                Tracks.Add(track);
-
-                CreateUtilities.SaveAssetIntoObject(track, this);
-                DirectorUtility.SelectedObject = track;
-
-                return track;
-            }
-
-            return null;
+            var newTrack = CreateInstance<TrackAsset>();
+            newTrack.Name = type.Name;
+            newTrack.Parent = this;
+            newTrack.trackModel = Activator.CreateInstance(type) as Track;
+            Tracks.Add(newTrack);
+            CreateUtilities.SaveAssetIntoObject(newTrack, this);
+            DirectorUtility.SelectedObject = newTrack;
+            return newTrack;
         }
 
         public void DeleteTrack(TrackAsset trackAsset)
@@ -168,7 +156,6 @@ namespace Darkness
 
             return newTrack;
         }
-
         #endregion
     }
 }

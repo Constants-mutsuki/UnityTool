@@ -10,11 +10,11 @@ namespace Darkness
     {
         public struct TypeMetaInfo
         {
-            public Type type;
-            public string name;
-            public string category;
-            public Type[] attachableTypes;
-            public bool isUnique;
+            public Type Type;
+            public string Name;
+            public string Category;
+            public Type[] AttachableTypes;
+            public bool IsUnique;
         }
 
         public static void BoldSeparator()
@@ -37,18 +37,15 @@ namespace Darkness
             GUI.enabled = true;
             if (GUILayout.Button(Lan.Select, GUILayout.Width(40)))
             {
-                var select_path =
-                    EditorUtility.OpenFilePanel(Lan.SelectFile,
-                        "Assets/", "");
-                if (string.IsNullOrEmpty(select_path)) return str;
-                int asset_start_index = select_path.IndexOf("Assets", StringComparison.Ordinal);
-                if (asset_start_index > -1)
+                var selectPath = EditorUtility.OpenFilePanel(Lan.SelectFile, "Assets/", "");
+                if (string.IsNullOrEmpty(selectPath)) return str;
+                int assetStartIndex = selectPath.IndexOf("Assets", StringComparison.Ordinal);
+                if (assetStartIndex > -1)
                 {
-                    select_path = select_path.Substring(asset_start_index,
-                        select_path.Length - asset_start_index);
+                    selectPath = selectPath.Substring(assetStartIndex, selectPath.Length - assetStartIndex);
                 }
 
-                str = select_path;
+                str = selectPath;
             }
 
             GUILayout.EndHorizontal();
@@ -63,18 +60,15 @@ namespace Darkness
             GUI.enabled = true;
             if (GUILayout.Button(Lan.Select, GUILayout.Width(40)))
             {
-                var select_path =
-                    EditorUtility.OpenFolderPanel(Lan.SelectFolder,
-                        "Assets/", "");
-                if (string.IsNullOrEmpty(select_path)) return str;
-                int asset_start_index = select_path.IndexOf("Assets", StringComparison.Ordinal);
-                if (asset_start_index > -1)
+                var selectPath = EditorUtility.OpenFolderPanel(Lan.SelectFolder, "Assets/", "");
+                if (string.IsNullOrEmpty(selectPath)) return str;
+                int assetStartIndex = selectPath.IndexOf("Assets", StringComparison.Ordinal);
+                if (assetStartIndex > -1)
                 {
-                    select_path = select_path.Substring(asset_start_index,
-                        select_path.Length - asset_start_index);
+                    selectPath = selectPath.Substring(assetStartIndex, selectPath.Length - assetStartIndex);
                 }
 
-                str = select_path;
+                str = selectPath;
             }
 
             GUILayout.EndHorizontal();
@@ -82,13 +76,12 @@ namespace Darkness
         }
 
         ///Generic Popup for selection of any element within a list
-        public static T Popup<T>(string prefix, T selected, List<T> options, params GUILayoutOption[] GUIOptions)
+        public static T Popup<T>(string prefix, T selected, List<T> options, params GUILayoutOption[] guiOptions)
         {
-            return Popup<T>(null, prefix, selected, options, GUIOptions);
+            return Popup<T>(null, prefix, selected, options, guiOptions);
         }
 
-        public static T Popup<T>(Rect? rect, string prefix, T selected, List<T> options,
-            params GUILayoutOption[] GUIOptions)
+        public static T Popup<T>(Rect? rect, string prefix, T selected, List<T> options, params GUILayoutOption[] guiOptions)
         {
             var index = 0;
             if (options.Contains(selected))
@@ -110,25 +103,11 @@ namespace Darkness
             GUI.enabled = stringedOptions.Count > 1;
             if (!string.IsNullOrEmpty(prefix))
             {
-                if (rect == null)
-                {
-                    index = EditorGUILayout.Popup(prefix, index, stringedOptions.ToArray(), GUIOptions);
-                }
-                else
-                {
-                    index = EditorGUI.Popup(rect.Value, prefix, index, stringedOptions.ToArray());
-                }
+                index = rect == null ? EditorGUILayout.Popup(prefix, index, stringedOptions.ToArray(), guiOptions) : EditorGUI.Popup(rect.Value, prefix, index, stringedOptions.ToArray());
             }
             else
             {
-                if (rect == null)
-                {
-                    index = EditorGUILayout.Popup(index, stringedOptions.ToArray(), GUIOptions);
-                }
-                else
-                {
-                    index = EditorGUI.Popup(rect.Value, index, stringedOptions.ToArray());
-                }
+                index = rect == null ? EditorGUILayout.Popup(index, stringedOptions.ToArray(), guiOptions) : EditorGUI.Popup(rect.Value, index, stringedOptions.ToArray());
             }
 
             GUI.enabled = true;
@@ -150,9 +129,7 @@ namespace Darkness
             var stringedOptions = options.Select(o => o != null ? o.ToString() : "NONE");
 
             GUI.enabled = options.Count > 0;
-            if (!string.IsNullOrEmpty(prefix))
-                index = EditorGUILayout.Popup(prefix, index, stringedOptions.ToArray(), GUIOptions);
-            else index = EditorGUILayout.Popup(index, stringedOptions.ToArray(), GUIOptions);
+            index = !string.IsNullOrEmpty(prefix) ? EditorGUILayout.Popup(prefix, index, stringedOptions.ToArray(), GUIOptions) : EditorGUILayout.Popup(index, stringedOptions.ToArray(), GUIOptions);
             GUI.enabled = true;
 
             return index == -1 ? default(T) : options[index];
@@ -168,38 +145,33 @@ namespace Darkness
             var infos = new List<TypeMetaInfo>();
             foreach (var type in ReflectionTools.GetImplementationsOf(baseType))
             {
-                if (type.GetCustomAttributes(typeof(System.ObsoleteAttribute), true).FirstOrDefault() != null)
+                if (type.GetCustomAttributes(typeof(ObsoleteAttribute), true).FirstOrDefault() != null)
                 {
                     continue;
                 }
 
                 var info = new TypeMetaInfo
                 {
-                    type = type,
-                    name =
-                        type.GetCustomAttributes(typeof(NameAttribute), true).FirstOrDefault() is NameAttribute nameAtt
-                            ? nameAtt.name
-                            : type.Name.SplitCamelCase()
+                    Type = type,
+                    Name = type.GetCustomAttributes(typeof(NameAttribute), true).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.Name : type.Name.SplitCamelCase()
                 };
 
-                if (type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() is CategoryAttribute
-                    catAtt)
+                if (type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() is CategoryAttribute catAtt)
                 {
-                    info.category = catAtt.category;
+                    info.Category = catAtt.Category;
                 }
 
-                if (type.GetCustomAttributes(typeof(AttachableAttribute), true).FirstOrDefault() is AttachableAttribute
-                    attachAtt)
+                if (type.GetCustomAttributes(typeof(AttachableAttribute), true).FirstOrDefault() is AttachableAttribute attachAtt)
                 {
-                    info.attachableTypes = attachAtt.Types;
+                    info.AttachableTypes = attachAtt.Types;
                 }
 
-                info.isUnique = type.IsDefined(typeof(UniqueAttribute), true);
+                info.IsUnique = type.IsDefined(typeof(UniqueAttribute), true);
 
                 infos.Add(info);
             }
 
-            infos = infos.OrderBy(i => i.name).ThenBy(i => i.category).ToList();
+            infos = infos.OrderBy(i => i.Name).ThenBy(i => i.Category).ToList();
             return infos;
         }
 
@@ -214,7 +186,7 @@ namespace Darkness
             var children = GetTypeMetaDerivedFrom(type);
             foreach (var t in children)
             {
-                var iT = t.type;
+                var iT = t.Type;
                 //如果不是抽象类就更新
                 if (!iT.IsAbstract)
                 {

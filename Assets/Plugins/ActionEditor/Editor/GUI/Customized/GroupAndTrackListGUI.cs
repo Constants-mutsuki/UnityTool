@@ -160,26 +160,26 @@ namespace Darkness
                 if ((e.type == EventType.ContextClick && groupRect.Contains(e.mousePosition)) || plusClicked)
                 {
                     var menu = new GenericMenu();
-                    foreach (var _info in EditorTools.GetTypeMetaDerivedFrom(typeof(TrackAsset)))
+                    foreach (var metaInfo in EditorTools.GetTypeMetaDerivedFrom(typeof(Track)))
                     {
-                        var info = _info;
-                        if (info.attachableTypes == null || !info.attachableTypes.Contains(group.GetType()))
+                        var info = metaInfo;
+                        if (info.AttachableTypes == null || !info.AttachableTypes.Contains(group.GetType()))
                         {
                             continue;
                         }
 
-                        var canAdd = !info.isUnique || (group.Tracks.Find(track => track.GetType() == info.type) == null);
+                        var canAdd = !info.IsUnique || (group.Tracks.Find(track => track.GetType() == info.Type) == null);
                         if (group.IsLocked)
                         {
                             canAdd = false;
                         }
 
-                        var finalPath = string.IsNullOrEmpty(info.category) ? info.name : info.category + "/" + info.name;
+                        var finalPath = string.IsNullOrEmpty(info.Category) ? info.Name : info.Category + "/" + info.Name;
                         if (canAdd)
                         {
                             menu.AddItem(new GUIContent($"{Lan.MenuAddTrack}/" + finalPath), false, () =>
                             {
-                                group.AddTrack(info.type);
+                                group.AddTrack(info.Type);
                             });
                         }
                         else

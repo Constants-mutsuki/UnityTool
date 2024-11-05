@@ -13,11 +13,18 @@ MonoBehaviour:
   m_Name: 22222
   m_EditorClassIdentifier: 
   m_parent: {fileID: -4346854750122615498}
+  trackModel:
+    rid: -2
   actionClips:
   - {fileID: 6598853516095389705}
   active: 1
   isLocked: 0
   color: {r: 1, g: 1, b: 1, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-5009052898146838168
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -31,10 +38,17 @@ MonoBehaviour:
   m_Name: New Group
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-4346854750122615498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -48,11 +62,19 @@ MonoBehaviour:
   m_Name: 11111
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks:
   - {fileID: -8539024984120088609}
+  - {fileID: 4800614277549093508}
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-3075218850349766518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -66,10 +88,17 @@ MonoBehaviour:
   m_Name: New Group
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-1471650833230000987
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -83,10 +112,17 @@ MonoBehaviour:
   m_Name: New Group
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &-1456535569122864205
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -114,11 +150,18 @@ MonoBehaviour:
   m_Name: 22222(Clone)
   m_EditorClassIdentifier: 
   m_parent: {fileID: -4346854750122615498}
+  trackModel:
+    rid: -2
   actionClips:
   - {fileID: -1456535569122864205}
   active: 1
   isLocked: 0
   color: {r: 1, g: 1, b: 1, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +179,58 @@ MonoBehaviour:
   viewTimeMax: 4
   groups:
   - {fileID: -4346854750122615498}
+  - {fileID: 5131698649604654032}
+  - {fileID: 1794407232222234001}
+--- !u!114 &1794407232222234001
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
+  m_Name: New Group
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
+  tracks: []
+  isCollapsed: 0
+  active: 1
+  isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &4800614277549093508
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11db1f7a654bb4e46a88b78e9959dbea, type: 3}
+  m_Name: ExampleTrack
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -4346854750122615498}
+  trackModel:
+    rid: 7626350204177875005
+  actionClips: []
+  active: 1
+  isLocked: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7626350204177875005
+      type: {class: ExampleTrack, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        active: 0
 --- !u!114 &4822193062677031292
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -149,10 +244,41 @@ MonoBehaviour:
   m_Name: New Group
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &5131698649604654032
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
+  m_Name: New Group
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
+  tracks: []
+  isCollapsed: 0
+  active: 1
+  isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6598853516095389705
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -180,7 +306,14 @@ MonoBehaviour:
   m_Name: New Group
   m_EditorClassIdentifier: 
   m_parent: {fileID: 0}
+  groupModel:
+    rid: -2
   tracks: []
   isCollapsed: 0
   active: 1
   isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

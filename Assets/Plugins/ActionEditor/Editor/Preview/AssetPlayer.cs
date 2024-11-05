@@ -152,13 +152,13 @@ namespace Darkness
             var children = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
             foreach (var t in children)
             {
-                var arrs = t.type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
+                var arrs = t.Type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
                 foreach (var arr in arrs)
                 {
                     if (arr is CustomPreviewAttribute c)
                     {
                         var bindT = c.PreviewType;
-                        var iT = t.type;
+                        var iT = t.Type;
                         if (!typeDic.ContainsKey(bindT))
                         {
                             if (!iT.IsAbstract) typeDic[bindT] = iT;
