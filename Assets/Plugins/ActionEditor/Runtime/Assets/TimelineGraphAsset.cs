@@ -126,7 +126,7 @@ namespace Darkness
             
             
             byte[] serializedData = MemoryPackSerializer.Serialize(graphmodel);
-            using (FileStream file = File.Create($"{EditorConfig.SavePath}/{name}.bytes"))
+            using (FileStream file = File.Create($"{Prefs.SerializeSavePath}/{name}.bytes"))
             {
                 file.Write(serializedData, 0, serializedData.Length);
             }
