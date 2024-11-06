@@ -18,12 +18,12 @@ namespace Darkness
 
         public virtual void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            DrawDefaultInspector(m_target.GetType());
         }
 
-        public void DrawDefaultInspector()
+        public void DrawDefaultInspector(Type type)
         {
-            var t = m_target.GetType();
+            var t = type;
             //得到字段的值,只能得到public类型的字典的值
             FieldInfo[] fieldInfos = t.GetFields();
             //排序一下，子类的字段在后，父类的在前
@@ -61,15 +61,15 @@ namespace Darkness
 
             foreach (var field in needShowField)
             {
-                FieldDefaultInspector(field);
+                FieldDefaultInspector(field,m_target);
             }
         }
 
-        protected void FieldDefaultInspector(FieldInfo field)
+        protected void FieldDefaultInspector(FieldInfo field , object Obj)
         {
             var fieldType = field.FieldType;
             var showType = field.FieldType;
-            var value = field.GetValue(m_target);
+            var value = field.GetValue(Obj);
             var newValue = value;
 
             //首字母大写
@@ -99,6 +99,14 @@ namespace Darkness
                 {
                     showType = t;
                     args = new List<object> { selectObjectPathAttribute.Type };
+                }
+                else if (attribute is SerializeReference)
+                {
+                    foreach (var fieldInfo in fieldType.GetFields())
+                    {
+                        FieldDefaultInspector(fieldInfo,field.GetValue(Obj));
+                    }
+                    return;
                 }
             }
 
@@ -132,7 +140,7 @@ namespace Darkness
             }
             else if (showType == typeof(AnimationCurve))
             {
-                AnimationCurve curve = field.GetValue(m_target) as AnimationCurve;
+                AnimationCurve curve = field.GetValue(Obj) as AnimationCurve;
                 if (curve == null)
                 {
                     curve = new AnimationCurve();
@@ -218,7 +226,7 @@ namespace Darkness
             }
 
             if (value != newValue)
-                field.SetValue(m_target, newValue);
+                field.SetValue(Obj, newValue);
         }
 
         private int FieldsSprtBy(FieldInfo f1, FieldInfo f2)
