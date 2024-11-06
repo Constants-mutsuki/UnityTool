@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Darkness
 {
@@ -9,6 +10,8 @@ namespace Darkness
     [Attachable(typeof(ATrack))]
     public class AnimancerClip : Clip
     {
+        public string path;
+        public List<AnimancerClip> animancerClips;
     }
 
     [Serializable]
@@ -18,6 +21,7 @@ namespace Darkness
     [Attachable(typeof(BTrack))]
     public class BulletClip : Clip
     {
+        public int bulletCid;
     }
 
     [Serializable]
@@ -27,5 +31,6 @@ namespace Darkness
     [Attachable(typeof(CTrack))]
     public class DamageClip : Clip
     {
+        public float damageValue;
     }
 }

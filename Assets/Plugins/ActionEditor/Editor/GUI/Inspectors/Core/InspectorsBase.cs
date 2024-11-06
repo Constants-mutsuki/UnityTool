@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -61,11 +62,11 @@ namespace Darkness
 
             foreach (var field in needShowField)
             {
-                FieldDefaultInspector(field,m_target);
+                FieldDefaultInspector(field, m_target);
             }
         }
 
-        protected void FieldDefaultInspector(FieldInfo field , object Obj)
+        protected void FieldDefaultInspector(FieldInfo field, object Obj)
         {
             var fieldType = field.FieldType;
             var showType = field.FieldType;
@@ -102,10 +103,8 @@ namespace Darkness
                 }
                 else if (attribute is SerializeReference)
                 {
-                    foreach (var fieldInfo in fieldType.GetFields())
-                    {
-                        FieldDefaultInspector(fieldInfo,field.GetValue(Obj));
-                    }
+                    PropertyTree tree = PropertyTree.Create(field.GetValue(Obj));
+                    tree.Draw(false);
                     return;
                 }
             }
@@ -145,6 +144,7 @@ namespace Darkness
                 {
                     curve = new AnimationCurve();
                 }
+
                 newValue = EditorGUILayout.CurveField(name, curve);
             }
             else if (showType == typeof(Vector2))
