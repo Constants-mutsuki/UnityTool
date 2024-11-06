@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace Darkness
 {
-    public class InspectorWindow : EditorWindow
+    public class InspectorWindow : OdinEditorWindow
     {
         private static InspectorWindow m_instance;
         private static Rect m_rect;
@@ -18,8 +19,8 @@ namespace Darkness
 
         public static void Init()
         {
-            DirectorUtility.OnSelectionChange -= OnSelectionChange;
-            DirectorUtility.OnSelectionChange += OnSelectionChange;
+            DirectorUtility.OnSelectionChange -= OnAssetChange;
+            DirectorUtility.OnSelectionChange += OnAssetChange;
         }
 
         private static void ShowWindow()
@@ -28,12 +29,12 @@ namespace Darkness
             m_instance.minSize = new Vector2(400, 200);
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
-            DirectorUtility.OnSelectionChange -= OnSelectionChange;
+            DirectorUtility.OnSelectionChange -= OnAssetChange;
         }
 
-        private static void OnSelectionChange(ScriptableObject obj)
+        private static void OnAssetChange(ScriptableObject obj)
         {
             if (obj)
             {
@@ -41,18 +42,20 @@ namespace Darkness
                 {
                     ShowWindow();
                 }
+
                 m_selection = obj;
                 m_instance?.Repaint();
             }
         }
 
-        private void OnGUI()
+        protected override void OnImGUI()
         {
             if (!DirectorUtility.SelectedObject)
             {
                 EditorGUILayout.HelpBox(Lan.NotSelectAsset, MessageType.Info);
                 return;
             }
+
             GUI.skin.GetStyle("label").richText = true;
             GUILayout.Space(5);
             DrawGraphInspector();
@@ -92,6 +95,7 @@ namespace Darkness
                 {
                     m_directableEditors[graphAsset] = drawer = EditorInspectorFactory.GetInspector(graphAsset);
                 }
+
                 drawer?.OnInspectorGUI();
             }
         }
@@ -107,7 +111,8 @@ namespace Darkness
 
             if (m_currentDirectableEditor != drawer)
             {
-                var enableMethod = drawer.GetType().GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+                var enableMethod = drawer.GetType().GetMethod("OnEnable",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
                 enableMethod?.Invoke(drawer, null);
 
                 m_currentDirectableEditor = drawer;
@@ -140,6 +145,7 @@ namespace Darkness
             {
                 EditorGUILayout.HelpBox(desc, MessageType.None);
             }
+
             GUILayout.Space(2);
         }
     }

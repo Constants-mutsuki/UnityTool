@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Darkness
 {
-    public class InspectorsBase : OdinEditor
+    public class InspectorsBase
     {
         protected object m_target;
 
@@ -17,10 +17,9 @@ namespace Darkness
             m_target = t;
         }
 
-        public override void OnInspectorGUI()
+        public virtual void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
-            //DrawDefaultInspector(m_target.GetType());
+            DrawDefaultInspector(m_target.GetType());
         }
 
         public void DrawDefaultInspector(Type type)
@@ -63,15 +62,15 @@ namespace Darkness
 
             foreach (var field in needShowField)
             {
-                FieldDefaultInspector(field,m_target);
+                FieldDefaultInspector(field, m_target);
             }
         }
 
-        protected void FieldDefaultInspector(FieldInfo field , object Obj)
+        protected void FieldDefaultInspector(FieldInfo field, object target)
         {
             var fieldType = field.FieldType;
             var showType = field.FieldType;
-            var value = field.GetValue(Obj);
+            var value = field.GetValue(target);
             var newValue = value;
 
             //首字母大写
@@ -104,8 +103,21 @@ namespace Darkness
                 }
                 else if (attribute is SerializeReference)
                 {
-                    // 获取字段的实际对象
-                    var fieldValue = field.GetValue(Obj);
+                    PropertyTree tree = PropertyTree.Create(value);
+                    tree.BeginDraw(false);
+                    foreach (var property in tree.EnumerateTree(false, true))
+                    {
+                        EditorGUI.BeginChangeCheck();
+                        property.Draw();
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            field.SetValue(target, value);
+                        }
+                    }
+
+                    tree.EndDraw();
+                    /*// 获取字段的实际对象
+                    var fieldValue = field.GetValue(target);
 
                     if (fieldValue == null)
                     {
@@ -123,7 +135,7 @@ namespace Darkness
 
                         // 递归调用
                         FieldDefaultInspector(fieldInfo, fieldValue);
-                    }
+                    }*/
                     return;
                 }
             }
@@ -158,11 +170,12 @@ namespace Darkness
             }
             else if (showType == typeof(AnimationCurve))
             {
-                AnimationCurve curve = field.GetValue(Obj) as AnimationCurve;
+                AnimationCurve curve = field.GetValue(target) as AnimationCurve;
                 if (curve == null)
                 {
                     curve = new AnimationCurve();
                 }
+
                 newValue = EditorGUILayout.CurveField(name, curve);
             }
             else if (showType == typeof(Vector2))
@@ -244,7 +257,7 @@ namespace Darkness
             }
 
             if (value != newValue)
-                field.SetValue(Obj, newValue);
+                field.SetValue(target, newValue);
         }
 
         private int FieldsSprtBy(FieldInfo f1, FieldInfo f2)
