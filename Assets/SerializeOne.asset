@@ -24,8 +24,7 @@ MonoBehaviour:
       data:
         startTime: 0
         length: 0
-        path: 
-        animancerClips: []
+        clips: []
 --- !u!114 &-3276147498517465581
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -50,7 +49,6 @@ MonoBehaviour:
       data:
         startTime: 0
         length: 0
-        damageValue: 0
 --- !u!114 &-3090507242900302545
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -117,7 +115,6 @@ MonoBehaviour:
       data:
         startTime: 0.37
         length: 0
-        damageValue: 0
 --- !u!114 &-1654506489273019075
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -161,8 +158,8 @@ MonoBehaviour:
   m_Name: SerializeOne
   m_EditorClassIdentifier: 
   length: 5
-  viewTimeMin: 0
-  viewTimeMax: 7
+  viewTimeMin: -0.07977481
+  viewTimeMax: 4.541431
   groups:
   - {fileID: -3090507242900302545}
 --- !u!114 &5329669125964721060
@@ -189,7 +186,6 @@ MonoBehaviour:
       data:
         startTime: 0.37
         length: 0
-        bulletCid: 0
 --- !u!114 &5543293717361020475
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -235,17 +231,16 @@ MonoBehaviour:
   m_parent: {fileID: 5543293717361020475}
   clipModel:
     rid: 7626350227717357637
-  startTime: 0.89
+  startTime: 0.29
   references:
     version: 2
     RefIds:
     - rid: 7626350227717357637
       type: {class: AnimancerClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
       data:
-        startTime: 2.15
+        startTime: 0.29
         length: 0
-        path: 
-        animancerClips: []
+        clips: []
 --- !u!114 &6204635687993349769
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -300,4 +295,3 @@ MonoBehaviour:
       data:
         startTime: 0
         length: 0
-        bulletCid: 0
