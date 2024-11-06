@@ -1,12 +1,15 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Darkness
 {
     [Serializable]
-    [Attachable(typeof(TrackAsset))]
-    public abstract class ClipAsset : DirectableAsset
+    public class ClipAsset : DirectableAsset
     {
+        [SerializeReference]
+        public Clip clipModel;
+
         [SerializeField]
         private float startTime;
 
@@ -22,7 +25,7 @@ namespace Darkness
             set => m_parent = value;
         }
 
-        public string Name
+        public string NameClip
         {
             get => name;
             set => name = value;
@@ -68,21 +71,17 @@ namespace Darkness
         }
 
 
-        public virtual string info
+        public virtual string Info
         {
             get
             {
-                var nameAtt = GetType().RTGetAttribute<NameAttribute>(true);
-                if (nameAtt != null)
-                {
-                    return nameAtt.name;
-                }
+                var nameAtt = clipModel.GetType().RTGetAttribute<NameAttribute>(true);
+                return nameAtt != null ? nameAtt.Name : GetType().Name.SplitCamelCase();
 
-                return GetType().Name.SplitCamelCase();
             }
         }
 
-        public virtual bool isValid => true;
+        public virtual bool IsValid => true;
 
 
         public ClipAsset GetNextClip()
@@ -134,8 +133,8 @@ namespace Darkness
             }
         }
 
-        #region Unity Editor
 
+        #region Unity Editor
 #if UNITY_EDITOR
 
         public void ShowClipGUI(Rect rect)
@@ -157,7 +156,6 @@ namespace Darkness
         }
 
 #endif
-
         #endregion
     }
 }

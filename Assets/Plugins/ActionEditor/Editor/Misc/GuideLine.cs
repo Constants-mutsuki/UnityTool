@@ -4,13 +4,13 @@ namespace Darkness
 {
     internal struct GuideLine
     {
-        public float time;
-        public Color color;
+        public readonly float Time;
+        public Color Color;
 
         public GuideLine(float time, Color color)
         {
-            this.time = time;
-            this.color = color;
+            this.Time = time;
+            this.Color = color;
         }
     }
 }

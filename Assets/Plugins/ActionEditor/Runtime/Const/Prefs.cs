@@ -11,8 +11,7 @@ namespace Darkness
 {
     public static class Prefs
     {
-        public static readonly string CONFIG_PATH =
-            $"{Application.dataPath}/../ProjectSettings/NBCActionEditor.txt";
+        public static readonly string ConfigPath = $"{Application.dataPath}/../ProjectSettings/NBCActionEditor.txt";
 
         [Serializable]
         public enum TimeStepMode
@@ -30,6 +29,7 @@ namespace Darkness
 
             public int AutoSaveSeconds;
             public string SavePath = "Assets/";
+            public string SerialieSavePath = "Assets/";
             public bool ScrollWheelZooms = true;
 
             public bool MagnetSnapping = true;
@@ -45,9 +45,9 @@ namespace Darkness
             {
                 if (_data == null)
                 {
-                    if (File.Exists(CONFIG_PATH))
+                    if (File.Exists(ConfigPath))
                     {
-                        var json = File.ReadAllText(CONFIG_PATH);
+                        var json = File.ReadAllText(ConfigPath);
                         _data = JsonUtility.FromJson<SerializedData>(json);
                     }
 
@@ -104,6 +104,18 @@ namespace Darkness
             }
         }
 
+        public static string SerializeSavePath
+        {
+            get => data.SerialieSavePath;
+            set
+            {
+                if (data.SerialieSavePath != value)
+                {
+                    data.SerialieSavePath = value;
+                    Save();
+                }
+            }
+        }
 
         public static bool magnetSnapping
         {
@@ -174,7 +186,7 @@ namespace Darkness
 
         static void Save()
         {
-            System.IO.File.WriteAllText(CONFIG_PATH, JsonUtility.ToJson(data));
+            System.IO.File.WriteAllText(ConfigPath, JsonUtility.ToJson(data));
         }
 
 
@@ -188,7 +200,7 @@ namespace Darkness
             var types = ReflectionTools.GetImplementationsOf(typeof(TimelineGraphAsset));
             foreach (var t in types)
             {
-                var typeName = t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.name : t.Name.SplitCamelCase();
+                var typeName = t.GetCustomAttributes(typeof(NameAttribute), false).FirstOrDefault() is NameAttribute nameAtt ? nameAtt.Name : t.Name.SplitCamelCase();
                 AssetTypes[typeName] = t;
                 AssetNames.Add(typeName);
             }

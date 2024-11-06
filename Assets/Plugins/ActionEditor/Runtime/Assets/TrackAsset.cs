@@ -6,9 +6,11 @@ using UnityEngine;
 namespace Darkness
 {
     [Serializable]
-    [Attachable(typeof(GroupAsset))]
-    public abstract class TrackAsset : DirectableAsset
+    public class TrackAsset : DirectableAsset
     {
+        [SerializeReference]
+        public Track trackModel;
+
         [SerializeField]
         private List<ClipAsset> actionClips = new List<ClipAsset>();
 
@@ -22,7 +24,6 @@ namespace Darkness
 
         [SerializeField]
         private Color color = Color.white;
-
 
         public Color Color => color.a > 0.1f ? color : Color.white;
 
@@ -80,47 +81,44 @@ namespace Darkness
 
 
         #region 增删
-
 #if UNITY_EDITOR
-        public T AddClip<T>(float time) where T : ClipAsset
+        public ClipAsset AddClip<T>(float time) where T : Clip
         {
-            return (T)AddClip(typeof(T), time);
+            return AddClip(typeof(T), time);
         }
 
         public ClipAsset AddClip(Type type, float time)
         {
             if (type.GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() is CategoryAttribute catAtt && Clips.Count == 0)
             {
-                Name = catAtt.category + " Track";
+                Name = catAtt.Category + " Track";
             }
 
-            var newAction = CreateInstance(type) as ClipAsset;
-
-            CreateUtilities.SaveAssetIntoObject(newAction, this);
-            DirectorUtility.selectedObject = newAction;
-
-            if (newAction != null)
+            var newClip = CreateInstance<ClipAsset>();
+            CreateUtilities.SaveAssetIntoObject(newClip, this);
+            DirectorUtility.SelectedObject = newClip;
+            if (newClip != null)
             {
-                newAction.Parent = this;
-                newAction.StartTime = time;
-                Clips.Add(newAction);
-
-                var nextAction = Clips.FirstOrDefault(a => a.StartTime > newAction.StartTime);
+                newClip.Parent = this;
+                newClip.StartTime = time;
+                newClip.clipModel = Activator.CreateInstance(type) as Clip;
+                Clips.Add(newClip);
+                var nextAction = Clips.FirstOrDefault(a => a.StartTime > newClip.StartTime);
                 if (nextAction != null)
                 {
-                    newAction.EndTime = Mathf.Min(newAction.EndTime, nextAction.StartTime);
+                    newClip.EndTime = Mathf.Min(newClip.EndTime, nextAction.StartTime);
                 }
             }
 
-            return newAction;
+            return newClip;
         }
 
         public void DeleteClip(ClipAsset action)
         {
             Clips.Remove(action);
-            if (ReferenceEquals(DirectorUtility.selectedObject, action))
+            if (ReferenceEquals(DirectorUtility.SelectedObject, action))
             {
-                DirectorUtility.selectedObject = null;
+                DirectorUtility.SelectedObject = null;
             }
         }
 
@@ -147,8 +145,9 @@ namespace Darkness
             return newClip;
         }
 #endif
-
         #endregion
+
+
 
 
         internal bool IsCompilable()
@@ -157,14 +156,14 @@ namespace Darkness
         }
 
 
-        bool m_CacheSorted;
+        bool m_cacheSorted;
 
         public void SortClips()
         {
-            if (!m_CacheSorted)
+            if (!m_cacheSorted)
             {
                 Clips.Sort((clip1, clip2) => clip1.StartTime.CompareTo(clip2.StartTime));
-                m_CacheSorted = true;
+                m_cacheSorted = true;
             }
         }
     }

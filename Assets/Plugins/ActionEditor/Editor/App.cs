@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace Darkness
@@ -20,6 +23,7 @@ namespace Darkness
 
         public static TimelineGraphAsset GraphAsset { get; set; }
 
+        public static TimelineGraph GraphModel { get; set; }
 
         public static void OnObjectPickerConfig(Object obj)
         {
@@ -27,6 +31,11 @@ namespace Darkness
             {
                 GraphAsset = a;
                 GraphAsset.Validate();
+                /*string uiScenePath = "Plugins/ActionEditor/Scene/TimelineEditor.unity";
+                if (SceneManager.GetActiveScene().name != "AbilityEditor")
+                {
+                    EditorSceneManager.OpenScene(Path.Combine(Application.dataPath, uiScenePath));
+                }*/
             }
         }
 
@@ -38,7 +47,6 @@ namespace Darkness
 
 
         #region AutoSave
-
         private static DateTime m_lastSaveTime = DateTime.Now;
         public static DateTime LastSaveTime => m_lastSaveTime;
 
@@ -60,21 +68,23 @@ namespace Darkness
             m_lastSaveTime = DateTime.Now;
             SaveAsset();
         }
-
         #endregion
 
         #region 播放相关
+        private static AssetPlayer Player => AssetPlayer.Instance;
 
-        private static AssetPlayer m_player => AssetPlayer.Instance;
-
-        public static bool IsStop =>
-            Application.isPlaying ? m_player.IsPaused || !m_player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
+        public static GameObject Owner
+        {
+            get => Player.Owner;
+            set => Player.Owner = value;
+        }
+        public static bool IsStop => Application.isPlaying ? Player.IsPaused || !Player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
 
         internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stopped;
 
         public static WrapMode EditorPlaybackWrapMode = WrapMode.Loop;
 
-        public static bool IsPlay => m_player.CurrentTime > 0;
+        public static bool IsPlay => Player.CurrentTime > 0;
 
         public static void Play(Action callback = null)
         {
@@ -101,33 +111,32 @@ namespace Darkness
         public static void Stop(bool forceRewind)
         {
             if (GraphAsset)
-                m_player.CurrentTime = 0;
+                Player.CurrentTime = 0;
             EditorPlaybackState = EditorPlaybackState.Stopped;
             OnStop?.Invoke();
         }
 
         public static void StepForward()
         {
-            if (Math.Abs(m_player.CurrentTime - m_player.Length) < 0.00001f)
+            if (Math.Abs(Player.CurrentTime - Player.Length) < 0.00001f)
             {
-                m_player.CurrentTime = 0;
+                Player.CurrentTime = 0;
                 return;
             }
 
-            m_player.CurrentTime += Prefs.snapInterval;
+            Player.CurrentTime += Prefs.snapInterval;
         }
 
         public static void StepBackward()
         {
-            if (m_player.CurrentTime == 0)
+            if (Player.CurrentTime == 0)
             {
-                m_player.CurrentTime = m_player.Length;
+                Player.CurrentTime = Player.Length;
                 return;
             }
 
-            m_player.CurrentTime -= Prefs.snapInterval;
+            Player.CurrentTime -= Prefs.snapInterval;
         }
-
         #endregion
     }
 }

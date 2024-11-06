@@ -1,20 +1,21 @@
-﻿using UnityEditor;
+﻿using System;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 namespace Darkness
 {
     public static class DirectorUtility
     {
+        [NonSerialized]
+        private static InspectorAsset m_currentInspector;
         private static ClipAsset m_copyClipAsset;
-        private static System.Type _copyClipType;
+        private static Type m_copyClipType;
+        [NonSerialized]
+        private static ScriptableObject m_selectedObject;
+        public static event Action<ScriptableObject> OnSelectionChange;
 
-        [System.NonSerialized]
-        private static InspectorPreviewAsset _currentInspectorPreviewAsset;
-
-        [System.NonSerialized]
-        private static ScriptableObject _selectedObject;
-
-        public static event System.Action<ScriptableObject> onSelectionChange;
+        public static InspectorAsset CurrentInspector => m_currentInspector ??= ScriptableObject.CreateInstance<InspectorAsset>();
 
         public static ClipAsset CopyClipAsset
         {
@@ -22,70 +23,40 @@ namespace Darkness
             set
             {
                 m_copyClipAsset = value;
-                if (value != null)
-                {
-                    _copyClipType = value.GetType();
-                }
-                else
-                {
-                    _copyClipType = default;
-                }
+                m_copyClipType = value ? value.GetType() : default;
             }
         }
 
         public static System.Type GetCopyType()
         {
-            return _copyClipType;
+            return m_copyClipType;
         }
-
 
         public static void FlushCopyClip()
         {
-            _copyClipType = null;
+            m_copyClipType = null;
             m_copyClipAsset = null;
         }
-
 
         public static void CutClip(ClipAsset clipAsset)
         {
             m_copyClipAsset = clipAsset;
-            _copyClipType = clipAsset.GetType();
+            m_copyClipType = clipAsset.GetType();
             (clipAsset.Parent as TrackAsset)?.DeleteClip(clipAsset);
         }
 
-
-        public static InspectorPreviewAsset CurrentInspectorPreviewAsset
+        public static ScriptableObject SelectedObject
         {
-            get
-            {
-                if (_currentInspectorPreviewAsset == null)
-                {
-                    _currentInspectorPreviewAsset = ScriptableObject.CreateInstance<InspectorPreviewAsset>();
-                }
-
-                return _currentInspectorPreviewAsset;
-            }
-        }
-
-
-        public static ScriptableObject selectedObject
-        {
-            get => _selectedObject;
+            get => m_selectedObject;
             set
             {
-                _selectedObject = value;
-                if (value != null)
-                {
-#if UNITY_EDITOR
-                    Selection.activeObject = CurrentInspectorPreviewAsset;
-                    EditorUtility.SetDirty(CurrentInspectorPreviewAsset);
-#endif
-                }
-
-                if (onSelectionChange != null)
-                {
-                    onSelectionChange(value);
-                }
+                m_selectedObject = value;
+                OnSelectionChange?.Invoke(value);
+/*#if UNITY_EDITOR
+                CurrentInspector.Target = m_selectedObject;
+                Selection.activeObject = CurrentInspector;
+                EditorUtility.SetDirty(CurrentInspector);
+#endif*/
             }
         }
     }

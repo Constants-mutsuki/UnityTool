@@ -12,17 +12,17 @@ namespace Darkness
         /// <summary>
         /// 类型映射
         /// </summary>
-        private static readonly Dictionary<Type, Type> _customizedTypeDic = new Dictionary<Type, Type>();
+        private static readonly Dictionary<Type, Type> s_customizedTypeDic = new Dictionary<Type, Type>();
 
         /// <summary>
         /// 类型实例映射
         /// </summary>
-        private static readonly Dictionary<Type, ICustomized> _customizedInstDic = new Dictionary<Type, ICustomized>();
+        private static readonly Dictionary<Type, ICustomized> s_customizedInstDic = new Dictionary<Type, ICustomized>();
 
         public static void Draw<T>() where T : ICustomized
         {
             var type = typeof(T);
-            if (_customizedInstDic.TryGetValue(type, out var customized) && customized != null)
+            if (s_customizedInstDic.TryGetValue(type, out var customized) && customized != null)
             {
                 customized.OnGUI();
                 return;
@@ -30,23 +30,23 @@ namespace Darkness
 
             var subType = GetSubclassType(type);
             if (subType == null) return;
-            _customizedTypeDic[type] = subType;
+            s_customizedTypeDic[type] = subType;
             if (Activator.CreateInstance(subType) is ICustomized custom)
             {
-                _customizedInstDic[type] = custom;
+                s_customizedInstDic[type] = custom;
                 custom.OnGUI();
             }
         }
 
         private static Type GetSubclassType(Type type)
         {
-            if (_customizedTypeDic.TryGetValue(type, out var t))
+            if (s_customizedTypeDic.TryGetValue(type, out var t))
             {
                 return t;
             }
 
-            EditorTools.GetTypeLastSubclass(type, _customizedTypeDic);
-            if (_customizedTypeDic.TryGetValue(type, out t))
+            EditorTools.GetTypeLastSubclass(type, s_customizedTypeDic);
+            if (s_customizedTypeDic.TryGetValue(type, out t))
             {
                 return t;
             }
@@ -58,7 +58,7 @@ namespace Darkness
 
         #region 绘制贴图
 
-        private static Dictionary<AudioClip, Texture2D> audioTextures = new Dictionary<AudioClip, Texture2D>();
+        private static Dictionary<AudioClip, Texture2D> m_audioTextures = new();
 
         public static Texture2D GetAudioClipTexture(AudioClip clip, int width, int height)
         {
@@ -69,7 +69,7 @@ namespace Darkness
 
             width = 8192;
 
-            if (audioTextures.TryGetValue(clip, out var texture))
+            if (m_audioTextures.TryGetValue(clip, out var texture))
             {
                 if (texture != null)
                 {
@@ -79,7 +79,7 @@ namespace Darkness
 
             if (clip.loadType != AudioClipLoadType.DecompressOnLoad)
             {
-                audioTextures[clip] = Styles.WhiteTexture;
+                m_audioTextures[clip] = Styles.WhiteTexture;
                 return null;
             }
 
@@ -111,7 +111,7 @@ namespace Darkness
             }
 
             texture.Apply();
-            audioTextures[clip] = texture;
+            m_audioTextures[clip] = texture;
             return texture;
         }
 

@@ -39,8 +39,8 @@ namespace Darkness
                             var t = attribute.GetType();
                             if (attribute is MenuNameAttribute menuNameAttribute)
                             {
-                                CacheMenuName[type][index] = menuNameAttribute.showName;
-                                return menuNameAttribute.showName;
+                                CacheMenuName[type][index] = menuNameAttribute.ShowName;
+                                return menuNameAttribute.ShowName;
                             }
                         }
                     }

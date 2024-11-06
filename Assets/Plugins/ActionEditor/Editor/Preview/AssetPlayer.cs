@@ -8,26 +8,24 @@ namespace Darkness
     public class AssetPlayer
     {
         private static AssetPlayer m_instance;
-
         public static AssetPlayer Instance
         {
             get { return m_instance ??= new AssetPlayer(); }
         }
-
+        private GameObject m_owner;
         private float m_playTimeMin;
         private float m_playTimeMax;
         private float m_currentTime;
         private bool m_preInitialized;
         private List<IDirectableTimePointer> m_timePointers;
-
-        /// <summary>
-        /// 预览器
-        /// </summary>
         private List<IDirectableTimePointer> m_unsortedStartTimePointers;
-
         public float PreviousTime { get; private set; }
         public TimelineGraphAsset SelectedGraph => App.GraphAsset;
-
+        public GameObject Owner
+        {
+            get => m_owner;
+            set => m_owner = value;
+        }
         /// <summary>
         /// 当前时间
         /// </summary>
@@ -57,7 +55,7 @@ namespace Darkness
         {
             get
             {
-                if (SelectedGraph != null)
+                if (SelectedGraph)
                 {
                     return SelectedGraph.Length;
                 }
@@ -74,7 +72,7 @@ namespace Darkness
         public void Sample(float time)
         {
             CurrentTime = time;
-            if ((m_currentTime == 0 || m_currentTime == Length) && PreviousTime == m_currentTime)
+            if ((m_currentTime == 0 || Mathf.Approximately(m_currentTime, Length)) && Mathf.Approximately(PreviousTime, m_currentTime))
             {
                 return;
             }
@@ -151,16 +149,16 @@ namespace Darkness
             m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
-            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
-            foreach (var t in childs)
+            var children = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
+            foreach (var t in children)
             {
-                var arrs = t.type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
+                var arrs = t.Type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
                 foreach (var arr in arrs)
                 {
                     if (arr is CustomPreviewAttribute c)
                     {
                         var bindT = c.PreviewType;
-                        var iT = t.type;
+                        var iT = t.Type;
                         if (!typeDic.ContainsKey(bindT))
                         {
                             if (!iT.IsAbstract) typeDic[bindT] = iT;
