@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using MemoryPack;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+
 
 namespace Darkness
 {
@@ -14,7 +14,6 @@ namespace Darkness
     [ShowIcon(typeof(Animator))]
     public sealed class TimelineGraphAsset : ScriptableObject, IData
     {
-        
         [SerializeField]
         private float length = 5f;
 
@@ -27,7 +26,7 @@ namespace Darkness
         [NonSerialized]
         private TrackAsset[] m_cacheOutputTracks;
 
-        [SerializeReference]
+        [SerializeField, HideInInspector]
         public List<GroupAsset> groups = new();
 
         public float Length
@@ -55,7 +54,7 @@ namespace Darkness
         public float ViewTime => ViewTimeMax - ViewTimeMin;
 
         public List<DirectableAsset> Directables { get; private set; }
-        
+
 
         public T AddGroup<T>() where T : GroupAsset, new()
         {
@@ -93,39 +92,42 @@ namespace Darkness
         }
 
         [Button]
-        public void SerializaGraphModel()
+        public void SerializeGraphModel()
         {
-            var graphmodel = new TimelineGraph();
-            graphmodel.groups = new List<Group>();
+            var graphModel = new TimelineGraph
+            {
+                groups = new List<Group>()
+            };
 
             foreach (var groupAsset in groups)
             {
-                var groupModel = groupAsset.groupModel; 
+                var groupModel = groupAsset.groupModel;
                 groupModel.tracks = new List<Track>();
 
                 foreach (var trackAsset in groupAsset.Tracks)
                 {
-                    var trackModel = trackAsset.trackModel; 
+                    var trackModel = trackAsset.trackModel;
                     trackModel.clips = new List<Clip>();
 
                     foreach (var clipAsset in trackAsset.Clips)
                     {
-                        var clipModel = clipAsset.ClipModel; 
-                        
+                        var clipModel = clipAsset.clipModel;
+
                         //对Clip属性做同步
                         clipModel.startTime = clipAsset.StartTime;
                         clipModel.length = clipAsset.Length;
                         trackModel.clips.Add(clipModel);
                     }
-                    
+
                     groupModel.tracks.Add(trackModel);
                 }
-                
-                graphmodel.groups.Add(groupModel);
+
+                graphModel.groups.Add(groupModel);
             }
             
+         
             
-            byte[] serializedData = MemoryPackSerializer.Serialize(graphmodel);
+            byte[] serializedData = MemoryPackSerializer.Serialize(graphModel);
             using (FileStream file = File.Create($"{Prefs.SerializeSavePath}/{name}.bytes"))
             {
                 file.Write(serializedData, 0, serializedData.Length);

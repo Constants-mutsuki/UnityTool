@@ -6,7 +6,7 @@ using MemoryPack;
 namespace Darkness
 {
     [Serializable]
-    [MemoryPackUnion(0, typeof(ExampleGroup))]
+    [MemoryPackable]
     public partial class Group
     {
         public bool active;

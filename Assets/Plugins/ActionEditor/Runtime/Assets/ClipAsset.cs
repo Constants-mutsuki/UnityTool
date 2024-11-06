@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Darkness
 {
@@ -8,7 +9,7 @@ namespace Darkness
     public class ClipAsset : DirectableAsset
     {
         [SerializeReference]
-        public Clip ClipModel;
+        public Clip clipModel;
         
         [SerializeField]
         private float startTime;

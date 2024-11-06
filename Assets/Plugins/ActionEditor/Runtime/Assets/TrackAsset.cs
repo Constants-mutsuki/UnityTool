@@ -83,9 +83,9 @@ namespace Darkness
 
         #region 增删
 #if UNITY_EDITOR
-        public T AddClip<T>(float time) where T : ClipAsset
+        public ClipAsset AddClip<T>(float time) where T : Clip
         {
-            return (T)AddClip(typeof(T), time);
+            return AddClip(typeof(T), time);
         }
 
         public ClipAsset AddClip(Type type, float time)
@@ -95,26 +95,23 @@ namespace Darkness
                 Name = catAtt.Category + " Track";
             }
 
-            var newAction = CreateInstance<ClipAsset>() ;
-
-            CreateUtilities.SaveAssetIntoObject(newAction, this);
-            DirectorUtility.SelectedObject = newAction;
-
-            if (newAction != null)
+            var newClip = CreateInstance<ClipAsset>();
+            CreateUtilities.SaveAssetIntoObject(newClip, this);
+            DirectorUtility.SelectedObject = newClip;
+            if (newClip != null)
             {
-                newAction.Parent = this;
-                newAction.StartTime = time;
-                newAction.ClipModel = Activator.CreateInstance(type) as Clip;
-                Clips.Add(newAction);
-
-                var nextAction = Clips.FirstOrDefault(a => a.StartTime > newAction.StartTime);
+                newClip.Parent = this;
+                newClip.StartTime = time;
+                newClip.clipModel = Activator.CreateInstance(type) as Clip;
+                Clips.Add(newClip);
+                var nextAction = Clips.FirstOrDefault(a => a.StartTime > newClip.StartTime);
                 if (nextAction != null)
                 {
-                    newAction.EndTime = Mathf.Min(newAction.EndTime, nextAction.StartTime);
+                    newClip.EndTime = Mathf.Min(newClip.EndTime, nextAction.StartTime);
                 }
             }
 
-            return newAction;
+            return newClip;
         }
 
         public void DeleteClip(ClipAsset action)
@@ -151,7 +148,7 @@ namespace Darkness
 #endif
         #endregion
 
-        
+
 
 
         internal bool IsCompilable()

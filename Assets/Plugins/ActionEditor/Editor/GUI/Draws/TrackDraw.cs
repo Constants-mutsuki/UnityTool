@@ -12,7 +12,6 @@ namespace Darkness.Draws
         private const float BOX_WIDTH = 30f;
 
         #region Icons
-
         private static readonly Dictionary<Type, Texture> _iconDictionary = new Dictionary<Type, Texture>();
         private static readonly Dictionary<Type, Color> _colorDictionary = new Dictionary<Type, Color>();
 
@@ -83,7 +82,6 @@ namespace Darkness.Draws
 
             return _colorDictionary[type];
         }
-
         #endregion
 
         public static void Draw(TrackAsset trackAsset, Rect trackRect)
@@ -105,8 +103,7 @@ namespace Darkness.Draws
 
             var iconBGRect = new Rect(4f, 0, BOX_WIDTH, trackAsset.ShowHeight);
             iconBGRect = iconBGRect.ExpandBy(-1);
-            var textInfoRect =
-                Rect.MinMaxRect(iconBGRect.xMax + 2, 0, trackRect.width - BOX_WIDTH - 2, trackAsset.ShowHeight);
+            var textInfoRect = Rect.MinMaxRect(iconBGRect.xMax + 2, 0, trackRect.width - BOX_WIDTH - 2, trackAsset.ShowHeight);
             var curveButtonRect = new Rect(trackRect.width - BOX_WIDTH, 0, BOX_WIDTH, trackAsset.ShowHeight);
 
             GUI.color = Color.black.WithAlpha(0.1f);
@@ -118,9 +115,7 @@ namespace Darkness.Draws
             {
                 var iconRect = new Rect(0, 0, 16, 16);
                 iconRect.center = iconBGRect.center;
-                GUI.color = ReferenceEquals(DirectorUtility.SelectedObject, trackAsset)
-                    ? Color.white
-                    : new Color(1, 1, 1, 0.8f);
+                GUI.color = ReferenceEquals(DirectorUtility.SelectedObject, trackAsset) ? Color.white : new Color(1, 1, 1, 0.8f);
                 GUI.DrawTexture(iconRect, icon);
                 GUI.color = Color.white;
             }
@@ -168,23 +163,20 @@ namespace Darkness.Draws
             GUI.color = Color.white;
             GUI.enabled = wasEnable;
         }
-        
+
         public static void DrawTrackContextMenu(TrackAsset trackAsset, Event e, Rect posRect, float cursorTime)
         {
-            var clipsPosRect =
-                Rect.MinMaxRect(posRect.xMin, posRect.yMin, posRect.xMax, posRect.yMin + trackAsset.ShowHeight);
+            var clipsPosRect = Rect.MinMaxRect(posRect.xMin, posRect.yMin, posRect.xMax, posRect.yMin + trackAsset.ShowHeight);
             if (e.type == EventType.ContextClick && clipsPosRect.Contains(e.mousePosition))
             {
                 var attachableTypeInfos = new List<EditorTools.TypeMetaInfo>();
 
                 var existing = trackAsset.Clips.FirstOrDefault();
-                var existingCatAtt =
-                    existing?.GetType().GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() as
-                        CategoryAttribute;
+                var existingCatAtt = existing?.GetType().GetCustomAttributes(typeof(CategoryAttribute), true).FirstOrDefault() as CategoryAttribute;
 
-                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(ClipAsset)))
+                foreach (var clip in EditorTools.GetTypeMetaDerivedFrom(typeof(Clip)))
                 {
-                    if (!clip.AttachableTypes.Contains(trackAsset.GetType()))
+                    if (!clip.AttachableTypes?.Contains(trackAsset.trackModel.GetType()) ?? true)
                     {
                         continue;
                     }
@@ -205,21 +197,25 @@ namespace Darkness.Draws
                 if (attachableTypeInfos.Count > 0)
                 {
                     var menu = new GenericMenu();
-                    foreach (var _info in attachableTypeInfos)
+                    foreach (var metaInfo in attachableTypeInfos)
                     {
-                        var info = _info;
+                        var info = metaInfo;
                         var category = string.IsNullOrEmpty(info.Category) ? string.Empty : (info.Category + "/");
                         var tName = info.Name;
-                        menu.AddItem(new GUIContent(category + tName), false,
-                            () => { trackAsset.AddClip(info.Type, cursorTime); });
+                        menu.AddItem(new GUIContent(category + tName), false, () =>
+                        {
+                            trackAsset.AddClip(info.Type, cursorTime);
+                        });
                     }
 
                     var copyType = DirectorUtility.GetCopyType();
                     if (copyType != null && attachableTypeInfos.Select(i => i.Type).Contains(copyType))
                     {
                         menu.AddSeparator("/");
-                        menu.AddItem(new GUIContent(string.Format(Lan.ClipPaste, copyType.Name)), false,
-                            () => { trackAsset.PasteClip(DirectorUtility.CopyClipAsset, cursorTime); });
+                        menu.AddItem(new GUIContent(string.Format(Lan.ClipPaste, copyType.Name)), false, () =>
+                        {
+                            trackAsset.PasteClip(DirectorUtility.CopyClipAsset, cursorTime);
+                        });
                     }
 
                     menu.ShowAsContext();
