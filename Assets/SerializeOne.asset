@@ -24,6 +24,7 @@ MonoBehaviour:
       data:
         startTime: 0
         length: 0
+        clips: []
 --- !u!114 &-3276147498517465581
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -157,8 +158,8 @@ MonoBehaviour:
   m_Name: SerializeOne
   m_EditorClassIdentifier: 
   length: 5
-  viewTimeMin: 0
-  viewTimeMax: 7
+  viewTimeMin: -0.07977481
+  viewTimeMax: 4.541431
   groups:
   - {fileID: -3090507242900302545}
 --- !u!114 &5329669125964721060
@@ -239,6 +240,7 @@ MonoBehaviour:
       data:
         startTime: 0.29
         length: 0
+        clips: []
 --- !u!114 &6204635687993349769
 MonoBehaviour:
   m_ObjectHideFlags: 1

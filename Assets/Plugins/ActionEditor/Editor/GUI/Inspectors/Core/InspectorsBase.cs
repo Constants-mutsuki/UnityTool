@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Darkness
 {
-    public class InspectorsBase
+    public class InspectorsBase : OdinEditor
     {
         protected object m_target;
 
@@ -16,9 +17,10 @@ namespace Darkness
             m_target = t;
         }
 
-        public virtual void OnInspectorGUI()
+        public override void OnInspectorGUI()
         {
-            DrawDefaultInspector(m_target.GetType());
+            base.OnInspectorGUI();
+            //DrawDefaultInspector(m_target.GetType());
         }
 
         public void DrawDefaultInspector(Type type)
@@ -102,9 +104,25 @@ namespace Darkness
                 }
                 else if (attribute is SerializeReference)
                 {
-                    foreach (var fieldInfo in fieldType.GetFields())
+                    // 获取字段的实际对象
+                    var fieldValue = field.GetValue(Obj);
+
+                    if (fieldValue == null)
                     {
-                        FieldDefaultInspector(fieldInfo,field.GetValue(Obj));
+                        Console.WriteLine("Field value is null");
+                        return;
+                    }
+
+                    // 获取实际对象的类型
+                    var runtimeType = fieldValue.GetType();
+
+                    // 获取实际类型的字段
+                    foreach (var fieldInfo in runtimeType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                    {
+                        Console.WriteLine($"Inspecting field: {fieldInfo.Name} of type {fieldInfo.FieldType.Name}");
+
+                        // 递归调用
+                        FieldDefaultInspector(fieldInfo, fieldValue);
                     }
                     return;
                 }

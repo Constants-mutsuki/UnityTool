@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Darkness
 {
@@ -9,6 +11,7 @@ namespace Darkness
     [Attachable(typeof(ATrack))]
     public class AnimancerClip : Clip
     {
+        public List<AnimationClip> clips;
     }
 
     [Serializable]
