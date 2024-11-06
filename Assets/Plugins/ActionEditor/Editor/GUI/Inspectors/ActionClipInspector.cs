@@ -31,7 +31,7 @@ namespace Darkness
 
         void ShowErrors()
         {
-            if (action.isValid) return;
+            if (action.IsValid) return;
             EditorGUILayout.HelpBox("该剪辑无效。 请确保设置了所需的参数。", MessageType.Error);
             GUILayout.Space(5);
         }

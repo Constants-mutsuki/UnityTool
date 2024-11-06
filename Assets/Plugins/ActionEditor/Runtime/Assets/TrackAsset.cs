@@ -6,7 +6,6 @@ using UnityEngine;
 namespace Darkness
 {
     [Serializable]
-    [Attachable(typeof(GroupAsset))]
     public class TrackAsset : DirectableAsset
     {
         [SerializeReference]

@@ -5,12 +5,11 @@ using UnityEngine.Serialization;
 namespace Darkness
 {
     [Serializable]
-    [Attachable(typeof(TrackAsset))]
     public class ClipAsset : DirectableAsset
     {
         [SerializeReference]
         public Clip clipModel;
-        
+
         [SerializeField]
         private float startTime;
 
@@ -72,21 +71,17 @@ namespace Darkness
         }
 
 
-        public virtual string info
+        public virtual string Info
         {
             get
             {
-                var nameAtt = GetType().RTGetAttribute<NameAttribute>(true);
-                if (nameAtt != null)
-                {
-                    return nameAtt.Name;
-                }
+                var nameAtt = clipModel.GetType().RTGetAttribute<NameAttribute>(true);
+                return nameAtt != null ? nameAtt.Name : GetType().Name.SplitCamelCase();
 
-                return GetType().Name.SplitCamelCase();
             }
         }
 
-        public virtual bool isValid => true;
+        public virtual bool IsValid => true;
 
 
         public ClipAsset GetNextClip()
@@ -137,7 +132,7 @@ namespace Darkness
                 }
             }
         }
-        
+
 
         #region Unity Editor
 #if UNITY_EDITOR

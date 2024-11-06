@@ -1,4 +1,5 @@
 ﻿using MemoryPack;
+using UnityEngine;
 
 namespace Darkness
 {
@@ -7,6 +8,7 @@ namespace Darkness
     [Description("ATrack")]
     [Color(r: 0.0f, 1f, 1f)]
     [Attachable(typeof(GroupAsset))]
+    [ShowIcon(typeof(Animator))]
     [MemoryPackable]
     public partial class ATrack : Track
     {

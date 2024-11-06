@@ -10,8 +10,6 @@ using UnityEngine;
 namespace Darkness
 {
     [Serializable]
-    [Name("时间轴")]
-    [ShowIcon(typeof(Animator))]
     public sealed class TimelineGraphAsset : ScriptableObject, IData
     {
         [SerializeField]

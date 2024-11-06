@@ -105,7 +105,7 @@ MonoBehaviour:
   m_parent: {fileID: 6204635687993349769}
   clipModel:
     rid: 7626350227717357635
-  startTime: 0.37
+  startTime: 0.5
   references:
     version: 2
     RefIds:
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 5
   viewTimeMin: 0
-  viewTimeMax: 5
+  viewTimeMax: 7
   groups:
   - {fileID: -3090507242900302545}
 --- !u!114 &5329669125964721060
