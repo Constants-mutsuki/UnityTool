@@ -5,6 +5,5 @@ namespace Darkness
 {
     public class InspectorAsset : SerializedScriptableObject
     {
-        public object Target;
     }
 }

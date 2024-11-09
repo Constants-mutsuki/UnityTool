@@ -1,9 +1,9 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Darkness.Design.Editor.Inspectors
+namespace Darkness
 {
-    public abstract class GroupInspector<T> : ActionClipInspector where T : GroupAsset
+    public abstract class GroupInspector<T> : ClipInspector where T : GroupAsset
     {
         protected T action => (T)m_target;
     }

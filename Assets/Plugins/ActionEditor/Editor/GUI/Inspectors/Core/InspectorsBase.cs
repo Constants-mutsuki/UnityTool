@@ -101,43 +101,6 @@ namespace Darkness
                     showType = t;
                     args = new List<object> { selectObjectPathAttribute.Type };
                 }
-                else if (attribute is SerializeReference)
-                {
-                    PropertyTree tree = PropertyTree.Create(value);
-                    tree.BeginDraw(false);
-                    foreach (var property in tree.EnumerateTree(false, true))
-                    {
-                        EditorGUI.BeginChangeCheck();
-                        property.Draw();
-                        if (EditorGUI.EndChangeCheck())
-                        {
-                            field.SetValue(target, value);
-                        }
-                    }
-
-                    tree.EndDraw();
-                    /*// 获取字段的实际对象
-                    var fieldValue = field.GetValue(target);
-
-                    if (fieldValue == null)
-                    {
-                        Console.WriteLine("Field value is null");
-                        return;
-                    }
-
-                    // 获取实际对象的类型
-                    var runtimeType = fieldValue.GetType();
-
-                    // 获取实际类型的字段
-                    foreach (var fieldInfo in runtimeType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        Console.WriteLine($"Inspecting field: {fieldInfo.Name} of type {fieldInfo.FieldType.Name}");
-
-                        // 递归调用
-                        FieldDefaultInspector(fieldInfo, fieldValue);
-                    }*/
-                    return;
-                }
             }
 
             if (showType == typeof(int))

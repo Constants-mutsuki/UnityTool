@@ -9,10 +9,13 @@ namespace Darkness
     {
         [NonSerialized]
         private static InspectorAsset m_currentInspector;
+
         private static ClipAsset m_copyClipAsset;
         private static Type m_copyClipType;
+
         [NonSerialized]
         private static ScriptableObject m_selectedObject;
+
         public static event Action<ScriptableObject> OnSelectionChange;
 
         public static InspectorAsset CurrentInspector => m_currentInspector ??= ScriptableObject.CreateInstance<InspectorAsset>();
@@ -40,9 +43,11 @@ namespace Darkness
 
         public static void CutClip(ClipAsset clipAsset)
         {
+#if UNITY_EDITOR
             m_copyClipAsset = clipAsset;
             m_copyClipType = clipAsset.GetType();
             (clipAsset.Parent as TrackAsset)?.DeleteClip(clipAsset);
+#endif
         }
 
         public static ScriptableObject SelectedObject
@@ -51,12 +56,11 @@ namespace Darkness
             set
             {
                 m_selectedObject = value;
-                OnSelectionChange?.Invoke(value);
-/*#if UNITY_EDITOR
-                CurrentInspector.Target = m_selectedObject;
+#if UNITY_EDITOR
                 Selection.activeObject = CurrentInspector;
                 EditorUtility.SetDirty(CurrentInspector);
-#endif*/
+#endif
+                OnSelectionChange?.Invoke(value);
             }
         }
     }
