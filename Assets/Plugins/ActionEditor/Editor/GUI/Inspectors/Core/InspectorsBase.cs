@@ -10,16 +10,21 @@ namespace Darkness
 {
     public class InspectorsBase
     {
+        private PropertyTree m_propertyTree;
         protected object m_target;
 
         public void SetTarget(object t)
         {
             m_target = t;
+            m_propertyTree = null;
         }
 
         public virtual void OnInspectorGUI()
         {
-            DrawDefaultInspector(m_target.GetType());
+            m_propertyTree ??= PropertyTree.Create(m_target);
+            m_propertyTree.Draw(false);
+
+            //DrawDefaultInspector(m_target.GetType());
         }
 
         public void DrawDefaultInspector(Type type)
@@ -217,6 +222,11 @@ namespace Darkness
                         newValue = AssetDatabase.GetAssetPath(newObj);
                     }
                 }
+            }
+            else if (showType == typeof(Clip))
+            {
+                m_propertyTree ??= PropertyTree.Create(value);
+                m_propertyTree.Draw(false);
             }
 
             if (value != newValue)

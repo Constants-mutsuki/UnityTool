@@ -10,7 +10,7 @@ namespace Darkness
         [SerializeReference]
         public Clip clipModel;
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private float startTime;
 
         public override TimelineGraphAsset Root
@@ -77,7 +77,6 @@ namespace Darkness
             {
                 var nameAtt = clipModel.GetType().RTGetAttribute<NameAttribute>(true);
                 return nameAtt != null ? nameAtt.Name : GetType().Name.SplitCamelCase();
-
             }
         }
 
@@ -135,6 +134,7 @@ namespace Darkness
 
 
         #region Unity Editor
+
 #if UNITY_EDITOR
 
         public void ShowClipGUI(Rect rect)
@@ -156,6 +156,7 @@ namespace Darkness
         }
 
 #endif
+
         #endregion
     }
 }

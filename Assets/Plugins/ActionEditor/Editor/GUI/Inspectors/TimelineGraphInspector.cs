@@ -3,9 +3,9 @@
 namespace Darkness
 {
     [CustomInspectors(typeof(TimelineGraphAsset), true)]
-    public class AssetInspector : InspectorsBase
+    public class TimelineGraphInspector : InspectorsBase
     {
-        private TimelineGraphAsset action => (TimelineGraphAsset)m_target;
+        private TimelineGraphAsset m_graph => (TimelineGraphAsset)m_target;
 
         public override void OnInspectorGUI()
         {
