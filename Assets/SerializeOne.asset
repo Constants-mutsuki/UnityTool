@@ -1,5 +1,30 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4248497482898612745
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 5543293717361020475}
+  clipModel:
+    rid: 8308794079586025533
+  startTime: 0.74
+  references:
+    version: 2
+    RefIds:
+    - rid: 8308794079586025533
+      type: {class: AnimancerClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+        clips: []
 --- !u!114 &-3441630083971494524
 MonoBehaviour:
   m_ObjectHideFlags: 1

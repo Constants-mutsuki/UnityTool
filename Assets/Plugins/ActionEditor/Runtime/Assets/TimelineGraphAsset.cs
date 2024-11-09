@@ -122,14 +122,14 @@ namespace Darkness
 
                 graphModel.groups.Add(groupModel);
             }
-            
-         
-            
+
+#if UNITY_EDITOR
             byte[] serializedData = MemoryPackSerializer.Serialize(graphModel);
             using (FileStream file = File.Create($"{Prefs.SerializeSavePath}/{name}.bytes"))
             {
                 file.Write(serializedData, 0, serializedData.Length);
             }
+#endif
         }
 
         public void Validate()

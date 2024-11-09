@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Darkness
 {
-    public abstract class ActionClipInspector<T> : ActionClipInspector where T : ClipAsset
+    public abstract class ClipInspector<T> : ClipInspector where T : ClipAsset
     {
-        protected T action => (T)m_target;
+        protected T Clip => (T)m_target;
     }
 
     [CustomInspectors(typeof(ClipAsset), true)]
-    public class ActionClipInspector : InspectorsBase
+    public class ClipInspector : InspectorsBase
     {
-        private ClipAsset action => (ClipAsset)m_target;
+        private ClipAsset m_clip => (ClipAsset)m_target;
 
         public override void OnInspectorGUI()
         {
@@ -31,36 +31,36 @@ namespace Darkness
 
         void ShowErrors()
         {
-            if (action.IsValid) return;
+            if (m_clip.IsValid) return;
             EditorGUILayout.HelpBox("该剪辑无效。 请确保设置了所需的参数。", MessageType.Error);
             GUILayout.Space(5);
         }
 
         void ShowInOutControls()
         {
-            var previousClip = action.GetPreviousSibling();
-            var previousTime = previousClip != null ? previousClip.EndTime : action.Parent.StartTime;
-            if (action.CanCrossBlend(previousClip))
+            var previousClip = m_clip.GetPreviousSibling();
+            var previousTime = previousClip != null ? previousClip.EndTime : m_clip.Parent.StartTime;
+            if (m_clip.CanCrossBlend(previousClip))
             {
-                previousTime -= Mathf.Min(action.Length / 2, (previousClip.EndTime - previousClip.StartTime) / 2);
+                previousTime -= Mathf.Min(m_clip.Length / 2, (previousClip.EndTime - previousClip.StartTime) / 2);
             }
 
-            var nextClip = action.GetNextSibling();
-            var nextTime = nextClip != null ? nextClip.StartTime : action.Parent.EndTime;
-            if (action.CanCrossBlend(nextClip))
+            var nextClip = m_clip.GetNextSibling();
+            var nextTime = nextClip != null ? nextClip.StartTime : m_clip.Parent.EndTime;
+            if (m_clip.CanCrossBlend(nextClip))
             {
-                nextTime += Mathf.Min(action.Length / 2, (nextClip.EndTime - nextClip.StartTime) / 2);
+                nextTime += Mathf.Min(m_clip.Length / 2, (nextClip.EndTime - nextClip.StartTime) / 2);
             }
 
-            var canScale = action.CanScale();
+            var canScale = m_clip.CanScale();
             var doFrames = Prefs.timeStepMode == Prefs.TimeStepMode.Frames;
 
             GUILayout.BeginVertical("box");
             GUILayout.BeginHorizontal();
 
-            var _in = action.StartTime;
-            var _length = action.Length;
-            var _out = action.EndTime;
+            var _in = m_clip.StartTime;
+            var _length = m_clip.Length;
+            var _out = m_clip.EndTime;
 
             if (canScale)
             {
@@ -109,7 +109,7 @@ namespace Darkness
 
             if (canScale)
             {
-                if (_in >= action.Parent.StartTime && _out <= action.Parent.EndTime)
+                if (_in >= m_clip.Parent.StartTime && _out <= m_clip.Parent.EndTime)
                 {
                     if (_out > _in)
                     {
@@ -125,14 +125,14 @@ namespace Darkness
             else
             {
                 GUILayout.Label("IN", GUILayout.Width(30));
-                _in = EditorGUILayout.Slider(_in, 0, action.Parent.EndTime);
+                _in = EditorGUILayout.Slider(_in, 0, m_clip.Parent.EndTime);
                 _out = _in;
             }
 
 
             if (GUI.changed)
             {
-                if (_length != action.Length)
+                if (_length != m_clip.Length)
                 {
                     _out = _in + _length;
                 }
@@ -143,29 +143,29 @@ namespace Darkness
                 _in = Mathf.Clamp(_in, previousTime, _out);
                 _out = Mathf.Clamp(_out, _in, nextClip != null ? nextTime : float.PositiveInfinity);
 
-                action.StartTime = _in;
-                action.EndTime = _out;
+                m_clip.StartTime = _in;
+                m_clip.EndTime = _out;
             }
 
-            if (_in > action.Parent.EndTime)
+            if (_in > m_clip.Parent.EndTime)
             {
                 EditorGUILayout.HelpBox(Lan.OverflowInvalid, MessageType.Warning);
             }
             else
             {
-                if (_out > action.Parent.EndTime)
+                if (_out > m_clip.Parent.EndTime)
                 {
                     EditorGUILayout.HelpBox(Lan.EndTimeOverflowInvalid, MessageType.Warning);
                 }
             }
 
-            if (_out < action.Parent.StartTime)
+            if (_out < m_clip.Parent.StartTime)
             {
                 EditorGUILayout.HelpBox(Lan.OverflowInvalid, MessageType.Warning);
             }
             else
             {
-                if (_in < action.Parent.StartTime)
+                if (_in < m_clip.Parent.StartTime)
                 {
                     EditorGUILayout.HelpBox(Lan.StartTimeOverflowInvalid, MessageType.Warning);
                 }
@@ -179,9 +179,9 @@ namespace Darkness
         /// </summary>
         void ShowBlendingControls()
         {
-            var canBlendIn = action.CanBlendIn();
-            var canBlendOut = action.CanBlendOut();
-            if ((canBlendIn || canBlendOut) && action.Length > 0)
+            var canBlendIn = m_clip.CanBlendIn();
+            var canBlendOut = m_clip.CanBlendOut();
+            if ((canBlendIn || canBlendOut) && m_clip.Length > 0)
             {
                 GUILayout.BeginVertical("box");
                 GUILayout.BeginHorizontal();
@@ -189,9 +189,9 @@ namespace Darkness
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label("Blend In");
-                    var max = action.Length - action.BlendOut;
-                    action.BlendIn = EditorGUILayout.Slider(action.BlendIn, 0, max);
-                    action.BlendIn = Mathf.Clamp(action.BlendIn, 0, max);
+                    var max = m_clip.Length - m_clip.BlendOut;
+                    m_clip.BlendIn = EditorGUILayout.Slider(m_clip.BlendIn, 0, max);
+                    m_clip.BlendIn = Mathf.Clamp(m_clip.BlendIn, 0, max);
                     GUILayout.EndVertical();
                 }
 
@@ -199,9 +199,9 @@ namespace Darkness
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label("Blend Out");
-                    var max = action.Length - action.BlendIn;
-                    action.BlendOut = EditorGUILayout.Slider(action.BlendOut, 0, max);
-                    action.BlendOut = Mathf.Clamp(action.BlendOut, 0, max);
+                    var max = m_clip.Length - m_clip.BlendIn;
+                    m_clip.BlendOut = EditorGUILayout.Slider(m_clip.BlendOut, 0, max);
+                    m_clip.BlendOut = Mathf.Clamp(m_clip.BlendOut, 0, max);
                     GUILayout.EndVertical();
                 }
 
