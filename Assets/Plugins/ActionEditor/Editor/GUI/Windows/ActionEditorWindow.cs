@@ -21,7 +21,7 @@ namespace Darkness
         internal bool ShowDragDropInfo;
 
         public TimelineGraphAsset TimelineGraphAsset => App.GraphAsset;
-        public AssetPlayer player => AssetPlayer.Instance;
+        public TimelineGraphPreviewProcessor player => App.Player;
 
         int UID(int g, int t, int a)
         {

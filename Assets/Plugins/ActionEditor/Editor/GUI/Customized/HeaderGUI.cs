@@ -5,7 +5,7 @@ namespace Darkness
 {
     public class HeaderGUI : ICustomized
     {
-        protected AssetPlayer player => AssetPlayer.Instance;
+        protected TimelineGraphPreviewProcessor player => App.Player;
 
         public virtual void OnGUI()
         {

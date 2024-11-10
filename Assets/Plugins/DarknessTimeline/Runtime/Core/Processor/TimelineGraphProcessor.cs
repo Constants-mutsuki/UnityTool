@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
 #if USE_FIXED_POINT
 using CMath = Box2DSharp.Common.FMath;
 using CFloat = Box2DSharp.Common.FP;
@@ -12,284 +14,351 @@ using CFloat = System.Single;
 
 namespace Darkness
 {
-    /// <summary>
-    /// 时间轴运行时逻辑
-    /// </summary>
     [ViewModel(typeof(TimelineGraph))]
     public class TimelineGraphProcessor : ITimelineGraph
     {
+        private GameObject m_owner;
         private TimelineGraph data;
-
-        private CFloat startTime;
-        private CFloat endTime;
-        private CFloat currentTime;
-        private Action onStop;
-        
         private List<GroupProcessor> groups;
         private BlackboardProcessor<string> context;
         private Events<string> events;
-        private GameObject m_owner;
+        
+        private CFloat startTime;
+        private CFloat endTime;
+        private Action onStop;
+        
+        private bool m_preInitialized;
+        
+        private List<IDirectableTimePointer> m_timePointers;
+        private List<IDirectableTimePointer> m_unsortedStartTimePointers;
+        
+        private CFloat currentTime;
+        
+        public WarpCategory PlayingWarpMode => data.warpCategory;
+        
+        public CFloat StartTime
+         {
+             get => startTime;
+             private set => SetStartTime(value);
+         }
+         
+         public CFloat EndTime
+         {
+             get => endTime;
+             private set => SetEndTime(value);
+         }
+        
+        /// <summary>
+        /// 当前时间
+        /// </summary>
+        public CFloat CurrentTime
+        {
+            get => currentTime;
+            set => SetCurrentTime(value);
+        }
+        
+        public IEnumerable<IDirectable> Children => groups != null ? groups : Array.Empty<IDirectable>();
+        
+        public BlackboardProcessor<string> Context {
+             get
+             {
+                 if (context == null)
+                 {
+                     context = new BlackboardProcessor<string>(new Blackboard<string>(), Events);
+                 }
+
+                 return context;
+             }
+        }
+        
+        public Events<string> Events {
+             get
+             {
+                 if (events == null)
+                 {
+                     events = new Events<string>();
+                 }
+
+                 return events;
+             }
+         }
+        
+        public bool Active { get; private set; }
+        public CFloat Length => data.length;
+        public CFloat PreviousTime { get; private set; }
+        
         public GameObject Owner
         {
             get => m_owner;
             set => m_owner = value;
         }
-        
-        
-        public WarpCategory PlayingWarpMode => data.warpCategory;
-        
-        
-        public CFloat StartTime
-        {
-            get => startTime;
-            private set => SetStartTime(value);
-        }
-        
-        public CFloat EndTime
-        {
-            get => endTime;
-            private set => SetEndTime(value);
-        }
-        
-        public CFloat Length => data.length;
 
-        public IEnumerable<IDirectable> Children => groups != null ? groups : Array.Empty<IDirectable>();
-        
-        public BlackboardProcessor<string> Context {
-            get
-            {
-                if (context == null)
-                {
-                    context = new BlackboardProcessor<string>(new Blackboard<string>(), Events);
-                }
+         private void SetStartTime(CFloat value)
+         {
+             startTime = CMath.Clamp(value, 0, Length);
+         }
 
-                return context;
-            }
-        }
-        
-        public Events<string> Events {
-            get
-            {
-                if (events == null)
-                {
-                    events = new Events<string>();
-                }
+         private void SetEndTime(CFloat value)
+         {
+             endTime = CMath.Clamp(value, 0, Length);
+         }
+         
+         private void SetCurrentTime(CFloat value)
+         {
+             currentTime = CMath.Clamp(value, 0, Length);
+         }
 
-                return events;
-            }
-        }
-        public bool Active { get; private set; }
-        
-        public CFloat PreviousTime { get; private set; }
-        
-        public CFloat CurrentTime 
-        {
-            get => currentTime;
-            set => SetCurrentTime(value);
-        }
         public TimelineGraphProcessor(TimelineGraph data)
-        {
-            this.data = data;
-            if (data.groups != null)
-            {
-                groups = new List<GroupProcessor>(data.groups.Count);
-                foreach (var group in data.groups)
-                {
-                    var groupProcessorType = ViewModelFactory.GetViewModelType(group.GetType());
-                    if (ObjectPools.Instance.Spawn(groupProcessorType) is GroupProcessor groupProcessor)
-                    {
-                        groupProcessor.SetUp(group, this);
-                        groups.Add(groupProcessor);
-                    }
-                }
-            }
-        }
-        private void SetCurrentTime(CFloat value)
-        {
-            currentTime = CMath.Clamp(value, 0, Length);
-        }
-
-        private void SetStartTime(CFloat value)
-        {
-            startTime = CMath.Clamp(value, 0, Length);
-        }
-
-        private void SetEndTime(CFloat value)
-        {
-            endTime = CMath.Clamp(value, 0, Length);
-        }
-        public void Play()
-        {
-            Play(0, data.length, null);
-        }
-
-        public void Play(CFloat start)
-        {
-            Play(start, data.length, null);
-        }
-
-        public void Play(CFloat start, Action stopCallback)
-        {
-            Play(start, data.length, stopCallback);
-        }
+         {
+             this.data = data;
+             if (data.groups != null)
+             {
+                 groups = new List<GroupProcessor>(data.groups.Count);
+                 foreach (var group in data.groups)
+                 {
+                     var groupProcessorType = ViewModelFactory.GetViewModelType(group.GetType());
+                     if (ObjectPools.Instance.Spawn(groupProcessorType) is GroupProcessor groupProcessor)
+                     {
+                         groupProcessor.SetUp(group, this);
+                         groups.Add(groupProcessor);
+                     }
+                 }
+             }
+         }
         
-        public void Play(CFloat start, CFloat end, Action stopCallback)
-        {
-            if (Active)
-            {
-                return;
-            }
-
-            if (start > end)
-            {
-                return;
-            }
-
-            this.StartTime = start;
-            this.EndTime = end;
-
-            this.Active = true;
-            this.StartTime = start;
-            this.EndTime = end;
-            this.PreviousTime = CMath.Clamp(start, start, end);
-            this.CurrentTime = CMath.Clamp(start, start, end);
-            this.onStop = stopCallback;
-
-            Sample(currentTime);
-        }
         
-         public void Sample(CFloat time)
-        {
-            this.CurrentTime = time;
+         public void Play()
+         {
+             Play(0, data.length, null);
+         }
 
-            if ((CurrentTime == 0 || Mathf.Approximately(CurrentTime, Length)) && Mathf.Approximately(PreviousTime ,CurrentTime))
+         public void Play(CFloat start)
+         {
+             Play(start, data.length, null);
+         }
+
+         public void Play(CFloat start, Action stopCallback)
+         {
+             Play(start, data.length, stopCallback);
+         }
+         
+         public void Play(CFloat start, CFloat end, Action stopCallback)
+         {
+             if (Active)
+             {
+                 return;
+             }
+
+             if (start > end)
+             {
+                 return;
+             }
+
+             this.StartTime = start;
+             this.EndTime = end;
+
+             this.Active = true;
+             this.StartTime = start;
+             this.EndTime = end;
+             this.PreviousTime = CMath.Clamp(start, start, end);
+             this.CurrentTime = CMath.Clamp(start, start, end);
+             this.onStop = stopCallback;
+
+             Sample(currentTime);
+         }
+         
+
+        public void Sample(CFloat time)
+        {
+            CurrentTime = time;
+            if ((currentTime == 0 || Mathf.Approximately(currentTime, Length)) && Mathf.Approximately(PreviousTime, currentTime))
             {
                 return;
             }
 
-            var frameData = new FrameData()
+            if (!m_preInitialized && currentTime > 0 && PreviousTime == 0)
             {
-                currentTime = this.CurrentTime,
-                previousTime = this.PreviousTime,
-                deltaTime = this.CurrentTime - this.PreviousTime,
-            };
+                InitializePreviewPointers();
+            }
 
-            if (groups != null)
+
+            if (m_timePointers != null)
             {
-                var startIndex = time >= frameData.previousTime ? 0 : groups.Count - 1;
-                var direction = time >= frameData.previousTime ? 1 : -1;
-                if (direction == -1)
-                {
-                    foreach (var group in groups)
-                    {
-                        if (!group.IsTriggered)
-                            continue;
-
-                        group.Exit(frameData);
-                    }
-                }
-
-                for (int i = 0; i < groups.Count; i++)
-                {
-                    var index = startIndex + i * direction;
-                    var group = groups[index];
-
-                    if (!group.Active)
-                    {
-                        continue;
-                    }
-
-                    if (!group.IsTriggered && frameData.currentTime >= group.StartTime && frameData.currentTime <= group.EndTime)
-                    {
-                        group.Enter(frameData);
-                    }
-
-                    if (group.IsTriggered)
-                    {
-                        group.Update(frameData);
-                    }
-
-                    if (group.IsTriggered && (frameData.currentTime <= group.StartTime || frameData.currentTime >= group.EndTime))
-                    {
-                        group.Exit(frameData);
-                    }
-                }
+                InternalSamplePointers(currentTime, PreviousTime);
             }
 
             switch (PlayingWarpMode)
+             {
+                 case WarpCategory.Once:
+
+                     if (CurrentTime < EndTime)
+                     {
+                         this.PreviousTime = CurrentTime;
+                     }
+                     else
+                     {
+                         Stop();
+                     }
+
+                     break;
+                 case WarpCategory.Loop:
+                     if (CurrentTime < EndTime)
+                     {
+                         this.PreviousTime = CurrentTime;
+                     }
+                     else
+                     {
+                         PreviousTime = StartTime;
+                         CurrentTime = StartTime;
+                     }
+                     break;
+             }
+        }
+
+        void InternalSamplePointers(CFloat currentTime, CFloat previousTime)
+        {
+            if (currentTime > previousTime)
             {
-                case WarpCategory.Once:
+                foreach (var t in m_timePointers)
+                {
+                    try
+                    {
+                        t.TriggerForward(currentTime, previousTime);
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                }
+            }
 
-                    if (CurrentTime < EndTime)
-                    {
-                        this.PreviousTime = CurrentTime;
-                    }
-                    else
-                    {
-                        Stop();
-                    }
 
-                    break;
-                case WarpCategory.Loop:
-                    if (CurrentTime < EndTime)
+            if (currentTime < previousTime)
+            {
+                for (var i = m_timePointers.Count - 1; i >= 0; i--)
+                {
+                    try
                     {
-                        this.PreviousTime = CurrentTime;
+                        m_timePointers[i].TriggerBackward(currentTime, previousTime);
                     }
-                    else
+                    catch (System.Exception e)
                     {
-                        PreviousTime = StartTime;
-                        CurrentTime = StartTime;
+                        Debug.LogException(e);
                     }
-                    break;
+                }
+            }
+
+            if (m_unsortedStartTimePointers != null)
+            {
+                foreach (var t in m_unsortedStartTimePointers)
+                {
+                    try
+                    {
+                        t.Update(currentTime, previousTime);
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                }
             }
         }
-         
-        public void Stop(StopMode stopMode = StopMode.Exit)
+
+        /// <summary>
+        /// 初始化时间指针
+        /// </summary>
+        public void InitializePreviewPointers()
         {
-            if (!Active)
-                return;
+            m_timePointers = new List<IDirectableTimePointer>();
+            m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
-            Active = false;
-
-            switch (stopMode)
+            foreach (var group in groups.AsEnumerable().Reverse())
             {
-                case StopMode.Exit:
+                foreach (var track in group.Children.AsEnumerable().Reverse())
                 {
-                    foreach (var group in groups)
+                    var tType = track.GetType();
+                    
+                    if (Activator.CreateInstance(tType) is TrackProcessor trackProcessor)
                     {
-                        if (!group.IsTriggered)
-                            continue;
+                        var p3 = new StartTimePointer(trackProcessor);
+                        m_timePointers.Add(p3);
+                        m_unsortedStartTimePointers.Add(p3);
+                        m_timePointers.Add(new EndTimePointer(trackProcessor));
+                    }
+                    
 
-                        var frameData = new FrameData()
+                    foreach (var clip in track.Children)
+                    {
+                        var cType = clip.GetType();
+                        
+                        if (Activator.CreateInstance(cType) is ClipProcessor clipProcessor)
                         {
-                            currentTime = CurrentTime,
-                            previousTime = PreviousTime,
-                            deltaTime = CurrentTime - PreviousTime,
-                        };
+                            var p3 = new StartTimePointer(clipProcessor);
+                            m_timePointers.Add(p3);
 
-                        group.Exit(frameData);
+                            m_unsortedStartTimePointers.Add(p3);
+                            m_timePointers.Add(new EndTimePointer(clipProcessor));
+                        }
+                        
                     }
-
-                    break;
-                }
-                case StopMode.Skip:
-                {
-                    Sample(endTime);
-                    break;
                 }
             }
 
-            if (onStop != null)
-            {
-                onStop.Invoke();
-                onStop = null;
-            }
-
-            CurrentTime = 0;
-            PreviousTime = 0;
+            m_preInitialized = true;
         }
+        public void Stop(StopMode stopMode = StopMode.Exit)
+         {
+             if (!Active)
+                 return;
+
+             Active = false;
+
+             switch (stopMode)
+             {
+                 case StopMode.Exit:
+                 {
+                     foreach (var group in groups)
+                     {
+                         if (!group.IsTriggered)
+                             continue;
+
+                         var frameData = new FrameData()
+                         {
+                             currentTime = CurrentTime,
+                             previousTime = PreviousTime,
+                             deltaTime = CurrentTime - PreviousTime,
+                         };
+                         
+                         var localCurrentTime = CMath.Clamp(CurrentTime - group.StartTime, 0, group.Length);
+                         var localPreviousTime = CMath.Clamp(PreviousTime - group.StartTime, 0, group.Length);
+                         
+                         var innerframedata = new FrameData()
+                             { previousTime = localPreviousTime, currentTime = localCurrentTime, deltaTime = localCurrentTime-localPreviousTime };
+                         group.Exit(frameData,innerframedata);
+                     }
+
+                     break;
+                 }
+                 case StopMode.Skip:
+                 {
+                     Sample(endTime);
+                     break;
+                 }
+             }
+
+             if (onStop != null)
+             {
+                 onStop.Invoke();
+                 onStop = null;
+             }
+
+             CurrentTime = 0;
+             PreviousTime = 0;
+         }
+        
+
         public void Reset()
-        {
+        { 
             if (!Active)
             {
                 return;
@@ -303,18 +372,21 @@ namespace Darkness
             context?.Clear();
             events?.Clear();
         }
+        
+        
+
         public void Dispose()
         {
-            Stop();
-            foreach (var child in Children)
-            {
-                child.Dispose();
-            }
+             Stop();
+             foreach (var child in Children)
+             {
+                 child.Dispose();
+             }
 
-            data = null;
-            groups.Clear();
-            context?.Clear();
-            events?.Clear();
+             data = null;
+             groups.Clear();
+             context?.Clear();
+             events?.Clear();
         }
     }
 }

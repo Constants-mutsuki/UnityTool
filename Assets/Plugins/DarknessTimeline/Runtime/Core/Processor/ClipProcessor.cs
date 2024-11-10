@@ -52,46 +52,35 @@ namespace Darkness
             this.Parent = track;
         }
         
-        public void Enter(FrameData frameData)
+        public void Enter(FrameData frameData,FrameData innerFrameData)
         {
-            var innerCurrentTime = CMath.Clamp(frameData.currentTime - StartTime, 0, Length);
-            var innerPreviousTime = CMath.Clamp(frameData.previousTime - StartTime, 0, Length);
-            var innerFrameData = new FrameData()
-            {
-                currentTime = innerCurrentTime,
-                previousTime = innerPreviousTime,
-                deltaTime = innerCurrentTime - innerPreviousTime,
-            };
             IsTriggered = true;
             OnEnter(frameData, innerFrameData);
         }
 
-        public void Update(FrameData frameData)
+        public void Update(FrameData frameData,FrameData innerFrameData)
         {
-            var innerCurrentTime = CMath.Clamp(frameData.currentTime - StartTime, 0, Length);
-            var innerPreviousTime = CMath.Clamp(frameData.previousTime - StartTime, 0, Length);
-            var innerFrameData = new FrameData()
-            {
-                currentTime = innerCurrentTime,
-                previousTime = innerPreviousTime,
-                deltaTime = innerCurrentTime - innerPreviousTime,
-            };
             OnUpdate(frameData, innerFrameData);
         }
 
-        public void Exit(FrameData frameData)
+        public void Exit(FrameData frameData,FrameData innerFrameData)
         {
-            var innerCurrentTime = CMath.Clamp(frameData.currentTime - StartTime, 0, Length);
-            var innerPreviousTime = CMath.Clamp(frameData.previousTime - StartTime, 0, Length);
-            var innerFrameData = new FrameData()
-            {
-                currentTime = innerCurrentTime,
-                previousTime = innerPreviousTime,
-                deltaTime = innerCurrentTime - innerPreviousTime,
-            };
             IsTriggered = false;
             OnExit(frameData, innerFrameData);
         }
+
+        public void ReverseEnter(FrameData frameData,FrameData innerFrameData)
+        {
+            IsTriggered = true;
+            OnReverseEnter(frameData, innerFrameData);
+        }
+
+        public void Reverse(FrameData frameData,FrameData innerFrameData)
+        {
+            IsTriggered = false;
+            OnReverse(frameData, innerFrameData);
+        }
+
         public void Reset()
         {
             OnReset();
@@ -116,6 +105,14 @@ namespace Darkness
         }
 
         protected virtual void OnUpdate(FrameData frameData, FrameData innerFrameData)
+        {
+        }
+
+        protected virtual void OnReverseEnter(FrameData frameData, FrameData innerFrameData)
+        {
+        }
+        
+        protected virtual void OnReverse(FrameData frameData, FrameData innerFrameData)
         {
         }
 

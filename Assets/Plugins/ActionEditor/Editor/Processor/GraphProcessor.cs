@@ -17,7 +17,7 @@ namespace Darkness
         private List<IDirectableTimePointer> m_unsortedStartTimePointers; //预览器
 
         public float PreviousTime { get; private set; }
-        public TimelineGraph CurrentGraph => App.GraphModel;
+        public TimelineGraph CurrentGraph;
 
         public bool IsActive { get; set; }
 

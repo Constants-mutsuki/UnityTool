@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -22,8 +23,8 @@ namespace Darkness
         public static CallbackFunction OnStop;
 
         public static TimelineGraphAsset GraphAsset { get; set; }
-
-        public static TimelineGraph GraphModel { get; set; }
+        
+        private static TimelineGraphPreviewProcessor _timelineGraphPreviewProcessor;
 
         public static void OnObjectPickerConfig(Object obj)
         {
@@ -31,11 +32,8 @@ namespace Darkness
             {
                 GraphAsset = a;
                 GraphAsset.Validate();
-                /*string uiScenePath = "Plugins/ActionEditor/Scene/TimelineEditor.unity";
-                if (SceneManager.GetActiveScene().name != "AbilityEditor")
-                {
-                    EditorSceneManager.OpenScene(Path.Combine(Application.dataPath, uiScenePath));
-                }*/
+                _timelineGraphPreviewProcessor = new TimelineGraphPreviewProcessor(GraphAsset);
+                
             }
         }
 
@@ -71,7 +69,9 @@ namespace Darkness
         #endregion
 
         #region 播放相关
-        private static AssetPlayer Player => AssetPlayer.Instance;
+
+        public static TimelineGraphPreviewProcessor Player => _timelineGraphPreviewProcessor;
+        
 
         public static GameObject Owner
         {

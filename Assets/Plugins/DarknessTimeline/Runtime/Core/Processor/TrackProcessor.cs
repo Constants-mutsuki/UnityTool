@@ -64,78 +64,21 @@ namespace Darkness
                 }
             }
         }
-        public void Enter(FrameData frameData)
+        public void Enter(FrameData frameData,FrameData innerFrameData)
         {
             IsTriggered = true;
-            OnEnter(frameData, frameData);
+            OnEnter(frameData, innerFrameData);
         }
 
-        public void Update(FrameData frameData)
+        public void Update(FrameData frameData,FrameData innerFrameData)
         {
-            var innerCurrentTime = CMath.Clamp(frameData.currentTime - StartTime, 0, Length);
-            var innerPreviousTime = CMath.Clamp(frameData.previousTime - StartTime, 0, Length);
-            var innerFrameData = new FrameData()
-            {
-                currentTime = innerCurrentTime,
-                previousTime = innerPreviousTime,
-                deltaTime = innerCurrentTime - innerPreviousTime,
-            };
-
-            if (clips != null)
-            {
-                var startIndex = frameData.currentTime >= frameData.previousTime ? 0 : clips.Count - 1;
-                var direction = frameData.currentTime >= frameData.previousTime ? 1 : -1;
-                for (int i = 0; i < clips.Count; i++)
-                {
-                    var index = startIndex + i * direction;
-                    var clip = clips[index];
-                    if (!clip.Active)
-                    {
-                        continue;
-                    }
-
-                    if (!clip.IsTriggered)
-                    {
-                        if (frameData.previousTime <= clip.StartTime && frameData.currentTime >= clip.StartTime)
-                        {
-                            clip.Enter(frameData);
-                        }
-                        else if (frameData.previousTime >= clip.EndTime && frameData.currentTime <= clip.EndTime)
-                        {
-                            clip.Enter(frameData);
-                        }
-                    }
-
-                    if (clip.IsTriggered)
-                    {
-                        clip.Update(frameData);
-                    }
-
-                    if (clip.IsTriggered && (frameData.currentTime <= clip.StartTime || frameData.currentTime >= clip.EndTime))
-                    {
-                        clip.Exit(frameData);
-                    }
-                }
-            }
-
             OnUpdate(frameData, innerFrameData);
         }
 
-        public void Exit(FrameData frameData)
+        public void Exit(FrameData frameData,FrameData innerFrameData)
         {
-            if (clips == null)
-                return;
-
-            foreach (var clip in clips)
-            {
-                if (!clip.IsTriggered)
-                    continue;
-
-                clip.Exit(frameData);
-            }
-
             IsTriggered = false;
-            OnExit(frameData, frameData);
+            OnExit(frameData, innerFrameData);
         }
 
         public void Reset()
@@ -146,6 +89,18 @@ namespace Darkness
             }
 
             OnReset();
+        }
+        
+        public void ReverseEnter(FrameData frameData,FrameData innerFrameData)
+        {
+            IsTriggered = true;
+            OnReverseEnter(frameData, innerFrameData);
+        }
+
+        public void Reverse(FrameData frameData,FrameData innerFrameData)
+        {
+            IsTriggered = false;
+            OnReverse(frameData, innerFrameData);
         }
         public void Dispose()
         {
@@ -174,6 +129,14 @@ namespace Darkness
         }
 
         protected virtual void OnUpdate(FrameData frameData, FrameData innerFrameData)
+        {
+        }
+        
+        protected virtual void OnReverseEnter(FrameData frameData, FrameData innerFrameData)
+        {
+        }
+        
+        protected virtual void OnReverse(FrameData frameData, FrameData innerFrameData)
         {
         }
 

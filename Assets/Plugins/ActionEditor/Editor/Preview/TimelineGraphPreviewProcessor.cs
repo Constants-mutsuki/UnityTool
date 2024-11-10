@@ -5,34 +5,68 @@ using UnityEngine;
 
 namespace Darkness
 {
-    public class AssetPlayer
+    public class TimelineGraphPreviewProcessor
     {
-        private static AssetPlayer m_instance;
-        public static AssetPlayer Instance
-        {
-            get { return m_instance ??= new AssetPlayer(); }
-        }
         private GameObject m_owner;
-        private float m_playTimeMin;
-        private float m_playTimeMax;
-        private float m_currentTime;
-        private bool m_preInitialized;
-        private List<IDirectableTimePointer> m_timePointers;
-        private List<IDirectableTimePointer> m_unsortedStartTimePointers;
-        public float PreviousTime { get; private set; }
-        public TimelineGraphAsset SelectedGraph => App.GraphAsset;
+        
+        private List<IDirectableTimePointer> timePointers;
+
+        /// <summary>
+        /// 预览器
+        /// </summary>
+        private List<IDirectableTimePointer> unsortedStartTimePointers;
+
+        private float playTimeMin;
+        private float playTimeMax;
+        private float currentTime;
+        
+        private BlackboardProcessor<string> context;
+        
+        private Events<string> events;
+
+        public float previousTime { get; private set; }
+
+        private bool preInitialized;
+
+        public TimelineGraphAsset TimelineGraphAsset { get; private set; }
+        
+        public BlackboardProcessor<string> Context {
+            get
+            {
+                if (context == null)
+                {
+                    context = new BlackboardProcessor<string>(new Blackboard<string>(), Events);
+                }
+
+                return context;
+            }
+        }
+        
+        public Events<string> Events {
+            get
+            {
+                if (events == null)
+                {
+                    events = new Events<string>();
+                }
+
+                return events;
+            }
+        }
         public GameObject Owner
         {
             get => m_owner;
             set => m_owner = value;
         }
+        
+
         /// <summary>
         /// 当前时间
         /// </summary>
         public float CurrentTime
         {
-            get => m_currentTime;
-            set => m_currentTime = Mathf.Clamp(value, 0, Length);
+            get => currentTime;
+            set => currentTime = Mathf.Clamp(value, 0, Length);
         }
 
         public bool IsActive { get; set; }
@@ -41,61 +75,69 @@ namespace Darkness
 
         public float PlayTimeMin
         {
-            get => m_playTimeMin;
-            set => m_playTimeMin = Mathf.Clamp(value, 0, PlayTimeMax);
+            get => playTimeMin;
+            set => playTimeMin = Mathf.Clamp(value, 0, PlayTimeMax);
         }
 
         public float PlayTimeMax
         {
-            get => m_playTimeMax;
-            set => m_playTimeMax = Mathf.Clamp(value, PlayTimeMin, Length);
+            get => playTimeMax;
+            set => playTimeMax = Mathf.Clamp(value, PlayTimeMin, Length);
         }
 
+        
         public float Length
         {
             get
             {
-                if (SelectedGraph)
+                if (TimelineGraphAsset != null)
                 {
-                    return SelectedGraph.Length;
+                    return TimelineGraphAsset.Length;
                 }
-
+        
                 return 0;
             }
         }
 
+        public TimelineGraphPreviewProcessor(TimelineGraphAsset asset)
+        {
+            this.TimelineGraphAsset = asset;
+        }
+
         public void Sample()
         {
-            Sample(m_currentTime);
+            Sample(currentTime);
         }
 
         public void Sample(float time)
         {
             CurrentTime = time;
-            if ((m_currentTime == 0 || Mathf.Approximately(m_currentTime, Length)) && Mathf.Approximately(PreviousTime, m_currentTime))
+            // if (currentTime == 0 || Math.Abs(currentTime - Length) < 0.0001f)
+            if ((currentTime == 0 || currentTime == Length) && previousTime == currentTime)
             {
                 return;
             }
+            // Debug.Log($"CurrentTime={CurrentTime}");
 
-            if (!m_preInitialized && m_currentTime > 0 && PreviousTime == 0)
+            if (!preInitialized && currentTime > 0 && previousTime == 0)
             {
                 InitializePreviewPointers();
             }
 
 
-            if (m_timePointers != null)
+            if (timePointers != null)
             {
-                InternalSamplePointers(m_currentTime, PreviousTime);
+                InternalSamplePointers(currentTime, previousTime);
             }
 
-            PreviousTime = m_currentTime;
+            previousTime = currentTime;
         }
 
         void InternalSamplePointers(float currentTime, float previousTime)
         {
             if (!Application.isPlaying || currentTime > previousTime)
             {
-                foreach (var t in m_timePointers)
+                foreach (var t in timePointers)
                 {
                     try
                     {
@@ -111,11 +153,11 @@ namespace Darkness
 
             if (!Application.isPlaying || currentTime < previousTime)
             {
-                for (var i = m_timePointers.Count - 1; i >= 0; i--)
+                for (var i = timePointers.Count - 1; i >= 0; i--)
                 {
                     try
                     {
-                        m_timePointers[i].TriggerBackward(currentTime, previousTime);
+                        timePointers[i].TriggerBackward(currentTime, previousTime);
                     }
                     catch (System.Exception e)
                     {
@@ -124,9 +166,9 @@ namespace Darkness
                 }
             }
 
-            if (m_unsortedStartTimePointers != null)
+            if (unsortedStartTimePointers != null)
             {
-                foreach (var t in m_unsortedStartTimePointers)
+                foreach (var t in unsortedStartTimePointers)
                 {
                     try
                     {
@@ -145,12 +187,12 @@ namespace Darkness
         /// </summary>
         public void InitializePreviewPointers()
         {
-            m_timePointers = new List<IDirectableTimePointer>();
-            m_unsortedStartTimePointers = new List<IDirectableTimePointer>();
+            timePointers = new List<IDirectableTimePointer>();
+            unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
-            var children = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
-            foreach (var t in children)
+            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
+            foreach (var t in childs)
             {
                 var arrs = t.Type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
                 foreach (var arr in arrs)
@@ -176,7 +218,7 @@ namespace Darkness
                 }
             }
 
-            foreach (var group in SelectedGraph.groups.AsEnumerable().Reverse())
+            foreach (var group in TimelineGraphAsset.groups.AsEnumerable().Reverse())
             {
                 if (!group.IsActive) continue;
                 foreach (var track in group.Tracks.AsEnumerable().Reverse())
@@ -188,14 +230,14 @@ namespace Darkness
                         if (Activator.CreateInstance(t1) is PreviewLogic preview)
                         {
                             preview.SetTarget(track);
-                            var p3 = new StartTimePointer(preview);
-                            m_timePointers.Add(p3);
-
-                            m_unsortedStartTimePointers.Add(p3);
-                            m_timePointers.Add(new EndTimePointer(preview));
+                            var p3 = new StartTimePreviewPointer(preview);
+                            timePointers.Add(p3);
+                
+                            unsortedStartTimePointers.Add(p3);
+                            timePointers.Add(new EndTimePreviewPointer(preview));
                         }
                     }
-
+                
                     foreach (var clip in track.Clips)
                     {
                         var cType = clip.GetType();
@@ -204,18 +246,18 @@ namespace Darkness
                             if (Activator.CreateInstance(t) is PreviewLogic preview)
                             {
                                 preview.SetTarget(clip);
-                                var p3 = new StartTimePointer(preview);
-                                m_timePointers.Add(p3);
-
-                                m_unsortedStartTimePointers.Add(p3);
-                                m_timePointers.Add(new EndTimePointer(preview));
+                                var p3 = new StartTimePreviewPointer(preview);
+                                timePointers.Add(p3);
+                
+                                unsortedStartTimePointers.Add(p3);
+                                timePointers.Add(new EndTimePreviewPointer(preview));
                             }
                         }
                     }
                 }
             }
 
-            m_preInitialized = true;
+            preInitialized = true;
         }
     }
 }

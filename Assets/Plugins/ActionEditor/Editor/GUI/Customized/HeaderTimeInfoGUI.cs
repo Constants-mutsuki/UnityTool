@@ -5,7 +5,7 @@ namespace Darkness
 {
     public sealed class HeaderTimeInfoGUI : ICustomized
     {
-        private AssetPlayer player => AssetPlayer.Instance;
+        private TimelineGraphPreviewProcessor player => App.Player;
 
         public void OnGUI()
         {
@@ -94,7 +94,7 @@ namespace Darkness
                     GUI.backgroundColor = EditorGUIUtility.isProSkin
                         ? Color.black.WithAlpha(0.4f)
                         : Color.black.WithAlpha(0.7f);
-                    GUI.color = AssetPlayer.Instance.GetScriberColor();
+                    GUI.color = App.Player.GetScriberColor();
                     GUI.Box(stampRect, text, Styles.HeaderBoxStyle);
                 }
 

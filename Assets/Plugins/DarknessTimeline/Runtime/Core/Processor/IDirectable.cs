@@ -28,11 +28,16 @@ namespace Darkness
         public CFloat StartTime { get; }
         public CFloat EndTime { get; }
 
-        void Enter(FrameData frameData);
+        void Enter(FrameData frameData,FrameData innerFrameData);
 
-        void Update(FrameData frameData);
+        void Update(FrameData frameData,FrameData innerFrameData);
 
-        void Exit(FrameData frameData);
+        void Exit(FrameData frameData,FrameData innerFrameData);
+
+        void ReverseEnter(FrameData frameData,FrameData innerFrameData);
+
+
+        void Reverse(FrameData frameData,FrameData innerFrameData);
 
         void Reset();
     }
