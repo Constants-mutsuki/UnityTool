@@ -30,7 +30,7 @@ namespace Darkness
             }
         }
 
-        public static System.Type GetCopyType()
+        public static Type GetCopyType()
         {
             return m_copyClipType;
         }
@@ -43,11 +43,9 @@ namespace Darkness
 
         public static void CutClip(ClipAsset clipAsset)
         {
-#if UNITY_EDITOR
             m_copyClipAsset = clipAsset;
             m_copyClipType = clipAsset.GetType();
             (clipAsset.Parent as TrackAsset)?.DeleteClip(clipAsset);
-#endif
         }
 
         public static ScriptableObject SelectedObject
@@ -56,10 +54,8 @@ namespace Darkness
             set
             {
                 m_selectedObject = value;
-#if UNITY_EDITOR
                 Selection.activeObject = CurrentInspector;
                 EditorUtility.SetDirty(CurrentInspector);
-#endif
                 OnSelectionChange?.Invoke(value);
             }
         }

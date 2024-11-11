@@ -50,13 +50,7 @@ namespace Darkness
         public override bool IsActive
         {
             get => active;
-            set
-            {
-                if (active != value)
-                {
-                    active = value;
-                }
-            }
+            set => active = value;
         }
 
         public override bool IsCollapsed
@@ -70,9 +64,10 @@ namespace Darkness
             get => isLocked;
             set => isLocked = value;
         }
-        
+
 
         #region 增删
+
         public bool CanAddTrack(TrackAsset trackAsset)
         {
             return trackAsset && CanAddTrackOfType(trackAsset.GetType());
@@ -148,6 +143,7 @@ namespace Darkness
 
             return newTrack;
         }
+
         #endregion
     }
 }

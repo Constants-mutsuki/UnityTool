@@ -33,6 +33,7 @@ namespace Darkness
 
 
         #region 静态接口
+
         public static ActionEditorWindow current;
 
         public static void ShowWindow()
@@ -55,9 +56,11 @@ namespace Darkness
             CloseWindow();
             return true;
         }
+
         #endregion
 
         #region 生命周期接口
+
         void OnEnable()
         {
             current = this;
@@ -187,7 +190,7 @@ namespace Darkness
                 Repaint(); //重新绘制窗口
             }
 
-            player.Sample();
+            player?.Sample();
         }
 
         void OnGUI()
@@ -202,7 +205,7 @@ namespace Darkness
 
             if (App.GraphAsset == null)
             {
-                DrawTools.Draw<WelcomeGUI>();
+                DrawUtils.Draw<WelcomeGUI>();
                 return;
             }
 
@@ -232,11 +235,11 @@ namespace Darkness
             // }
 
 
-            DrawTools.Draw<HeaderGUI>();
+            DrawUtils.Draw<HeaderGUI>();
             if (App.GraphAsset == null) return;
-            DrawTools.Draw<HeaderTimeInfoGUI>();
+            DrawUtils.Draw<HeaderTimeInfoGUI>();
             DrawTimelineInfo();
-            DrawTools.Draw<BottomGUI>();
+            DrawUtils.Draw<BottomGUI>();
             DoKeyboardShortcuts();
         }
 
@@ -246,12 +249,15 @@ namespace Darkness
             if (App.GraphAsset != null && player.CurrentTime > 0)
             {
                 App.Stop(true);
-                Debug.LogWarning("Scene Saved while a cutscene was in preview mode. Cutscene was reverted before saving the scene along with changes it affected.");
+                Debug.LogWarning(
+                    "Scene Saved while a cutscene was in preview mode. Cutscene was reverted before saving the scene along with changes it affected.");
             }
         }
+
         #endregion
 
         #region Init
+
         void InitializeAll()
         {
             Lan.Load();
@@ -268,9 +274,11 @@ namespace Darkness
 
             WillRepaint = true;
         }
+
         #endregion
 
         #region 快捷键
+
         /// <summary>
         /// 监听执行鼠标快捷键
         /// </summary>
@@ -326,9 +334,11 @@ namespace Darkness
                 }
             }
         }
+
         #endregion
 
         #region 时间轴
+
         private static bool isProSkin => EditorGUIUtility.isProSkin;
 
 
@@ -411,7 +421,7 @@ namespace Darkness
             var scrollRect1 = Rect.MinMaxRect(0, CenterRect.yMin, G.ScreenWidth, G.ScreenHeight - 5);
             var scrollRect2 = Rect.MinMaxRect(0, CenterRect.yMin, G.ScreenWidth, G.TotalHeight + 150);
             G.ScrollPos = GUI.BeginScrollView(scrollRect1, G.ScrollPos, scrollRect2);
-            DrawTools.Draw<GroupAndTrackListGUI>();
+            DrawUtils.Draw<GroupAndTrackListGUI>();
             ShowTimeLines(CenterRect);
             GUI.EndScrollView();
 
@@ -470,6 +480,7 @@ namespace Darkness
         }
 
         #region Magnet Snap
+
         void CacheMagnetSnapTimes(ClipAsset clipAsset = null)
         {
             var result = new List<float>();
@@ -517,9 +528,11 @@ namespace Darkness
 
             return null;
         }
+
         #endregion
 
         #region 多选
+
         /// <summary>
         /// 多选
         /// </summary>
@@ -634,9 +647,11 @@ namespace Darkness
 
             GUI.color = Color.white;
         }
+
         #endregion
 
         #region 辅助标线
+
         /// <summary>
         /// 绘制时间参考线
         /// </summary>
@@ -707,9 +722,11 @@ namespace Darkness
             EditorGUIUtility.AddCursorRect(rect, type);
             WillRepaint = true;
         }
+
         #endregion
 
         #region 刻度控制
+
         /// <summary>
         /// 时间轴刻度控制
         /// </summary>
@@ -760,7 +777,8 @@ namespace Darkness
             if (isMovingScrubCarret)
             {
                 player.CurrentTime = G.SnapTime(pointerTime);
-                player.CurrentTime = Mathf.Clamp(player.CurrentTime, Mathf.Max(TimelineGraphAsset.ViewTimeMin, 0) + float.Epsilon, TimelineGraphAsset.ViewTimeMax - float.Epsilon);
+                player.CurrentTime = Mathf.Clamp(player.CurrentTime, Mathf.Max(TimelineGraphAsset.ViewTimeMin, 0) + float.Epsilon,
+                    TimelineGraphAsset.ViewTimeMax - float.Epsilon);
             }
 
             if (isMovingEndCarret)
@@ -768,7 +786,8 @@ namespace Darkness
                 TimelineGraphAsset.Length = G.SnapTime(pointerTime);
                 var magnetSnap = MagnetSnapTime(TimelineGraphAsset.Length, magnetSnapTimesCache);
                 TimelineGraphAsset.Length = magnetSnap != null ? magnetSnap.Value : TimelineGraphAsset.Length;
-                TimelineGraphAsset.Length = Mathf.Clamp(TimelineGraphAsset.Length, TimelineGraphAsset.ViewTimeMin + float.Epsilon, TimelineGraphAsset.ViewTimeMax - float.Epsilon);
+                TimelineGraphAsset.Length = Mathf.Clamp(TimelineGraphAsset.Length, TimelineGraphAsset.ViewTimeMin + float.Epsilon,
+                    TimelineGraphAsset.ViewTimeMax - float.Epsilon);
             }
         }
 
@@ -816,9 +835,11 @@ namespace Darkness
                 }
             }
         }
+
         #endregion
 
         #region 时间轴
+
         //初始化动作剪辑包装器
         internal void InitClipWrappers()
         {
@@ -872,7 +893,8 @@ namespace Darkness
         void ShowTimeLines(Rect centerRect)
         {
             var e = Event.current;
-            var bgRect = Rect.MinMaxRect(centerRect.xMin, Styles.TopMargin + Styles.ToolbarHeight + G.ScrollPos.y, centerRect.xMax, G.ScreenHeight - Styles.ToolbarHeight + G.ScrollPos.y);
+            var bgRect = Rect.MinMaxRect(centerRect.xMin, Styles.TopMargin + Styles.ToolbarHeight + G.ScrollPos.y, centerRect.xMax,
+                G.ScreenHeight - Styles.ToolbarHeight + G.ScrollPos.y);
             GUI.color = Color.black.WithAlpha(0.1f);
             GUI.DrawTexture(bgRect, Styles.WhiteTexture);
             GUI.color = Color.black.WithAlpha(0.03f);
@@ -959,7 +981,8 @@ namespace Darkness
                 return;
             }
 
-            var groupRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(0)), nextYPos, TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), nextYPos + Styles.GroupHeight);
+            var groupRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(0)),
+                nextYPos, TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), nextYPos + Styles.GroupHeight);
             nextYPos += Styles.GroupHeight;
 
             if (groupAsset.IsCollapsed)
@@ -1001,7 +1024,10 @@ namespace Darkness
         {
             var yPos = nextYPos;
 
-            var trackPosRect = Rect.MinMaxRect(Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(trackAsset.StartTime)), yPos, TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), yPos + trackAsset.ShowHeight);
+            var trackPosRect =
+                Rect.MinMaxRect(
+                    Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), TimelineGraphAsset.TimeToPos(trackAsset.StartTime)), yPos,
+                    TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMax), yPos + trackAsset.ShowHeight);
 
             nextYPos += trackAsset.ShowHeight + Styles.TrackMargins;
 
@@ -1009,14 +1035,18 @@ namespace Darkness
             GUI.color = Color.black.WithAlpha(isProSkin ? 0.06f : 0.1f);
             GUI.DrawTexture(trackPosRect, Styles.WhiteTexture);
             Handles.color = ColorUtility.Grey(isProSkin ? 0.15f : 0.4f);
-            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.y + 1), new Vector2(trackPosRect.xMax, trackPosRect.y + 1));
-            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMax), new Vector2(trackPosRect.xMax, trackPosRect.yMax));
+            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.y + 1),
+                new Vector2(trackPosRect.xMax, trackPosRect.y + 1));
+            Handles.DrawLine(new Vector2(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMax),
+                new Vector2(trackPosRect.xMax, trackPosRect.yMax));
 
             Handles.color = Color.white;
             if (TimelineGraphAsset.ViewTimeMin < 0)
             {
                 //just visual clarity
-                GUI.Box(Rect.MinMaxRect(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMin, TimelineGraphAsset.TimeToPos(0), trackPosRect.yMax), string.Empty);
+                GUI.Box(
+                    Rect.MinMaxRect(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.ViewTimeMin), trackPosRect.yMin, TimelineGraphAsset.TimeToPos(0),
+                        trackPosRect.yMax), string.Empty);
             }
 
             // Debug.Log($"track.parent={track.parent}");
@@ -1078,7 +1108,8 @@ namespace Darkness
                     {
                         GUI.color = Color.black.WithAlpha(0.2f);
                         GUI.DrawTexture(trackPosRect, Styles.WhiteTexture);
-                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.Stripes, new Rect(0, 0, (trackPosRect.width / 5), (trackPosRect.height / 5)));
+                        GUI.DrawTextureWithTexCoords(trackPosRect, Styles.Stripes,
+                            new Rect(0, 0, (trackPosRect.width / 5), (trackPosRect.height / 5)));
                         GUI.color = Color.white;
                     }
 
@@ -1253,7 +1284,8 @@ namespace Darkness
                         //Shift all the next clips along with this one if shift is down
                         if (e.shift)
                         {
-                            foreach (var cw in clipWrappers.Values.Where(c => c.action.Parent == action.Parent && c.action != action && c.action.StartTime > lastTime))
+                            foreach (var cw in clipWrappers.Values.Where(c =>
+                                         c.action.Parent == action.Parent && c.action != action && c.action.StartTime > lastTime))
                             {
                                 cw.action.StartTime += xTime - lastTime;
                             }
@@ -1269,7 +1301,8 @@ namespace Darkness
             clipRect.x = TimelineGraphAsset.TimeToPos(xTime);
 
             //dont draw if outside of view range and not selected
-            var isSelected = ReferenceEquals(DirectorUtility.SelectedObject, action) || (multiSelection != null && multiSelection.Select(b => b.action).Contains(action));
+            var isSelected = ReferenceEquals(DirectorUtility.SelectedObject, action) ||
+                             (multiSelection != null && multiSelection.Select(b => b.action).Contains(action));
             var isVisible = Rect.MinMaxRect(0, G.ScrollPos.y, CenterRect.width, CenterRect.height).Overlaps(clipRect);
             if (!isSelected && !isVisible)
             {
@@ -1322,30 +1355,15 @@ namespace Darkness
                     return;
                 }
 
-                menu.AddItem(new GUIContent(Lan.ClipCopy), false, () =>
-                {
-                    DirectorUtility.CopyClipAsset = action;
-                });
-                menu.AddItem(new GUIContent(Lan.ClipCut), false, () =>
-                {
-                    DirectorUtility.CutClip(action);
-                });
+                menu.AddItem(new GUIContent(Lan.ClipCopy), false, () => { DirectorUtility.CopyClipAsset = action; });
+                menu.AddItem(new GUIContent(Lan.ClipCut), false, () => { DirectorUtility.CutClip(action); });
 
                 if (action is ISubClipContainable subContainable && subContainable.SubClipLength > 0)
                 {
                     menu.AddSeparator("");
-                    menu.AddItem(new GUIContent(Lan.MatchPreviousLoop), false, () =>
-                    {
-                        action.TryMatchPreviousSubClipLoop();
-                    });
-                    menu.AddItem(new GUIContent(Lan.MatchClipLength), false, () =>
-                    {
-                        action.TryMatchSubClipLength();
-                    });
-                    menu.AddItem(new GUIContent(Lan.MatchNextLoop), false, () =>
-                    {
-                        action.TryMatchNexSubClipLoop();
-                    });
+                    menu.AddItem(new GUIContent(Lan.MatchPreviousLoop), false, () => { action.TryMatchPreviousSubClipLoop(); });
+                    menu.AddItem(new GUIContent(Lan.MatchClipLength), false, () => { action.TryMatchSubClipLength(); });
+                    menu.AddItem(new GUIContent(Lan.MatchNextLoop), false, () => { action.TryMatchNexSubClipLoop(); });
                 }
 
                 menu.AddSeparator("/");
@@ -1503,7 +1521,7 @@ namespace Darkness
                 action.ShowClipGUI(wholeRect);
                 if (action is ISubClipContainable subClip)
                 {
-                    DrawTools.DrawLoopedLines(wholeRect, subClip.SubClipLength / subClip.SubClipSpeed, action.Length, subClip.SubClipOffset);
+                    DrawUtils.DrawLoopedLines(wholeRect, subClip.SubClipLength / subClip.SubClipSpeed, action.Length, subClip.SubClipOffset);
                 }
 
                 ShowClipBlockColor(wholeRect);
@@ -1791,7 +1809,9 @@ namespace Darkness
                 }
             }
         }
+
         #endregion
+
         #endregion
     }
 }

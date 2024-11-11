@@ -2,7 +2,7 @@
 
 namespace Darkness
 {
-    public static class AssetExtension
+    public static class GraphExtension
     {
         public static float TimeToPos(this TimelineGraphAsset timelineGraphAsset, float time)
         {

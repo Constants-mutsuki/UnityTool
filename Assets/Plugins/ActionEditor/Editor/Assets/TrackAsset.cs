@@ -11,7 +11,7 @@ namespace Darkness
         [SerializeReference]
         public Track trackModel;
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private List<ClipAsset> actionClips = new List<ClipAsset>();
 
         [SerializeField]
@@ -32,7 +32,6 @@ namespace Darkness
             get => name;
             set => name = value;
         }
-
 
         public virtual string info => string.Empty;
 
@@ -71,17 +70,15 @@ namespace Darkness
 
         public override float StartTime => 0;
 
-
         public override float EndTime => Parent != null ? Parent.EndTime : 0;
 
         public override bool CanCrossBlend => false;
-
 
         public virtual float ShowHeight => 30f;
 
 
         #region 增删
-#if UNITY_EDITOR
+
         public ClipAsset AddClip<T>(float time) where T : Clip
         {
             return AddClip(typeof(T), time);
@@ -144,17 +141,13 @@ namespace Darkness
 
             return newClip;
         }
-#endif
+
         #endregion
-
-
-
 
         internal bool IsCompilable()
         {
             return true;
         }
-
 
         bool m_cacheSorted;
 

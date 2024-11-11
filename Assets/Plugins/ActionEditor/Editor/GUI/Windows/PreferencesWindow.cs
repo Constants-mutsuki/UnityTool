@@ -21,7 +21,7 @@ namespace Darkness
 
         public override void OnGUI(Rect rect)
         {
-            DrawTools.Draw<PreferencesGUI>();
+            DrawUtils.Draw<PreferencesGUI>();
 
             if (m_firstPass || Event.current.type == EventType.Repaint)
             {

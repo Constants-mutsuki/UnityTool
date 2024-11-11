@@ -18,9 +18,5 @@ namespace Darkness
         public virtual float BlendIn { get; set; }
         public virtual float BlendOut { get; set; }
         public virtual bool CanCrossBlend { get; set; }
-
-        public virtual void SaveToAssets()
-        {
-        }
     }
 }

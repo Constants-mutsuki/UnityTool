@@ -5,7 +5,6 @@ namespace Darkness
 {
     internal static class CreateUtilities
     {
-        
         public static void SaveAssetIntoObject(Object childAsset, Object masterAsset)
         {
             if (childAsset == null || masterAsset == null)

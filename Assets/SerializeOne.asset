@@ -131,7 +131,7 @@ MonoBehaviour:
   m_parent: {fileID: 6204635687993349769}
   clipModel:
     rid: 7626350227717357635
-  startTime: 0.5
+  startTime: 0
   references:
     version: 2
     RefIds:
@@ -183,8 +183,8 @@ MonoBehaviour:
   m_Name: SerializeOne
   m_EditorClassIdentifier: 
   length: 5
-  viewTimeMin: 0.17139971
-  viewTimeMax: 5.4921794
+  viewTimeMin: 0.033969134
+  viewTimeMax: 4.9982233
   groups:
   - {fileID: -3090507242900302545}
 --- !u!114 &5329669125964721060
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_parent: {fileID: 5543293717361020475}
   clipModel:
     rid: 7626350227717357637
-  startTime: 1.9699999
+  startTime: 0.84999996
   references:
     version: 2
     RefIds:
@@ -286,6 +286,7 @@ MonoBehaviour:
     rid: 7626350227717357629
   actionClips:
   - {fileID: -2799812997940121690}
+  - {fileID: 9051338769754280250}
   active: 1
   isLocked: 0
   color: {r: 1, g: 1, b: 1, a: 1}
@@ -320,6 +321,30 @@ MonoBehaviour:
     RefIds:
     - rid: 7626350227717357638
       type: {class: BulletClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+--- !u!114 &9051338769754280250
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 6204635687993349769}
+  clipModel:
+    rid: 8308794128801202237
+  startTime: 1.52
+  references:
+    version: 2
+    RefIds:
+    - rid: 8308794128801202237
+      type: {class: DamageClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
       data:
         startTime: 0
         length: 0
