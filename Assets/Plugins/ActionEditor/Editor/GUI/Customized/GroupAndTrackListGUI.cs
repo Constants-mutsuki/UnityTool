@@ -163,7 +163,7 @@ namespace Darkness
                     foreach (var metaInfo in EditorTools.GetTypeMetaDerivedFrom(typeof(Track)))
                     {
                         var info = metaInfo;
-                        if (info.AttachableTypes == null || !info.AttachableTypes.Contains(group.GetType()))
+                        if (info.AttachableTypes == null || !info.AttachableTypes.Contains(group.groupModel.GetType()))
                         {
                             continue;
                         }
@@ -177,10 +177,7 @@ namespace Darkness
                         var finalPath = string.IsNullOrEmpty(info.Category) ? info.Name : info.Category + "/" + info.Name;
                         if (canAdd)
                         {
-                            menu.AddItem(new GUIContent($"{Lan.MenuAddTrack}/" + finalPath), false, () =>
-                            {
-                                group.AddTrack(info.Type);
-                            });
+                            menu.AddItem(new GUIContent($"{Lan.MenuAddTrack}/" + finalPath), false, () => { group.AddTrack(info.Type); });
                         }
                         else
                         {
@@ -203,14 +200,8 @@ namespace Darkness
                         menu.AddDisabledItem(new GUIContent(Lan.MenuPasteTrack));
                     }
 
-                    menu.AddItem(new GUIContent(Lan.GroupDisable), !group.IsActive, () =>
-                    {
-                        group.IsActive = !group.IsActive;
-                    });
-                    menu.AddItem(new GUIContent(Lan.GroupLocked), group.IsLocked, () =>
-                    {
-                        group.IsLocked = !group.IsLocked;
-                    });
+                    menu.AddItem(new GUIContent(Lan.GroupDisable), !group.IsActive, () => { group.IsActive = !group.IsActive; });
+                    menu.AddItem(new GUIContent(Lan.GroupLocked), group.IsLocked, () => { group.IsLocked = !group.IsLocked; });
 
                     menu.AddSeparator("");
 
@@ -255,7 +246,8 @@ namespace Darkness
                 {
                     if (groupRect.Contains(e.mousePosition))
                     {
-                        var markRect = new Rect(groupRect.x, (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y, groupRect.width, 2);
+                        var markRect = new Rect(groupRect.x,
+                            (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y, groupRect.width, 2);
                         GUI.color = Color.grey;
                         GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
@@ -323,21 +315,12 @@ namespace Darkness
                 if (e.type == EventType.ContextClick && trackRect.Contains(e.mousePosition))
                 {
                     var menu = new GenericMenu();
-                    menu.AddItem(new GUIContent(Lan.TrackDisable), !track.IsActive, () =>
-                    {
-                        track.IsActive = !track.IsActive;
-                    });
-                    menu.AddItem(new GUIContent(Lan.TrackLocked), track.IsLocked, () =>
-                    {
-                        track.IsLocked = !track.IsLocked;
-                    });
+                    menu.AddItem(new GUIContent(Lan.TrackDisable), !track.IsActive, () => { track.IsActive = !track.IsActive; });
+                    menu.AddItem(new GUIContent(Lan.TrackLocked), track.IsLocked, () => { track.IsLocked = !track.IsLocked; });
 
                     menu.AddSeparator("");
 
-                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () =>
-                    {
-                        m_copyTrackAsset = track;
-                    });
+                    menu.AddItem(new GUIContent(Lan.TrackCopy), false, () => { m_copyTrackAsset = track; });
 
                     if (track.GetType().RTGetAttribute<UniqueAttribute>(true) == null)
                     {
@@ -386,7 +369,8 @@ namespace Darkness
                 {
                     if (trackRect.Contains(e.mousePosition))
                     {
-                        var markRect = new Rect(trackRect.x, (groupAsset.Tracks.IndexOf(m_pickedTrackAsset) < t) ? trackRect.yMax - 2 : trackRect.y, trackRect.width, 2);
+                        var markRect = new Rect(trackRect.x, (groupAsset.Tracks.IndexOf(m_pickedTrackAsset) < t) ? trackRect.yMax - 2 : trackRect.y,
+                            trackRect.width, 2);
                         GUI.color = Color.grey;
                         GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;

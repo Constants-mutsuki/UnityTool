@@ -49,12 +49,10 @@ public class ShowInInspector : Editor
         GUILayout.BeginHorizontal(Styles.HeaderBoxStyle);
         GUI.color = Color.white;
         var inspectorTitle = "时间轴基础信息";
-        GUILayout.Label($"{(m_graphFoldout ? "▼" : "▶")} {inspectorTitle}");
+        GUILayout.Label($"{(m_graphFoldout ? "▼" : "▶")}  {inspectorTitle}");
         GUILayout.EndHorizontal();
-
         var lastRect = GUILayoutUtility.GetLastRect();
         EditorGUIUtility.AddCursorRect(lastRect, MouseCursor.Link);
-
         if (Event.current.type == EventType.MouseDown && lastRect.Contains(Event.current.mousePosition))
         {
             m_graphFoldout = !m_graphFoldout;

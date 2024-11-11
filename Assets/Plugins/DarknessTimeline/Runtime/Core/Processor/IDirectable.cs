@@ -35,8 +35,7 @@ namespace Darkness
         void Exit(FrameData frameData,FrameData innerFrameData);
 
         void ReverseEnter(FrameData frameData,FrameData innerFrameData);
-
-
+        
         void Reverse(FrameData frameData,FrameData innerFrameData);
 
         void Reset();

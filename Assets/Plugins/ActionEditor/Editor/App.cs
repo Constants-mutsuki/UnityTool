@@ -23,7 +23,7 @@ namespace Darkness
         public static CallbackFunction OnStop;
 
         public static TimelineGraphAsset GraphAsset { get; set; }
-        
+
         private static TimelineGraphPreviewProcessor _timelineGraphPreviewProcessor;
 
         public static void OnObjectPickerConfig(Object obj)
@@ -33,7 +33,6 @@ namespace Darkness
                 GraphAsset = a;
                 GraphAsset.Validate();
                 _timelineGraphPreviewProcessor = new TimelineGraphPreviewProcessor(GraphAsset);
-                
             }
         }
 
@@ -45,6 +44,7 @@ namespace Darkness
 
 
         #region AutoSave
+
         private static DateTime m_lastSaveTime = DateTime.Now;
         public static DateTime LastSaveTime => m_lastSaveTime;
 
@@ -66,18 +66,20 @@ namespace Darkness
             m_lastSaveTime = DateTime.Now;
             SaveAsset();
         }
+
         #endregion
 
         #region 播放相关
 
         public static TimelineGraphPreviewProcessor Player => _timelineGraphPreviewProcessor;
-        
+
 
         public static GameObject Owner
         {
             get => Player.Owner;
             set => Player.Owner = value;
         }
+
         public static bool IsStop => Application.isPlaying ? Player.IsPaused || !Player.IsActive : EditorPlaybackState == EditorPlaybackState.Stopped;
 
         internal static EditorPlaybackState EditorPlaybackState = EditorPlaybackState.Stopped;
@@ -137,6 +139,7 @@ namespace Darkness
 
             Player.CurrentTime -= Prefs.snapInterval;
         }
+
         #endregion
     }
 }
