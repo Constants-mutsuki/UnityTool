@@ -117,11 +117,9 @@ namespace Darkness
                  foreach (var group in data.groups)
                  {
                      var groupProcessorType = ViewModelFactory.GetViewModelType(group.GetType());
-                     if (ObjectPools.Instance.Spawn(groupProcessorType) is GroupProcessor groupProcessor)
-                     {
-                         groupProcessor.SetUp(group, this);
-                         groups.Add(groupProcessor);
-                     }
+                     var groupProcessor = new ExampleGroupProcessor();
+                     groupProcessor.SetUp(group, this);
+                     groups.Add(groupProcessor);
                  }
              }
          }

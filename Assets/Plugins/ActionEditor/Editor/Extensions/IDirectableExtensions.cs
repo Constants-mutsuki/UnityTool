@@ -53,6 +53,7 @@ namespace Darkness
 
         public static bool CanScale(this ClipAsset directable)
         {
+            // true;
             var lengthProp = directable.GetType().GetProperty("Length", BindingFlags.Instance | BindingFlags.Public);
             return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ClipAsset);
         }
