@@ -9,7 +9,7 @@ namespace Darkness
     [Serializable]
     public class TrackAsset : DirectableAsset
     {
-        [SerializeReference]
+        [SerializeReference, HideInInspector]
         public Track trackModel;
 
         [SerializeField, HideInInspector]
@@ -168,6 +168,7 @@ namespace Darkness
                 {
                     clip.clipModel.startTime = clip.StartTime;
                 }
+
                 trackModel.clips.Sort((clip1, clip2) => clip1.startTime.CompareTo(clip2.startTime));
                 m_cacheSorted = true;
             }
