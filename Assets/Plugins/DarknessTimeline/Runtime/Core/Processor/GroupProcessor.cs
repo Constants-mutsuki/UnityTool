@@ -25,7 +25,6 @@ namespace Darkness
         private List<TrackProcessor> tracks;
         private CFloat startTime;
         private CFloat endTime;
-        public bool Active => data.active;
         
         public CFloat StartTime => startTime;
         

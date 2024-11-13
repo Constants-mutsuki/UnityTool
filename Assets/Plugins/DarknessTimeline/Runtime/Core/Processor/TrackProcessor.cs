@@ -27,7 +27,6 @@ namespace Darkness
         private CFloat endTime;
 
         protected Track Data => data;
-        public bool Active => data.active;
         
         public CFloat StartTime => startTime;
         

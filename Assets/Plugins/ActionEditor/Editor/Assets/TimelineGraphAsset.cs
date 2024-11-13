@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MemoryPack;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,6 +24,9 @@ namespace Darkness
 
         [NonSerialized]
         private TrackAsset[] m_cacheOutputTracks;
+
+        [SerializeReference]
+        public TimelineGraph GraphModel = new();
 
         [SerializeField, HideInInspector]
         public List<GroupAsset> groups = new();
@@ -61,6 +65,9 @@ namespace Darkness
             newGroup.Root = this;
             newGroup.groupModel = new Group();
             groups.Add(newGroup);
+            if (GraphModel.groups.IsNullOrEmpty())
+                GraphModel.groups = new List<Group>();
+            GraphModel.groups.Add(newGroup.groupModel);
             CreateUtilities.SaveAssetIntoObject(newGroup, this);
             DirectorUtility.SelectedObject = newGroup;
             return newGroup;
@@ -69,6 +76,7 @@ namespace Darkness
         public void DeleteGroup(GroupAsset groupAsset)
         {
             groups.Remove(groupAsset);
+            GraphModel.groups.Remove(groupAsset.groupModel);
         }
 
         public GroupAsset PasteGroup(GroupAsset groupAsset)
@@ -78,6 +86,9 @@ namespace Darkness
             {
                 newGroup.Root = this;
                 groups.Add(newGroup);
+                if (GraphModel.groups.IsNullOrEmpty())
+                    GraphModel.groups = new List<Group>();
+                GraphModel.groups.Add(newGroup.groupModel);
                 CreateUtilities.SaveAssetIntoObject(newGroup, this);
                 newGroup.Tracks.Clear();
                 foreach (var track in groupAsset.Tracks)
