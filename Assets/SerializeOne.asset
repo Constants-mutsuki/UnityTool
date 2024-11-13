@@ -15,7 +15,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202242
-  startTime: 3.213539
+  startTime: 2.723539
   references:
     version: 2
     RefIds:
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202244
-  startTime: 4.0299997
+  startTime: 3.54
   references:
     version: 2
     RefIds:
@@ -297,8 +297,8 @@ MonoBehaviour:
   m_Name: SerializeOne
   m_EditorClassIdentifier: 
   length: 5
-  viewTimeMin: 0.4974188
-  viewTimeMax: 5.8281503
+  viewTimeMin: 0
+  viewTimeMax: 5.4062953
   groups:
   - {fileID: -3090507242900302545}
 --- !u!114 &2504787901206175688
@@ -316,7 +316,7 @@ MonoBehaviour:
   m_parent: {fileID: -1654506489273019075}
   clipModel:
     rid: 8308794128801202246
-  startTime: 2.8699996
+  startTime: 2.3799999
   references:
     version: 2
     RefIds:
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202245
-  startTime: 3.7144313
+  startTime: 3.2244315
   references:
     version: 2
     RefIds:
@@ -390,7 +390,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202243
-  startTime: 3.4231372
+  startTime: 2.9331374
   references:
     version: 2
     RefIds:
@@ -415,7 +415,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202241
-  startTime: 2.9676516
+  startTime: 2.4776518
   references:
     version: 2
     RefIds:
@@ -494,7 +494,7 @@ MonoBehaviour:
   m_parent: {fileID: 5543293717361020475}
   clipModel:
     rid: 7626350227717357637
-  startTime: 0.98999995
+  startTime: 1.0699999
   references:
     version: 2
     RefIds:

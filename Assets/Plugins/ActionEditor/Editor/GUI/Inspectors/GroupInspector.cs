@@ -15,7 +15,7 @@ namespace Darkness
 
         public override void OnInspectorGUI()
         {
-            ShowCommonInspector();
+            ShowCommonInspector(false);
         }
 
         protected void ShowCommonInspector(bool showBaseInspector = true)

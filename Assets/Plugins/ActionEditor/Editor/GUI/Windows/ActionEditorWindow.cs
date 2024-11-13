@@ -6,6 +6,7 @@ using Darkness.Draws;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Darkness
 {
@@ -244,7 +245,7 @@ namespace Darkness
         }
 
 
-        void OnWillSaveScene(UnityEngine.SceneManagement.Scene scene, string path)
+        void OnWillSaveScene(Scene scene, string path)
         {
             if (App.GraphAsset != null && player.CurrentTime > 0)
             {
@@ -947,7 +948,7 @@ namespace Darkness
                 var endPos = Mathf.Max(TimelineGraphAsset.TimeToPos(TimelineGraphAsset.Length) + G.LeftRect.width, centerRect.xMin);
                 var darkRect = Rect.MinMaxRect(endPos, centerRect.yMin, centerRect.xMax, centerRect.yMax);
                 GUI.color = Color.black.WithAlpha(0.3f);
-                GUI.Box(darkRect, string.Empty, (GUIStyle)"TextField");
+                GUI.Box(darkRect, string.Empty, "TextField");
                 GUI.color = Color.white;
             }
 
@@ -957,7 +958,7 @@ namespace Darkness
                 var startPos = Mathf.Min(TimelineGraphAsset.TimeToPos(0) + G.LeftRect.width, centerRect.xMax);
                 var darkRect = Rect.MinMaxRect(centerRect.xMin, centerRect.yMin, startPos, centerRect.yMax);
                 GUI.color = Color.black.WithAlpha(0.3f);
-                GUI.Box(darkRect, string.Empty, (GUIStyle)"TextField");
+                GUI.Box(darkRect, string.Empty, "TextField");
                 GUI.color = Color.white;
             }
 
@@ -1453,7 +1454,7 @@ namespace Darkness
             private Rect controlRectIn;
             private Rect controlRectOut;
 
-            private ActionEditorWindow editor => ActionEditorWindow.current;
+            private ActionEditorWindow editor => current;
 
             private List<ActionClipWrapper> multiSelection
             {
@@ -1484,9 +1485,9 @@ namespace Darkness
                 isScalingEnd = false;
             }
 
-            public void OnClipGUI(int clipID)
+            public void OnClipGUI(int clipId)
             {
-                this.clipID = clipID;
+                clipID = clipId;
                 e = Event.current;
 
                 overlapIn = PreviousClipAsset != null ? Mathf.Max(PreviousClipAsset.EndTime - action.StartTime, 0) : 0;
@@ -1555,7 +1556,7 @@ namespace Darkness
                     {
                         if (multiSelection == null)
                         {
-                            multiSelection = new List<ActionClipWrapper>() { this };
+                            multiSelection = new List<ActionClipWrapper> { this };
                         }
 
                         if (multiSelection.Contains(this))

@@ -67,7 +67,7 @@ namespace Darkness
         public virtual float Length
         {
             get => 0;
-            set { }
+            set => clipModel.length = value;
         }
 
 

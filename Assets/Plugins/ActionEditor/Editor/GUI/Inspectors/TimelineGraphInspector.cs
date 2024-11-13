@@ -10,7 +10,7 @@ namespace Darkness
         public override void OnInspectorGUI()
         {
             ShowCommonInspector();
-            base.OnInspectorGUI();
+            //base.OnInspectorGUI();
         }
 
         protected void ShowCommonInspector(bool showBaseInspector = true)

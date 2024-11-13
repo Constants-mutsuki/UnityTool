@@ -39,7 +39,7 @@ namespace Darkness
         void ShowInOutControls()
         {
             var previousClip = m_clip.GetPreviousSibling();
-            var previousTime = previousClip != null ? previousClip.EndTime : m_clip.Parent.StartTime;
+            var previousTime = previousClip ? previousClip.EndTime : m_clip.Parent.StartTime;
             if (m_clip.CanCrossBlend(previousClip))
             {
                 previousTime -= Mathf.Min(m_clip.Length / 2, (previousClip.EndTime - previousClip.StartTime) / 2);
