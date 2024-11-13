@@ -19,7 +19,7 @@ namespace Darkness
     }
     
     [ViewModel(typeof(Group))]
-    public abstract class GroupProcessor : IDirectable
+    public class GroupProcessor : IDirectable
     {
         private Group data;
         private List<TrackProcessor> tracks;
@@ -57,6 +57,27 @@ namespace Darkness
                     if (ObjectPools.Instance.Spawn(trackProcessorType) is TrackProcessor trackProcessor)
                     {
                         trackProcessor.SetUp(track, this);
+                        tracks.Add(trackProcessor);
+                    }
+                }
+            }
+        }
+        
+        public void SetUp(Group group, ITimelineGraph graph,bool editor)
+        {
+            this.data = group;
+            this.Root = graph;
+            this.startTime = 0;
+            this.endTime = Root.Length;
+            if (group.tracks != null)
+            {
+                this.tracks = new List<TrackProcessor>(group.tracks.Count);
+                foreach (var track in group.tracks)
+                {
+                    var trackProcessorType = ViewModelFactory.GetViewModelType(track.GetType());
+                    if (Activator.CreateInstance(trackProcessorType) is TrackProcessor trackProcessor)
+                    {
+                        trackProcessor.SetUp(track, this,editor);
                         tracks.Add(trackProcessor);
                     }
                 }

@@ -24,6 +24,7 @@ namespace Darkness
             {
                 if (!triggered)
                 {
+                    triggered = true;
                     var farmedata = new FrameData()
                     {
                         currentTime = currentTime,
@@ -37,6 +38,7 @@ namespace Darkness
                     target.Enter(farmedata,innerframedata);
                     
                     target.Update(farmedata,innerframedata);
+                    
                 }
             }
         }

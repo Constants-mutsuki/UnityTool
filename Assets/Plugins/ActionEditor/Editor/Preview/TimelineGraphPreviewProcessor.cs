@@ -219,7 +219,7 @@ namespace Darkness
             }
 
             TimelineGraphProcessor timelineGraphProcessor =
-                new TimelineGraphProcessor(TimelineGraphAsset.GraphModel);
+                new TimelineGraphProcessor(TimelineGraphAsset.GraphModel,true);
 
             for (int i =  TimelineGraphAsset.groups.Count-1 ; i>=0 ;i--)
             {
@@ -250,7 +250,7 @@ namespace Darkness
                     unsortedStartTimePointers.Add(trackp3);
                     timePointers.Add(new EndTimePreviewPointer(trackpreview));
                 
-                    for (int k = 0; k < trackAsset.Clips.Count;i++)
+                    for (int k = 0; k < trackAsset.Clips.Count;k++)
                     {
                         var clipAsset = trackAsset.Clips[k];
                         var clipProcessor = trackProcessor.Children.ElementAt(k);

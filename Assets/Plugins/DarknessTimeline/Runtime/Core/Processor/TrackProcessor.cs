@@ -19,7 +19,7 @@ namespace Darkness
     }
     
     [ViewModel(typeof(Track))]
-    public abstract class TrackProcessor : IDirectable
+    public class TrackProcessor : IDirectable
     {
         private Track data;
         private List<ClipProcessor> clips;
@@ -56,6 +56,27 @@ namespace Darkness
                 {
                     var clipProcessorType = ViewModelFactory.GetViewModelType(clip.GetType());
                     if (ObjectPools.Instance.Spawn(clipProcessorType) is ClipProcessor clipProcessor)
+                    {
+                        clipProcessor.SetUp(clip, this);
+                        clips.Add(clipProcessor);
+                    }
+                }
+            }
+        }
+        public void SetUp(Track track, IDirectable group,bool editor)
+        {
+            this.data = track;
+            this.Parent = group;
+            this.Root = group.Root;
+            this.startTime = 0;
+            this.endTime = Root.Length;
+            if (track.clips != null)
+            {
+                this.clips = new List<ClipProcessor>(track.clips.Count);
+                foreach (var clip in track.clips)
+                {
+                    var clipProcessorType = ViewModelFactory.GetViewModelType(clip.GetType());
+                    if (Activator.CreateInstance(clipProcessorType) is ClipProcessor clipProcessor)
                     {
                         clipProcessor.SetUp(clip, this);
                         clips.Add(clipProcessor);

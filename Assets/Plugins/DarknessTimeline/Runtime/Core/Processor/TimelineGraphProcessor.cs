@@ -125,6 +125,24 @@ namespace Darkness
                  }
              }
          }
+
+        public TimelineGraphProcessor(TimelineGraph data,bool editor)
+        {
+            this.data = data;
+            if (data.groups != null)
+            {
+                groups = new List<GroupProcessor>(data.groups.Count);
+                foreach (var group in data.groups)
+                {
+                    var groupProcessorType = ViewModelFactory.GetViewModelType(group.GetType());
+                    if (Activator.CreateInstance(groupProcessorType) is GroupProcessor groupProcessor)
+                    {
+                        groupProcessor.SetUp(group, this,editor);
+                        groups.Add(groupProcessor);
+                    }
+                }
+            }
+        }
         
         
          public void Play()

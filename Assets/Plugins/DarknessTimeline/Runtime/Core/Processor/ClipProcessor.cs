@@ -22,7 +22,7 @@ namespace Darkness
     
     
     [ViewModel(typeof(Clip))]
-    public abstract class ClipProcessor : IDirectable
+    public class ClipProcessor : IDirectable
     {
 
         private Clip data;
