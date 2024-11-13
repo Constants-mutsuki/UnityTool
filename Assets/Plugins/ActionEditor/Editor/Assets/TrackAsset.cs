@@ -101,6 +101,8 @@ namespace Darkness
                 newClip.StartTime = time;
                 newClip.clipModel = Activator.CreateInstance(type) as Clip;
                 Clips.Add(newClip);
+                if (trackModel.clips.IsNullOrEmpty())
+                    trackModel.clips = new List<Clip>();
                 trackModel.clips.Add(newClip.clipModel);
                 var nextAction = Clips.FirstOrDefault(a => a.StartTime > newClip.StartTime);
                 if (nextAction != null)
@@ -139,6 +141,8 @@ namespace Darkness
 
                 newClip.Parent = this;
                 Clips.Add(newClip);
+                if (trackModel.clips.IsNullOrEmpty())
+                    trackModel.clips = new List<Clip>();
                 trackModel.clips.Add(newClip.clipModel);
                 CreateUtilities.SaveAssetIntoObject(newClip, this);
             }

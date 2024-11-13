@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -101,6 +102,8 @@ namespace Darkness
             newTrack.Parent = this;
             newTrack.trackModel = Activator.CreateInstance(type) as Track;
             Tracks.Add(newTrack);
+            if (groupModel.tracks.IsNullOrEmpty())
+                groupModel.tracks = new List<Track>();
             groupModel.tracks.Add(newTrack.trackModel);
             CreateUtilities.SaveAssetIntoObject(newTrack, this);
             DirectorUtility.SelectedObject = newTrack;
@@ -135,6 +138,8 @@ namespace Darkness
             {
                 newTrack.Parent = this;
                 Tracks.Add(newTrack);
+                if (groupModel.tracks.IsNullOrEmpty())
+                    groupModel.tracks = new List<Track>();
                 groupModel.tracks.Add(newTrack.trackModel);
                 CreateUtilities.SaveAssetIntoObject(newTrack, this);
                 newTrack.Clips.Clear();
