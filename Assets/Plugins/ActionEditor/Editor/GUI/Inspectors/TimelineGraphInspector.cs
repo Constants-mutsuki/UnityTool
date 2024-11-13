@@ -15,7 +15,6 @@ namespace Darkness
 
         protected void ShowCommonInspector(bool showBaseInspector = true)
         {
-            // action.version = EditorGUILayout.TextField("Name", action.version);
         }
     }
 }

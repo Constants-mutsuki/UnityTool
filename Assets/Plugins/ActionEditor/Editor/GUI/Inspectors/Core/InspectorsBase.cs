@@ -23,8 +23,6 @@ namespace Darkness
         {
             m_propertyTree ??= PropertyTree.Create(m_target);
             m_propertyTree.Draw(false);
-
-            //DrawDefaultInspector(m_target.GetType());
         }
 
         public void DrawDefaultInspector(Type type)
