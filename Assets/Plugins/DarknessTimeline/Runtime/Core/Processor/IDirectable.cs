@@ -14,8 +14,7 @@ namespace Darkness
 {
     public interface IDirectable : IDisposable
     {
-        bool Active { get; }
-
+        
         ITimelineGraph Root { get; }
 
         IDirectable Parent { get; }

@@ -27,8 +27,6 @@ namespace Darkness
 
         private Clip data;
 
-        public bool Active => true;
-
         public CFloat StartTime => data.startTime;
 
         public CFloat EndTime => data.startTime + data.length;

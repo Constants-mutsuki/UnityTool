@@ -101,6 +101,7 @@ namespace Darkness
             newTrack.Parent = this;
             newTrack.trackModel = Activator.CreateInstance(type) as Track;
             Tracks.Add(newTrack);
+            groupModel.tracks.Add(newTrack.trackModel);
             CreateUtilities.SaveAssetIntoObject(newTrack, this);
             DirectorUtility.SelectedObject = newTrack;
             return newTrack;
@@ -110,6 +111,7 @@ namespace Darkness
         {
             // Undo.RegisterCompleteObjectUndo(this, "Delete Track");
             Tracks.Remove(trackAsset);
+            groupModel.tracks.Remove(trackAsset.trackModel);
             if (ReferenceEquals(DirectorUtility.SelectedObject, trackAsset))
             {
                 DirectorUtility.SelectedObject = null;
@@ -133,6 +135,7 @@ namespace Darkness
             {
                 newTrack.Parent = this;
                 Tracks.Add(newTrack);
+                groupModel.tracks.Add(newTrack.trackModel);
                 CreateUtilities.SaveAssetIntoObject(newTrack, this);
                 newTrack.Clips.Clear();
                 foreach (var clip in trackAsset.Clips)

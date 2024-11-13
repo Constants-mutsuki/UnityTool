@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Darkness
@@ -100,6 +101,7 @@ namespace Darkness
                 newClip.StartTime = time;
                 newClip.clipModel = Activator.CreateInstance(type) as Clip;
                 Clips.Add(newClip);
+                trackModel.clips.Add(newClip.clipModel);
                 var nextAction = Clips.FirstOrDefault(a => a.StartTime > newClip.StartTime);
                 if (nextAction != null)
                 {
@@ -113,6 +115,7 @@ namespace Darkness
         public void DeleteClip(ClipAsset action)
         {
             Clips.Remove(action);
+            trackModel.clips.Remove(action.clipModel);
             if (ReferenceEquals(DirectorUtility.SelectedObject, action))
             {
                 DirectorUtility.SelectedObject = null;
@@ -136,6 +139,7 @@ namespace Darkness
 
                 newClip.Parent = this;
                 Clips.Add(newClip);
+                trackModel.clips.Add(newClip.clipModel);
                 CreateUtilities.SaveAssetIntoObject(newClip, this);
             }
 
@@ -156,6 +160,11 @@ namespace Darkness
             if (!m_cacheSorted)
             {
                 Clips.Sort((clip1, clip2) => clip1.StartTime.CompareTo(clip2.StartTime));
+                foreach (var clip in Clips)
+                {
+                    clip.clipModel.startTime = clip.StartTime;
+                }
+                trackModel.clips.Sort((clip1, clip2) => clip1.startTime.CompareTo(clip2.startTime));
                 m_cacheSorted = true;
             }
         }

@@ -9,24 +9,15 @@ namespace Darkness
     /// 则继承预览类，并且在类上方使用[CustomPreview(typeof(重写Processor的类))]，
     /// 并且重写生命周期，然后去掉base.生命周期
     /// </summary>
-    public abstract class PreviewLogic
+    public class PreviewLogic
     {
         public DirectableAsset Directable;
         public IDirectable Processor;
 
-        public void SetTarget(DirectableAsset t)
+        public void SetTarget(IDirectable t,DirectableAsset directable)
         {
-            Directable = t;
-            if (Directable is ClipAsset clipAsset)
-            {
-                var ProcessorType = ViewModelFactory.GetViewModelType(clipAsset.clipModel.GetType());
-                Processor = Activator.CreateInstance(ProcessorType) as IDirectable;
-            }
-            if (Directable is TrackAsset trackAsset)
-            {
-                var ProcessorType = ViewModelFactory.GetViewModelType(trackAsset.trackModel.GetType());
-                Processor = Activator.CreateInstance(ProcessorType) as IDirectable;
-            }
+            Directable = directable;
+            Processor = t;
         }
 
         public virtual void Enter(FrameData frameData,FrameData innerFrameData)
