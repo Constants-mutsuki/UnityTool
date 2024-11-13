@@ -15,7 +15,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202242
-  startTime: 1.7735391
+  startTime: 3.213539
   references:
     version: 2
     RefIds:
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202244
-  startTime: 2.59
+  startTime: 4.0299997
   references:
     version: 2
     RefIds:
@@ -316,7 +316,7 @@ MonoBehaviour:
   m_parent: {fileID: -1654506489273019075}
   clipModel:
     rid: 8308794128801202246
-  startTime: 1.43
+  startTime: 2.8699996
   references:
     version: 2
     RefIds:
@@ -340,7 +340,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202245
-  startTime: 2.2744315
+  startTime: 3.7144313
   references:
     version: 2
     RefIds:
@@ -390,7 +390,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202243
-  startTime: 1.9831375
+  startTime: 3.4231372
   references:
     version: 2
     RefIds:
@@ -415,7 +415,7 @@ MonoBehaviour:
   m_parent: {fileID: -7703826499708501092}
   clipModel:
     rid: 8308794128801202241
-  startTime: 1.5276517
+  startTime: 2.9676516
   references:
     version: 2
     RefIds:
