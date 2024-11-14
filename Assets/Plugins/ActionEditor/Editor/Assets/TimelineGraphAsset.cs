@@ -91,6 +91,7 @@ namespace Darkness
                 GraphModel.groups.Add(newGroup.groupModel);
                 CreateUtilities.SaveAssetIntoObject(newGroup, this);
                 newGroup.Tracks.Clear();
+                newGroup.groupModel.tracks.Clear();
                 foreach (var track in groupAsset.Tracks)
                 {
                     newGroup.PasteTrack(track);

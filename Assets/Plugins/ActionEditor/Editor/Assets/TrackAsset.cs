@@ -93,8 +93,7 @@ namespace Darkness
             }
 
             var newClip = CreateInstance<ClipAsset>();
-            CreateUtilities.SaveAssetIntoObject(newClip, this);
-            DirectorUtility.SelectedObject = newClip;
+           
             if (newClip != null)
             {
                 newClip.Parent = this;
@@ -110,7 +109,8 @@ namespace Darkness
                     newClip.EndTime = Mathf.Min(newClip.EndTime, nextAction.StartTime);
                 }
             }
-
+            CreateUtilities.SaveAssetIntoObject(newClip, this);
+            DirectorUtility.SelectedObject = newClip;
             return newClip;
         }
 

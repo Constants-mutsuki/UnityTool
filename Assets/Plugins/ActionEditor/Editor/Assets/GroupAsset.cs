@@ -143,6 +143,7 @@ namespace Darkness
                 groupModel.tracks.Add(newTrack.trackModel);
                 CreateUtilities.SaveAssetIntoObject(newTrack, this);
                 newTrack.Clips.Clear();
+                newTrack.trackModel.clips.Clear();
                 foreach (var clip in trackAsset.Clips)
                 {
                     newTrack.PasteClip(clip);
