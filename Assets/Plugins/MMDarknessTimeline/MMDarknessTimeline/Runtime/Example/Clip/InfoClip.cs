@@ -1,0 +1,12 @@
+﻿using System;
+using MemoryPack;
+
+namespace Darkness
+{
+    [Name("打印信息")]
+    [Attachable(typeof(ATrack))]
+    public class InfoClip : Clip
+    {
+        public string Info;
+    }
+}

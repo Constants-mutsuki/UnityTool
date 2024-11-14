@@ -1,5 +1,30 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5702943056494296716
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 7718614813343737645}
+  clipModel:
+    rid: 1470398120961507328
+  startTime: 3.08
+  references:
+    version: 2
+    RefIds:
+    - rid: 1470398120961507328
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 3.08
+        length: 0
+        Info: "\u5C0F\u6697"
 --- !u!114 &-5463943987352434456
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -36,6 +61,10 @@ MonoBehaviour:
             length: 0
           - startTime: 2.6299999
             length: 0
+          - startTime: 3.08
+            length: 0
+          - startTime: 3.6899998
+            length: 0
         - clips:
           - startTime: 0.19
             length: 1
@@ -49,6 +78,8 @@ MonoBehaviour:
           - startTime: 1.62
             length: 0
           - startTime: 2.6699998
+            length: 0
+          - startTime: 3.55
             length: 0
 --- !u!114 &-4814960274246103640
 MonoBehaviour:
@@ -200,6 +231,31 @@ MonoBehaviour:
         startTime: 2.6299999
         length: 0
         clips: []
+--- !u!114 &328997696458771194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 7718614813343737645}
+  clipModel:
+    rid: 1470398120961507330
+  startTime: 3.6899998
+  references:
+    version: 2
+    RefIds:
+    - rid: 1470398120961507330
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 3.6899998
+        length: 0
+        Info: 
 --- !u!114 &783795053665034305
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -223,6 +279,30 @@ MonoBehaviour:
       type: {class: DamageClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
       data:
         startTime: 2.6699998
+        length: 0
+--- !u!114 &1852234113628438937
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 3232840999694975187}
+  clipModel:
+    rid: 1470398120961507329
+  startTime: 3.55
+  references:
+    version: 2
+    RefIds:
+    - rid: 1470398120961507329
+      type: {class: DamageClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 3.55
         length: 0
 --- !u!114 &2793757907642356427
 MonoBehaviour:
@@ -268,6 +348,7 @@ MonoBehaviour:
   - {fileID: 7593913839046067790}
   - {fileID: 8320663290794386236}
   - {fileID: 783795053665034305}
+  - {fileID: 1852234113628438937}
   active: 1
   isLocked: 0
   color: {r: 1, g: 1, b: 1, a: 1}
@@ -283,6 +364,8 @@ MonoBehaviour:
         - startTime: 1.62
           length: 0
         - startTime: 2.6699998
+          length: 0
+        - startTime: 3.55
           length: 0
 --- !u!114 &5869658576485556770
 MonoBehaviour:
@@ -351,6 +434,8 @@ MonoBehaviour:
   - {fileID: 132740924351584309}
   - {fileID: 2793757907642356427}
   - {fileID: 302353460086208487}
+  - {fileID: -5702943056494296716}
+  - {fileID: 328997696458771194}
   active: 1
   isLocked: 0
   color: {r: 1, g: 1, b: 1, a: 1}
@@ -366,6 +451,10 @@ MonoBehaviour:
         - startTime: 1.7199999
           length: 0
         - startTime: 2.6299999
+          length: 0
+        - startTime: 3.08
+          length: 0
+        - startTime: 3.6899998
           length: 0
 --- !u!114 &8320663290794386236
 MonoBehaviour:
