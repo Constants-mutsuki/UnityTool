@@ -1,0 +1,214 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8373886066876766466
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -1785986919090430939}
+  clipModel:
+    rid: 1188609773468647490
+  startTime: 0.57
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647490
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0.57
+        length: 0
+        Info: 
+--- !u!114 &-4805995995868049572
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
+  m_Name: New Group
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 0}
+  groupModel:
+    rid: 1188609773468647492
+  tracks:
+  - {fileID: -1785986919090430939}
+  isCollapsed: 0
+  active: 1
+  isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647492
+      type: {class: Group, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        tracks:
+        - clips:
+          - startTime: 0.57
+            length: 0
+          - startTime: 2.02
+            length: 0
+          - startTime: 2.59
+            length: 0
+          - startTime: 3.3899999
+            length: 0
+--- !u!114 &-2613817445010471783
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -1785986919090430939}
+  clipModel:
+    rid: 1188609773468647491
+  startTime: 2.02
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647491
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 2.02
+        length: 0
+        Info: 
+--- !u!114 &-1785986919090430939
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11db1f7a654bb4e46a88b78e9959dbea, type: 3}
+  m_Name: ATrack
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -4805995995868049572}
+  trackModel:
+    rid: 1188609773468647489
+  actionClips:
+  - {fileID: -8373886066876766466}
+  - {fileID: -2613817445010471783}
+  - {fileID: 6516221455299143777}
+  - {fileID: 53389170680678962}
+  active: 1
+  isLocked: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647489
+      type: {class: ATrack, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        clips:
+        - startTime: 0.57
+          length: 0
+        - startTime: 2.02
+          length: 0
+        - startTime: 2.59
+          length: 0
+        - startTime: 3.3899999
+          length: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a29e83d2d7624c45a871814f041acc6, type: 3}
+  m_Name: 111
+  m_EditorClassIdentifier: 
+  length: 5
+  viewTimeMin: 0
+  viewTimeMax: 5
+  GraphModel:
+    rid: 1188609773468647488
+  groups:
+  - {fileID: -4805995995868049572}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647488
+      type: {class: TimelineGraph, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        length: 0
+        warpCategory: 0
+        groups:
+        - tracks:
+          - clips:
+            - startTime: 0.57
+              length: 0
+            - startTime: 2.02
+              length: 0
+            - startTime: 2.59
+              length: 0
+            - startTime: 3.3899999
+              length: 0
+--- !u!114 &53389170680678962
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -1785986919090430939}
+  clipModel:
+    rid: 1188609773468647494
+  startTime: 3.3899999
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647494
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 3.3899999
+        length: 0
+        Info: 
+--- !u!114 &6516221455299143777
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -1785986919090430939}
+  clipModel:
+    rid: 1188609773468647493
+  startTime: 2.59
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609773468647493
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 2.59
+        length: 0
+        Info: 

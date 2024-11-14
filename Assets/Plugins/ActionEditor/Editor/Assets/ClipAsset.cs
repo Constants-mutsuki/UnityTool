@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -55,6 +56,7 @@ namespace Darkness
                 if (Math.Abs(StartTime + Length - value) > 0.0001f) //if (StartTime + length != value)
                 {
                     Length = Mathf.Max(value - StartTime, 0);
+                    clipModel.length = Length;
                     BlendOut = Mathf.Clamp(BlendOut, 0, Length - BlendIn);
                     BlendIn = Mathf.Clamp(BlendIn, 0, Length - BlendOut);
                 }

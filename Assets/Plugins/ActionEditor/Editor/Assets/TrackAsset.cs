@@ -97,8 +97,8 @@ namespace Darkness
             if (newClip != null)
             {
                 newClip.Parent = this;
-                newClip.StartTime = time;
                 newClip.clipModel = Activator.CreateInstance(type) as Clip;
+                newClip.StartTime = time;
                 Clips.Add(newClip);
                 if (trackModel.clips.IsNullOrEmpty())
                     trackModel.clips = new List<Clip>();
