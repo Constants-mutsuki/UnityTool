@@ -7,7 +7,6 @@ namespace Darkness
 {
     public class TimelineGraphPreviewProcessor
     {
-        private GameObject m_owner;
         
         private List<IDirectableTimePointer> timePointers;
 
@@ -55,8 +54,8 @@ namespace Darkness
         }
         public GameObject Owner
         {
-            get => m_owner;
-            set => m_owner = value;
+            get;
+            set;
         }
         
 
@@ -220,6 +219,7 @@ namespace Darkness
 
             TimelineGraphProcessor timelineGraphProcessor =
                 new TimelineGraphProcessor(TimelineGraphAsset.GraphModel,true);
+            timelineGraphProcessor.Owner = this.Owner;
 
             for (int i =  TimelineGraphAsset.groups.Count-1 ; i>=0 ;i--)
             {

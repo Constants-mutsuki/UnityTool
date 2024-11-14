@@ -1,5 +1,83 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7494396709721048365
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 2998904026042604873}
+  clipModel:
+    rid: 1188609771832344612
+  startTime: 0.88
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344612
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+        Info: 
+--- !u!114 &-4340567115741152437
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 2998904026042604873}
+  clipModel:
+    rid: 1188609771832344613
+  startTime: 1.42
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344613
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+        Info: 
+--- !u!114 &-1011465972977952117
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb2749d90b133472da797f5201e53720, type: 3}
+  m_Name: New Group
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 0}
+  groupModel:
+    rid: 1188609771832344616
+  tracks:
+  - {fileID: 2998904026042604873}
+  isCollapsed: 0
+  active: 1
+  isLocked: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344616
+      type: {class: Group, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        tracks:
+        - clips: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17,7 +95,8 @@ MonoBehaviour:
   viewTimeMax: 5
   GraphModel:
     rid: 1188609771832344610
-  groups: []
+  groups:
+  - {fileID: -1011465972977952117}
   references:
     version: 2
     RefIds:
@@ -26,4 +105,82 @@ MonoBehaviour:
       data:
         length: 0
         warpCategory: 0
-        groups: []
+        groups:
+        - tracks:
+          - clips: []
+--- !u!114 &2998904026042604873
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11db1f7a654bb4e46a88b78e9959dbea, type: 3}
+  m_Name: ATrack
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: -1011465972977952117}
+  trackModel:
+    rid: 1188609771832344611
+  actionClips: []
+  active: 1
+  isLocked: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344611
+      type: {class: ATrack, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        clips: []
+--- !u!114 &3461759919319758602
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 2998904026042604873}
+  clipModel:
+    rid: 1188609771832344615
+  startTime: 2.53
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344615
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+        Info: 
+--- !u!114 &7192565357904850937
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45458daa91df64a43b385d625b46e760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parent: {fileID: 2998904026042604873}
+  clipModel:
+    rid: 1188609771832344614
+  startTime: 1.89
+  references:
+    version: 2
+    RefIds:
+    - rid: 1188609771832344614
+      type: {class: InfoClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
+      data:
+        startTime: 0
+        length: 0
+        Info: 
