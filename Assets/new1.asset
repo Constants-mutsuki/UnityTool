@@ -219,14 +219,14 @@ MonoBehaviour:
   m_parent: {fileID: 1589425943202900716}
   clipModel:
     rid: 7626350408074002503
-  startTime: 0.19999999
+  startTime: 1.1999999
   references:
     version: 2
     RefIds:
     - rid: 7626350408074002503
       type: {class: AnimancerClip, ns: Darkness, asm: Assembly-CSharp-firstpass}
       data:
-        startTime: 0
+        startTime: 1.1999999
         length: 0
         clips: []
 --- !u!114 &8543261483859164807

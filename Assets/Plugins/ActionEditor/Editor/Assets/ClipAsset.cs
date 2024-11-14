@@ -39,6 +39,7 @@ namespace Darkness
                 if (Math.Abs(startTime - value) > 0.0001f)
                 {
                     startTime = Mathf.Max(value, 0);
+                    clipModel.startTime = startTime;
                     BlendIn = Mathf.Clamp(BlendIn, 0, Length - BlendOut);
                     BlendOut = Mathf.Clamp(BlendOut, 0, Length - BlendIn);
                 }
