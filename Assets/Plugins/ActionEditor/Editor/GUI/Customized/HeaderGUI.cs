@@ -139,10 +139,7 @@ namespace Darkness
                 App.AutoSave(); //先保存当前的
                 ObjectSelectorWindow.ShowObjectPicker<TextAsset>(App.GraphAsset, App.OnObjectPickerConfig, Prefs.savePath);
             }
-
-            //绘制ObjectField
-            /*GUIStyle customStyle = new GUIStyle(EditorStyles.objectField); 
-            GUILayoutOption option=new */
+            
             App.Owner = EditorGUILayout.ObjectField("",App.Owner, typeof(GameObject), true) as GameObject;
         }
 

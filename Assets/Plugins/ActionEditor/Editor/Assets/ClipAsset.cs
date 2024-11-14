@@ -39,6 +39,7 @@ namespace Darkness
                 if (Math.Abs(startTime - value) > 0.0001f)
                 {
                     startTime = Mathf.Max(value, 0);
+                    clipModel.startTime = startTime;
                     BlendIn = Mathf.Clamp(BlendIn, 0, Length - BlendOut);
                     BlendOut = Mathf.Clamp(BlendOut, 0, Length - BlendIn);
                 }
@@ -132,11 +133,6 @@ namespace Darkness
             }
         }
 
-
-        #region Unity Editor
-
-#if UNITY_EDITOR
-
         public void ShowClipGUI(Rect rect)
         {
             OnClipGUI(rect);
@@ -154,9 +150,5 @@ namespace Darkness
         protected virtual void OnClipGUIExternal(Rect left, Rect right)
         {
         }
-
-#endif
-
-        #endregion
     }
 }
