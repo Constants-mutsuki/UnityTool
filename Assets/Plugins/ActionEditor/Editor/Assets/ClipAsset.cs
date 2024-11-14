@@ -132,11 +132,6 @@ namespace Darkness
             }
         }
 
-
-        #region Unity Editor
-
-#if UNITY_EDITOR
-
         public void ShowClipGUI(Rect rect)
         {
             OnClipGUI(rect);
@@ -154,9 +149,5 @@ namespace Darkness
         protected virtual void OnClipGUIExternal(Rect left, Rect right)
         {
         }
-
-#endif
-
-        #endregion
     }
 }

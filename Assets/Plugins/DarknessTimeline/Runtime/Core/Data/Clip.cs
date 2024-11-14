@@ -1,5 +1,6 @@
 ﻿using System;
 using MemoryPack;
+using Sirenix.OdinInspector;
 
 namespace Darkness
 {
@@ -7,7 +8,9 @@ namespace Darkness
     [MemoryPackable]
     public partial class Clip
     {
+        [ReadOnly]
         public float startTime;
+        [ReadOnly]
         public float length;
     }
 }

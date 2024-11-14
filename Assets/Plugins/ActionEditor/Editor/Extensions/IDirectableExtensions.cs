@@ -40,20 +40,18 @@ namespace Darkness
         public static bool CanBlendIn(this ClipAsset directable)
         {
             var blendInProp = directable.GetType().GetProperty("BlendIn", BindingFlags.Instance | BindingFlags.Public);
-            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f &&
-                   blendInProp.DeclaringType != typeof(DirectableAsset);
+            return blendInProp != null && blendInProp.CanWrite && Math.Abs(directable.BlendIn - (-1)) > 0.0001f && blendInProp.DeclaringType != typeof(DirectableAsset);
         }
 
         public static bool CanBlendOut(this ClipAsset directable)
         {
             var blendOutProp = directable.GetType().GetProperty("BlendOut", BindingFlags.Instance | BindingFlags.Public);
-            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f &&
-                   blendOutProp.DeclaringType != typeof(DirectableAsset);
+            return blendOutProp != null && blendOutProp.CanWrite && Math.Abs(directable.BlendOut - (-1)) > 0.0001f && blendOutProp.DeclaringType != typeof(DirectableAsset);
         }
 
         public static bool CanScale(this ClipAsset directable)
         {
-            // true;
+            return true;
             var lengthProp = directable.GetType().GetProperty("Length", BindingFlags.Instance | BindingFlags.Public);
             return lengthProp != null && lengthProp.CanWrite && lengthProp.DeclaringType != typeof(ClipAsset);
         }
