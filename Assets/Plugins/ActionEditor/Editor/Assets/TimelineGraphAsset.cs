@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace Darkness
@@ -24,12 +25,9 @@ namespace Darkness
 
         [NonSerialized]
         private TrackAsset[] m_cacheOutputTracks;
-
-        [SerializeReference]
-        public TimelineGraph GraphModel = new();
-
+        
         [SerializeField, HideInInspector]
-        public List<GroupAsset> groups = new();
+        public List<GroupAsset> groupAssets = new();
 
         public float Length
         {
@@ -64,10 +62,7 @@ namespace Darkness
             newGroup.Name = "New Group";
             newGroup.Root = this;
             newGroup.groupModel = new Group();
-            groups.Add(newGroup);
-            if (GraphModel.groups.IsNullOrEmpty())
-                GraphModel.groups = new List<Group>();
-            GraphModel.groups.Add(newGroup.groupModel);
+            groupAssets.Add(newGroup);
             CreateUtilities.SaveAssetIntoObject(newGroup, this);
             DirectorUtility.SelectedObject = newGroup;
             return newGroup;
@@ -75,8 +70,7 @@ namespace Darkness
 
         public void DeleteGroup(GroupAsset groupAsset)
         {
-            groups.Remove(groupAsset);
-            GraphModel.groups.Remove(groupAsset.groupModel);
+            groupAssets.Remove(groupAsset);
         }
 
         public GroupAsset PasteGroup(GroupAsset groupAsset)
@@ -85,10 +79,7 @@ namespace Darkness
             if (newGroup != null)
             {
                 newGroup.Root = this;
-                groups.Add(newGroup);
-                if (GraphModel.groups.IsNullOrEmpty())
-                    GraphModel.groups = new List<Group>();
-                GraphModel.groups.Add(newGroup.groupModel);
+                groupAssets.Add(newGroup);
                 CreateUtilities.SaveAssetIntoObject(newGroup, this);
                 newGroup.Tracks.Clear();
                 newGroup.groupModel.tracks.Clear();
@@ -101,15 +92,14 @@ namespace Darkness
             return newGroup;
         }
 
-        [Button]
-        public void SerializeGraphModel()
+        public TimelineGraph GetGraphModel()
         {
             var graphModel = new TimelineGraph
             {
                 groups = new List<Group>()
             };
 
-            foreach (var groupAsset in groups)
+            foreach (var groupAsset in groupAssets)
             {
                 var groupModel = groupAsset.groupModel;
                 groupModel.tracks = new List<Track>();
@@ -134,15 +124,20 @@ namespace Darkness
 
                 graphModel.groups.Add(groupModel);
             }
+            return graphModel;
+        }
 
-            byte[] serializedData = MemoryPackSerializer.Serialize(graphModel);
+        [Button]
+        public void SerializeGraphModel()
+        {
+            byte[] serializedData = MemoryPackSerializer.Serialize(GetGraphModel());
             using FileStream file = File.Create($"{Prefs.SerializeSavePath}/{name}.bytes");
             file.Write(serializedData, 0, serializedData.Length);
         }
 
         public void Validate()
         {
-            foreach (var groupAsset in groups)
+            foreach (var groupAsset in groupAssets)
             {
                 groupAsset.Root = this;
             }

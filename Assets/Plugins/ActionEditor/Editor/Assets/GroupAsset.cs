@@ -14,7 +14,7 @@ namespace Darkness
         public Group groupModel;
 
         [SerializeField, HideInInspector]
-        private List<TrackAsset> tracks = new();
+        private List<TrackAsset> trackAssets = new();
 
         [SerializeField, HideInInspector]
         private bool isCollapsed = false;
@@ -44,8 +44,8 @@ namespace Darkness
 
         public List<TrackAsset> Tracks
         {
-            get => tracks;
-            set => tracks = value;
+            get => trackAssets;
+            set => trackAssets = value;
         }
 
         public override bool IsActive
@@ -68,7 +68,6 @@ namespace Darkness
 
 
         #region 增删
-
         public bool CanAddTrack(TrackAsset trackAsset)
         {
             return trackAsset && CanAddTrackOfType(trackAsset.GetType());
@@ -102,9 +101,6 @@ namespace Darkness
             newTrack.Parent = this;
             newTrack.trackModel = Activator.CreateInstance(type) as Track;
             Tracks.Add(newTrack);
-            if (groupModel.tracks.IsNullOrEmpty())
-                groupModel.tracks = new List<Track>();
-            groupModel.tracks.Add(newTrack.trackModel);
             CreateUtilities.SaveAssetIntoObject(newTrack, this);
             DirectorUtility.SelectedObject = newTrack;
             return newTrack;
@@ -114,7 +110,6 @@ namespace Darkness
         {
             // Undo.RegisterCompleteObjectUndo(this, "Delete Track");
             Tracks.Remove(trackAsset);
-            groupModel.tracks.Remove(trackAsset.trackModel);
             if (ReferenceEquals(DirectorUtility.SelectedObject, trackAsset))
             {
                 DirectorUtility.SelectedObject = null;
@@ -138,9 +133,6 @@ namespace Darkness
             {
                 newTrack.Parent = this;
                 Tracks.Add(newTrack);
-                if (groupModel.tracks.IsNullOrEmpty())
-                    groupModel.tracks = new List<Track>();
-                groupModel.tracks.Add(newTrack.trackModel);
                 CreateUtilities.SaveAssetIntoObject(newTrack, this);
                 newTrack.Clips.Clear();
                 newTrack.trackModel.clips.Clear();
@@ -152,7 +144,6 @@ namespace Darkness
 
             return newTrack;
         }
-
         #endregion
     }
 }

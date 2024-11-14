@@ -7,7 +7,6 @@ namespace Darkness
 {
     public class TimelineGraphPreviewProcessor
     {
-        
         private List<IDirectableTimePointer> timePointers;
 
         /// <summary>
@@ -18,9 +17,9 @@ namespace Darkness
         private float playTimeMin;
         private float playTimeMax;
         private float currentTime;
-        
+
         private BlackboardProcessor<string> context;
-        
+
         private Events<string> events;
 
         public float previousTime { get; private set; }
@@ -28,8 +27,9 @@ namespace Darkness
         private bool preInitialized;
 
         public TimelineGraphAsset TimelineGraphAsset { get; private set; }
-        
-        public BlackboardProcessor<string> Context {
+
+        public BlackboardProcessor<string> Context
+        {
             get
             {
                 if (context == null)
@@ -40,8 +40,9 @@ namespace Darkness
                 return context;
             }
         }
-        
-        public Events<string> Events {
+
+        public Events<string> Events
+        {
             get
             {
                 if (events == null)
@@ -57,7 +58,7 @@ namespace Darkness
             get;
             set;
         }
-        
+
 
         /// <summary>
         /// 当前时间
@@ -84,7 +85,7 @@ namespace Darkness
             set => playTimeMax = Mathf.Clamp(value, PlayTimeMin, Length);
         }
 
-        
+
         public float Length
         {
             get
@@ -93,7 +94,7 @@ namespace Darkness
                 {
                     return TimelineGraphAsset.Length;
                 }
-        
+
                 return 0;
             }
         }
@@ -190,8 +191,8 @@ namespace Darkness
             unsortedStartTimePointers = new List<IDirectableTimePointer>();
 
             Dictionary<Type, Type> typeDic = new Dictionary<Type, Type>();
-            var childs = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
-            foreach (var t in childs)
+            var children = EditorTools.GetTypeMetaDerivedFrom(typeof(PreviewLogic));
+            foreach (var t in children)
             {
                 var arrs = t.Type.GetCustomAttributes(typeof(CustomPreviewAttribute), true);
                 foreach (var arr in arrs)
@@ -217,59 +218,58 @@ namespace Darkness
                 }
             }
 
-            TimelineGraphProcessor timelineGraphProcessor =
-                new TimelineGraphProcessor(TimelineGraphAsset.GraphModel,true);
-            timelineGraphProcessor.Owner = this.Owner;
+            TimelineGraphProcessor timelineGraphProcessor = new TimelineGraphProcessor(TimelineGraphAsset.GetGraphModel(), true);
+            timelineGraphProcessor.Owner = Owner;
 
-            for (int i =  TimelineGraphAsset.groups.Count-1 ; i>=0 ;i--)
+            for (int i = TimelineGraphAsset.groupAssets.Count - 1; i >= 0; i--)
             {
-                var groupAsset = TimelineGraphAsset.groups[i];
+                var groupAsset = TimelineGraphAsset.groupAssets[i];
                 var groupProcessor = timelineGraphProcessor.Children.ElementAt(i);
                 if (!groupAsset.IsActive) continue;
-                for (int j = groupAsset.Tracks.Count-1;  j>=0;  j--)
+                for (int j = groupAsset.Tracks.Count - 1; j >= 0; j--)
                 {
                     var trackAsset = groupAsset.Tracks[j];
                     var trackProcessor = groupProcessor.Children.ElementAt(j);
                     if (!trackAsset.IsActive) continue;
                     var tType = trackProcessor.GetType();
-                    PreviewLogic trackpreview;
-                    
+                    PreviewLogic trackPreview;
+
                     if (typeDic.TryGetValue(tType, out var t1))
                     {
-                        trackpreview = Activator.CreateInstance(t1) as PreviewLogic;
+                        trackPreview = Activator.CreateInstance(t1) as PreviewLogic;
                     }
                     else
                     {
-                        trackpreview = new PreviewLogic();
+                        trackPreview = new PreviewLogic();
                     }
-                    
-                    trackpreview.SetTarget(trackProcessor,trackAsset);
-                    var trackp3 = new StartTimePreviewPointer(trackpreview);
-                    timePointers.Add(trackp3);
-                
-                    unsortedStartTimePointers.Add(trackp3);
-                    timePointers.Add(new EndTimePreviewPointer(trackpreview));
-                
-                    for (int k = 0; k < trackAsset.Clips.Count;k++)
+
+                    trackPreview.SetTarget(trackProcessor, trackAsset);
+                    var trackPoint3 = new StartTimePreviewPointer(trackPreview);
+                    timePointers.Add(trackPoint3);
+
+                    unsortedStartTimePointers.Add(trackPoint3);
+                    timePointers.Add(new EndTimePreviewPointer(trackPreview));
+
+                    for (int k = 0; k < trackAsset.Clips.Count; k++)
                     {
                         var clipAsset = trackAsset.Clips[k];
                         var clipProcessor = trackProcessor.Children.ElementAt(k);
                         var cType = clipProcessor.GetType();
-                        PreviewLogic clippreview;
+                        PreviewLogic clipPreview;
                         if (typeDic.TryGetValue(cType, out var t))
                         {
-                            clippreview = Activator.CreateInstance(t) as PreviewLogic;
+                            clipPreview = Activator.CreateInstance(t) as PreviewLogic;
                         }
                         else
                         {
-                            clippreview = new PreviewLogic();
+                            clipPreview = new PreviewLogic();
                         }
-                        clippreview.SetTarget(clipProcessor,clipAsset);
-                        var clipp3 = new StartTimePreviewPointer(clippreview);
-                        timePointers.Add(clipp3);
-                
-                        unsortedStartTimePointers.Add(clipp3);
-                        timePointers.Add(new EndTimePreviewPointer(clippreview));
+                        clipPreview.SetTarget(clipProcessor, clipAsset);
+                        var clipPoint3 = new StartTimePreviewPointer(clipPreview);
+                        timePointers.Add(clipPoint3);
+
+                        unsortedStartTimePointers.Add(clipPoint3);
+                        timePointers.Add(new EndTimePreviewPointer(clipPreview));
                     }
                 }
             }

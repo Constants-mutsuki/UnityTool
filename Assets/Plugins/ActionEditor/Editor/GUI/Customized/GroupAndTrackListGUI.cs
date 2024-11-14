@@ -53,12 +53,12 @@ namespace Darkness
             var collapseAllRect = Rect.MinMaxRect(m_leftRect.x + 5, m_leftRect.y + 4, 20, m_leftRect.y + 20 - 1);
             var searchRect = Rect.MinMaxRect(m_leftRect.x + 20, m_leftRect.y + 4, m_leftRect.xMax - 18, m_leftRect.y + 20 - 1);
             var searchCancelRect = Rect.MinMaxRect(searchRect.xMax, searchRect.y, m_leftRect.xMax - 4, searchRect.yMax);
-            var anyExpanded = TimelineGraphAsset.groups.Any(g => !g.IsCollapsed);
+            var anyExpanded = TimelineGraphAsset.groupAssets.Any(g => !g.IsCollapsed);
             ActionEditorWindow.current.AddCursorRect(collapseAllRect, MouseCursor.Link);
             GUI.color = Color.white.WithAlpha(0.5f);
             if (GUI.Button(collapseAllRect, anyExpanded ? "▼" : "►", (GUIStyle)"label"))
             {
-                foreach (var group in TimelineGraphAsset.groups)
+                foreach (var group in TimelineGraphAsset.groupAssets)
                 {
                     group.IsCollapsed = anyExpanded;
                 }
@@ -103,9 +103,9 @@ namespace Darkness
 
         private void ShowListGroups(Event e, ref float nextYPos)
         {
-            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
+            for (int g = 0; g < TimelineGraphAsset.groupAssets.Count; g++)
             {
-                var group = TimelineGraphAsset.groups[g];
+                var group = TimelineGraphAsset.groupAssets[g];
 
                 if (G.IsFilteredOutBySearch(group))
                 {
@@ -247,7 +247,7 @@ namespace Darkness
                     if (groupRect.Contains(e.mousePosition))
                     {
                         var markRect = new Rect(groupRect.x,
-                            (TimelineGraphAsset.groups.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y, groupRect.width, 2);
+                            (TimelineGraphAsset.groupAssets.IndexOf(m_pickedGroupAsset) < g) ? groupRect.yMax - 2 : groupRect.y, groupRect.width, 2);
                         GUI.color = Color.grey;
                         GUI.DrawTexture(markRect, Styles.WhiteTexture);
                         GUI.color = Color.white;
@@ -255,8 +255,8 @@ namespace Darkness
 
                     if (e.rawType == EventType.MouseUp && e.button == 0 && groupRect.Contains(e.mousePosition))
                     {
-                        TimelineGraphAsset.groups.Remove(m_pickedGroupAsset);
-                        TimelineGraphAsset.groups.Insert(g, m_pickedGroupAsset);
+                        TimelineGraphAsset.groupAssets.Remove(m_pickedGroupAsset);
+                        TimelineGraphAsset.groupAssets.Insert(g, m_pickedGroupAsset);
                         m_pickedGroupAsset = null;
                         e.Use();
                     }

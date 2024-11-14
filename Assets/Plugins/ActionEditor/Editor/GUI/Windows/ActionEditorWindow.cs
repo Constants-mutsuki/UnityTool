@@ -405,7 +405,7 @@ namespace Darkness
             mousePosition = e.mousePosition;
             if (interactingClip == null && e.type == EventType.Layout)
             {
-                foreach (var group in TimelineGraphAsset.groups)
+                foreach (var group in TimelineGraphAsset.groupAssets)
                 {
                     foreach (var track in group.Tracks)
                     {
@@ -442,7 +442,7 @@ namespace Darkness
                 ShowDragDropInfo = false;
             }
 
-            if (ShowDragDropInfo && TimelineGraphAsset.groups.Find(g => g.GetType() == typeof(GroupAsset)) == null)
+            if (ShowDragDropInfo && TimelineGraphAsset.groupAssets.Find(g => g.GetType() == typeof(GroupAsset)) == null)
             {
                 var label = "Drag & Drop GameObjects or Prefabs in this window to create Actor Groups";
                 var size = new GUIStyle("label").CalcSize(new GUIContent(label));
@@ -858,11 +858,11 @@ namespace Darkness
 
             clipWrappers = new Dictionary<int, ActionClipWrapper>();
             clipWrappersMap = new Dictionary<ClipAsset, ActionClipWrapper>();
-            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
+            for (int g = 0; g < TimelineGraphAsset.groupAssets.Count; g++)
             {
-                for (int t = 0; t < TimelineGraphAsset.groups[g].Tracks.Count; t++)
+                for (int t = 0; t < TimelineGraphAsset.groupAssets[g].Tracks.Count; t++)
                 {
-                    for (int a = 0; a < TimelineGraphAsset.groups[g].Tracks[t].Clips.Count; a++)
+                    for (int a = 0; a < TimelineGraphAsset.groupAssets[g].Tracks[t].Clips.Count; a++)
                     {
                         var id = UID(g, t, a);
                         if (clipWrappers.ContainsKey(id))
@@ -871,7 +871,7 @@ namespace Darkness
                             continue;
                         }
 
-                        var clip = TimelineGraphAsset.groups[g].Tracks[t].Clips[a];
+                        var clip = TimelineGraphAsset.groupAssets[g].Tracks[t].Clips[a];
                         var wrapper = new ActionClipWrapper(clip);
                         clipWrappers[id] = wrapper;
                         clipWrappersMap[clip] = wrapper;
@@ -919,9 +919,9 @@ namespace Darkness
 
             BeginWindows();
 
-            for (int g = 0; g < TimelineGraphAsset.groups.Count; g++)
+            for (int g = 0; g < TimelineGraphAsset.groupAssets.Count; g++)
             {
-                var group = TimelineGraphAsset.groups[g];
+                var group = TimelineGraphAsset.groupAssets[g];
                 ShowGroupArea(group, g, e, ref nextYPos);
             }
 
