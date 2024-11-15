@@ -1,5 +1,4 @@
 ﻿using System;
-using MemoryPack;
 using Sirenix.OdinInspector;
 
 namespace Darkness

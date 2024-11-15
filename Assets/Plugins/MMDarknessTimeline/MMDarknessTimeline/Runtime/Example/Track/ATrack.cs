@@ -1,5 +1,4 @@
-﻿using MemoryPack;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Darkness
 {

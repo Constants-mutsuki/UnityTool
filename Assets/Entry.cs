@@ -1,6 +1,5 @@
 using System;
 using Darkness;
-using MemoryPack;
 using Sirenix.Serialization;
 using UnityEngine;
 
